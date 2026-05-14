@@ -510,10 +510,12 @@ export default function InvoiceGenerator() {
         </div>
       </div>
 
-    </div>
-  </div>
+      </div>
+
+
   );
 }
+
 
 function SectionLabel({ label, color }: { label: string; color?: string }) {
   return (

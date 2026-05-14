@@ -14,6 +14,8 @@ export default function AdBanner({ slot }: { slot: string }) {
     } catch {}
   }, []);
 
+
+  
   return (
     <div className="my-6 flex justify-center no-print">
       <ins
