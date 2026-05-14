@@ -55,6 +55,8 @@ export default function InvoiceGenerator() {
   const [busy,    setBusy]    = useState(false);
   const [clients, setClients] = useState<string[]>([]);
   const [hist,    setHist]    = useState<string[]>([]);
+  const [docType, setDocType] = useState<"invoice" | "quotation">("invoice");
+  const [wmLogo,  setWmLogo]  = useState<string | null>(null);
   const previewEl = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -96,7 +98,7 @@ export default function InvoiceGenerator() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
+    <div className="min-h-screen bg-slate-100">
 
       {/* Hero */}
       <div className="text-center pt-10 pb-6 px-4">
@@ -114,11 +116,11 @@ export default function InvoiceGenerator() {
 
       {/* Two-column layout */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-16">
-        <div className="flex flex-col xl:flex-row gap-6 items-start justify-center">
+        <div className="flex flex-col lg:flex-row gap-6 items-start justify-center">
 
           {/* ── LEFT: FORM CARD ── */}
-          <div className="w-full xl:w-[500px] flex-shrink-0">
-            <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
+          <div className="w-full lg:w-[480px] flex-shrink-0">
+            <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-200">
 
               {/* Card header */}
               <div className="px-7 pt-6 pb-5 border-b border-slate-100 flex items-center justify-between">
@@ -144,6 +146,19 @@ export default function InvoiceGenerator() {
 
               {/* Scrollable form body */}
               <div className="px-7 py-6 space-y-6 overflow-y-auto" style={{ maxHeight: "calc(100vh - 260px)" }}>
+
+                {/* Document type toggle */}
+                <div className="flex rounded-xl overflow-hidden border border-slate-200 text-[12.5px] font-bold">
+                  {(["invoice", "quotation"] as const).map(t => (
+                    <button key={t} onClick={() => setDocType(t)}
+                      className="flex-1 py-2 capitalize transition-all"
+                      style={docType === t
+                        ? { backgroundColor: color, color: "#fff" }
+                        : { backgroundColor: "#fff", color: "#94a3b8" }}>
+                      {t === "invoice" ? "Invoice" : "Quotation"}
+                    </button>
+                  ))}
+                </div>
 
                 <SectionLabel label="Invoice Info" />
                 <div className="grid grid-cols-2 gap-4">
@@ -279,6 +294,29 @@ export default function InvoiceGenerator() {
 
                 <hr className="border-dashed border-slate-200" />
 
+                <SectionLabel label="Watermark Logo (optional)" />
+                <div className="flex items-center gap-3">
+                  <label className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-dashed border-slate-300 cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/40 transition-all text-[12.5px] text-slate-500 font-medium">
+                    <Upload size={14} />
+                    {wmLogo ? "Change Logo" : "Upload Logo"}
+                    <input type="file" accept="image/*" className="hidden" onChange={e => {
+                      const f = e.target.files?.[0];
+                      if (!f) return;
+                      const r = new FileReader();
+                      r.onload = ev => setWmLogo(ev.target?.result as string);
+                      r.readAsDataURL(f);
+                    }} />
+                  </label>
+                  {wmLogo && (
+                    <button onClick={() => setWmLogo(null)}
+                      className="px-3 py-2.5 rounded-xl border border-slate-200 text-[12px] text-slate-500 hover:bg-slate-50 transition-all">
+                      Remove
+                    </button>
+                  )}
+                </div>
+
+                <hr className="border-dashed border-slate-200" />
+
                 <SectionLabel label="Notes / Payment Terms" />
                 <textarea rows={3} className={inp + " resize-none"}
                   placeholder="e.g. Payment due within 30 days..."
@@ -306,7 +344,7 @@ export default function InvoiceGenerator() {
           </div>
 
           {/* ── RIGHT: LIVE PREVIEW CARD ── */}
-          <div className="w-full xl:flex-1 xl:min-w-0 xl:sticky xl:top-24 no-print">
+          <div className="w-full lg:flex-1 lg:min-w-0 lg:sticky lg:top-24 no-print">
 
             {/* Status bar */}
             <div className="flex items-center justify-between mb-3 px-1">
@@ -337,8 +375,22 @@ export default function InvoiceGenerator() {
                 <div className="p-10">
 
                   {/* Invoice header */}
-                  <div className="flex justify-between items-start mb-10">
-                    <div>
+                  <div className="relative flex justify-between items-start mb-10">
+                    {/* Watermark — centered behind content */}
+                    {wmLogo ? (
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 0 }}>
+                        <img src={wmLogo} alt="" className="max-h-40 max-w-[260px] select-none"
+                          style={{ opacity: 0.08, objectFit: "contain" }} />
+                      </div>
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 0 }}>
+                        <p className="text-[52px] font-black tracking-widest select-none uppercase"
+                          style={{ color: `${color}18`, transform: "rotate(-8deg)", letterSpacing: "0.15em" }}>
+                          {docType === "invoice" ? "INVOICE" : "QUOTATION"}
+                        </p>
+                      </div>
+                    )}
+                    <div style={{ position: "relative", zIndex: 1 }}>
                       <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-black text-xl mb-3"
                         style={{ backgroundColor: color }}>
                         {(from.name || "I")[0].toUpperCase()}
@@ -348,10 +400,8 @@ export default function InvoiceGenerator() {
                       {from.phone   && <p className="text-[12px] text-slate-400 mt-0.5">{from.phone}</p>}
                       {from.address && <p className="text-[12px] text-slate-400 mt-0.5 whitespace-pre-line">{from.address}</p>}
                     </div>
-                    <div className="text-right">
-                      <p className="text-[44px] font-black leading-none tracking-widest select-none"
-                        style={{ color: `${color}1a` }}>INVOICE</p>
-                      <p className="text-[15px] font-bold text-slate-900 mt-1">#{meta.no || "—"}</p>
+                    <div className="text-right" style={{ position: "relative", zIndex: 1 }}>
+                      <p className="text-[15px] font-bold text-slate-900">#{meta.no || "—"}</p>
                       <p className="text-[12px] text-slate-500 mt-1">
                         Issued: <span className="font-semibold text-slate-700">{meta.date || "—"}</span>
                       </p>
@@ -543,3 +593,4 @@ function Spinner() {
     </svg>
   );
 }
+    
