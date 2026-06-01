@@ -1,293 +1,218 @@
 @import "tailwindcss";
 
-/* ========================================
-   RESET
-======================================== */
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* ========================================
-   ROOT COLORS
-======================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; overflow-x: hidden; max-width: 100%; }
 
 :root {
-  /* Backgrounds */
-  --background: #f5f7ff;
-  --surface: #ffffff;
-  --surface-secondary: #f8faff;
-  --surface-hover: #eef2ff;
-
-  /* Text */
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
-
-  /* Brand */
+  --bg: #f5f7ff;
+  --border: #e4e9f2;
   --primary: #4f46e5;
-  --primary-dark: #4338ca;
-  --primary-light: #eef2ff;
-
-  /* Borders */
-  --border: #e2e8f0;
-  --border-light: #edf2f7;
-
-  /* Success */
-  --success: #16a34a;
-  --success-bg: #f0fdf4;
-
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
-  --shadow-md: 0 6px 20px rgba(15, 23, 42, 0.06);
-  --shadow-lg: 0 10px 40px rgba(79, 70, 229, 0.12);
-
-  /* Radius */
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
+  --text-1: #0d1117;
+  --text-2: #4b5563;
+  --text-3: #9ca3af;
+  --radius-md: 14px;
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.04), 0 8px 32px rgba(15,23,42,0.07);
 }
 
-/* ========================================
-   BODY
-======================================== */
-
 body {
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  background:
-    radial-gradient(circle at top left, rgba(99, 102, 241, 0.08), transparent 25%),
-    radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.06), transparent 25%),
-    var(--background);
-  color: var(--text-primary);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text-1);
   line-height: 1.6;
   font-size: 14px;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* ========================================
-   TYPOGRAPHY
-======================================== */
+h1,h2,h3,h4 { letter-spacing: -0.025em; font-weight: 700; }
+a { color: inherit; text-decoration: none; }
+::selection { background: rgba(79,70,229,.15); }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  letter-spacing: -0.03em;
-  font-weight: 700;
-  color: var(--text-primary);
+/* ── Tool: responsive paddings & scroll ───────────────── */
+.ig-toolwrap   { padding: 0 24px 80px; }
+.ig-formhead   { padding: 20px 28px 16px; }
+.ig-formbody   { padding: 22px 28px; overflow-y: auto; max-height: calc(100vh - 210px); }
+.ig-formfoot   { padding: 16px 28px; }
+
+/* On tablet/mobile the form should flow with the page,
+   not trap content inside its own scroll area. */
+@media (max-width: 1023px) {
+  .ig-formbody { max-height: none; overflow: visible; }
+}
+@media (max-width: 640px) {
+  .ig-toolwrap { padding: 0 14px 56px; }
+  .ig-formhead { padding: 16px 16px 14px; }
+  .ig-formbody { padding: 18px 16px; }
+  .ig-formfoot { padding: 14px 16px; }
 }
 
-p {
-  color: var(--text-secondary);
+/* Item row enter animation (replaces framer-motion → smaller bundle) */
+.ig-itemrow { animation: igRowIn .16s ease both; }
+@keyframes igRowIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .ig-itemrow { animation: none; }
+  html { scroll-behavior: auto; }
 }
 
-/* ========================================
-   LINKS
-======================================== */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(79,70,229,.25); border-radius: 99px; }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-/* ========================================
-   SELECTION
-======================================== */
-
-::selection {
-  background: rgba(79, 70, 229, 0.18);
-  color: var(--text-primary);
-}
-
-/* ========================================
-   SCROLLBAR
-======================================== */
-
-::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.35);
-  border-radius: 999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.6);
-}
-
-/* ========================================
-   INPUTS
-======================================== */
-
-input,
-textarea,
-select,
-button {
-  font: inherit;
-  outline: none;
-}
-
-input,
-textarea,
-select {
-  width: 100%;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.8);
-  color: var(--text-primary);
-  border-radius: var(--radius-sm);
-  transition: all 0.25s ease;
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-  border-color: var(--primary);
-  background: white;
-  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
-}
-
-/* Remove Number Input Arrows */
+input, textarea, select, button { font: inherit; outline: none; }
 input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+input[type="number"] { -moz-appearance: textfield; }
+input[type="date"]::-webkit-calendar-picker-indicator { opacity: .45; cursor: pointer; }
+button { cursor: pointer; border: none; transition: all .2s ease; }
+button:active { transform: scale(.97); }
+
+/* ── AdSense slots — responsive, reserves space (low CLS) ── */
+.ad-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 970px;
+  margin: 28px auto;
+  padding: 0 16px;
+  min-height: 100px;          /* reserve space → avoids layout shift */
+  overflow: hidden;           /* an oversized ad can never break the layout */
+}
+/* Safety net: no ad iframe may exceed its container on any device */
+.ad-wrap .adsbygoogle,
+.ad-wrap ins,
+.ad-wrap iframe { max-width: 100% !important; }
+.ad-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #b6bdca;
+  margin-bottom: 6px;
+}
+.ad-wrap .adsbygoogle { display: block; width: 100%; }
+.ad-placeholder {
+  width: 100%;
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px dashed #d7deea;
+  border-radius: 12px;
+  background: #f8faff;
+  color: #aab2c2;
+  font-size: 12px;
+  text-align: center;
+  padding: 12px;
+}
+@media (max-width: 768px) {
+  .ad-wrap { margin: 20px auto; }
 }
 
-input[type="number"] {
-  -moz-appearance: textfield;
+/* ── SEO article typography ── */
+.seo-prose h2 {
+  font-size: clamp(20px, 3vw, 26px);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #0d1117;
+  margin: 34px 0 12px;
 }
+.seo-prose h3 {
+  font-size: clamp(16px, 2.4vw, 19px);
+  font-weight: 800;
+  color: #0d1117;
+  margin: 24px 0 10px;
+}
+.seo-prose p { font-size: 15px; line-height: 1.75; color: #4b5563; margin-bottom: 14px; }
+.seo-prose ul, .seo-prose ol { margin: 0 0 16px 22px; }
+.seo-prose li { font-size: 15px; line-height: 1.7; color: #4b5563; margin-bottom: 8px; }
+.seo-prose strong { color: #1e293b; }
 
-/* Date Picker */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  opacity: 0.5;
+/* FAQ accordion (native <details>) */
+.faq-list { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+.faq-item {
+  border: 1.5px solid #eef1f8;
+  border-radius: 14px;
+  background: #f9fbff;
+  padding: 4px 18px;
+  transition: border-color .2s, box-shadow .2s;
+}
+.faq-item[open] {
+  border-color: #d8def0;
+  box-shadow: 0 4px 16px rgba(15,23,42,0.05);
+}
+.faq-item summary {
   cursor: pointer;
+  list-style: none;
+  padding: 14px 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0d1117;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after {
+  content: "+";
+  font-size: 20px;
+  font-weight: 400;
+  color: #94a3b8;
+  transition: transform .2s;
+}
+.faq-item[open] summary::after { content: "−"; }
+.faq-item p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #64748b;
+  padding: 0 0 16px;
+  margin: 0;
 }
 
-/* ========================================
-   BUTTONS
-======================================== */
-
-button {
-  cursor: pointer;
-  border: none;
-  transition: all 0.25s ease;
-}
-
-button:active {
-  transform: scale(0.98);
-}
-
-/* ========================================
-   GLASS CARD
-======================================== */
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: var(--shadow-md);
-  border-radius: var(--radius-lg);
-}
-
-/* ========================================
-   INVOICE SHEET
-======================================== */
-
-.invoice-sheet {
-  aspect-ratio: 1 / 1.414;
-  min-height: 842px;
-  background: white;
-  border-radius: 24px;
-  box-shadow: var(--shadow-lg);
-  overflow: hidden;
-}
-
-/* ========================================
-   UTILITIES
-======================================== */
-
-.text-gradient {
-  background: linear-gradient(
-    135deg,
-    #4f46e5 0%,
-    #7c3aed 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.border-gradient {
-  position: relative;
-  border-radius: inherit;
-}
-
-.border-gradient::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  padding: 1px;
-  border-radius: inherit;
-  background: linear-gradient(
-    135deg,
-    rgba(79, 70, 229, 0.5),
-    rgba(168, 85, 247, 0.3)
-  );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-}
-
-/* ========================================
-   PRINT
-======================================== */
-
+/* ── PRINT FIX: only the document prints, on one page ──
+   We use display:none (not visibility:hidden) so hidden content
+   takes NO vertical space — otherwise the tall page generated
+   several blank pages. */
 @media print {
+  @page { size: A4; margin: 10mm; }
+
+  /* Remove every block that isn't the document */
+  body > header,
+  body > footer,
+  .ad-wrap,
+  .seo-prose,
+  section[aria-label="About this free invoice generator"],
+  .ig-hero,
+  .ig-form,
+  .ig-features,
+  .ig-previewbar,
+  .ig-pills,
   .no-print {
     display: none !important;
   }
 
-  body {
-    background: white !important;
+  /* Collapse all wrappers so the invoice is the ONLY flow content */
+  html, body, main,
+  .ig-root, .ig-grid, .ig-preview, .ig-cardwrap, #invoice-print-area {
+    display: block !important;
+    position: static !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
   }
 
-  .invoice-sheet {
-    box-shadow: none;
-    border-radius: 0;
+  /* Cancel the on-screen auto-fit scale so it prints at natural size */
+  #invoice-print-area > div {
+    transform: none !important;
+    width: 100% !important;
   }
 }
-
-/* ========================================
-   MOBILE
-======================================== */
-
-@media (max-width: 768px) {
-  body {
-    font-size: 13px;
-  }
-
-  .invoice-sheet {
-    min-height: auto;
-    border-radius: 18px;
-  }
-} 

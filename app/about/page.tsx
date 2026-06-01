@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { PageShell, PageHero, Card, CTAButton } from "@/components/ui";
+import AdSlot from "@/components/AdSlot";
+import { SITE } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: "About InvoiceQuick — Free Invoice Generator",
+  title: "About",
   description:
-    "InvoiceQuick is a free, privacy-first invoice generator built for freelancers, consultants, and small businesses. No signup. No data storage. Just fast invoices.",
+    "PDF Invoice Builder is a free, privacy-first generator for invoices, receipts, and quotations — built for freelancers, consultants, and small businesses. No signup, no data storage.",
+  alternates: { canonical: "/about" },
 };
 
 const stats = [
@@ -13,112 +16,70 @@ const stats = [
   { label: "Signup Required", value: "None"    },
 ];
 
+const values = [
+  { icon: "🔒", title: "Privacy First",  desc: "Your data never leaves your browser. Nothing is sent to our servers, ever.", bg: "bg-indigo-50" },
+  { icon: "⚡", title: "Lightning Fast", desc: "No loading screens, no bloat. Open the page and start invoicing instantly.", bg: "bg-emerald-50" },
+  { icon: "♾️", title: "Built to Last",  desc: "No accounts, no subscriptions. PDF Invoice Builder is free, forever.", bg: "bg-amber-50" },
+];
+
 export default function About() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
+    <PageShell>
+      <PageHero
+        badge="About Us"
+        title="About PDF Invoice Builder"
+        subtitle="Built for the millions of freelancers and small businesses who just need a simple, fast, and completely free way to get paid."
+      />
 
-        {/* Hero */}
-        <div className="text-center mb-14">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-widest bg-indigo-50 text-indigo-600 border border-indigo-100 mb-5">
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-            About Us
-          </span>
-          <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
-            About InvoiceQuick
-          </h1>
-          <p className="text-slate-500 text-[16px] max-w-xl mx-auto leading-relaxed">
-            Built for the millions of freelancers who just need a simple, fast, and completely free invoice.
+      {/* Story */}
+      <Card className="mb-6">
+        <div className="space-y-5 text-[15px] leading-relaxed text-slate-500">
+          <p>
+            <strong className="font-bold text-slate-900">{SITE.name}</strong> was created with one goal:
+            give every freelancer, consultant, and small business owner a dead-simple way to create
+            professional documents without paying for bloated software or making yet another account.
+          </p>
+          <p>
+            Most invoice tools are too complicated, too expensive, or they store your sensitive client
+            data on their servers. We&apos;re different — everything happens entirely in your browser, so
+            your information always stays yours.
+          </p>
+          <p>
+            We support invoices, receipts, and quotations with multi-currency, tax, your own logo, and
+            instant PDF download. Everything you need to get paid faster, in one clean interface.
           </p>
         </div>
+      </Card>
 
-        {/* Story card */}
-        <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-8 sm:p-10 mb-10">
-          <div className="space-y-5 text-slate-500 leading-relaxed">
-            <p className="text-[15px]">
-              <strong className="text-slate-900 font-bold">InvoiceQuick</strong> was created with one goal
-              in mind: give every freelancer, consultant, and small business owner a dead-simple way to
-              create professional invoices without paying for bloated software or creating yet another
-              online account.
-            </p>
-            <p className="text-[15px]">
-              Most invoice tools are too complicated, too expensive, or they store your sensitive
-              client data on their servers. InvoiceQuick is different. Everything happens
-              entirely in your browser. No data is ever sent to any server. Your information stays yours.
-            </p>
-            <p className="text-[15px]">
-              We support multiple currencies, line-item invoicing, tax calculation, and instant PDF
-              download. Everything you need to get paid faster, wrapped in a clean interface.
-            </p>
+      {/* Stats */}
+      <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {stats.map(s => (
+          <div key={s.label} className="rounded-3xl border border-slate-100 bg-white p-7 text-center shadow-sm">
+            <p className="mb-1 text-4xl font-black text-indigo-600">{s.value}</p>
+            <p className="text-[13px] font-medium text-slate-500">{s.label}</p>
           </div>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-          {stats.map(s => (
-            <div key={s.label} className="bg-white rounded-3xl border border-slate-100 shadow-sm p-7 text-center hover:shadow-md transition-all">
-              <p className="text-4xl font-black text-indigo-600 mb-1">{s.value}</p>
-              <p className="text-[13px] text-slate-500 font-medium">{s.label}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Values */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
-
-          <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-7 hover:shadow-md hover:-translate-y-0.5 transition-all">
-            <div className="w-10 h-10 bg-indigo-50 rounded-2xl flex items-center justify-center mb-4">
-              <svg className="w-5 h-5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg>
-            </div>
-            <h3 className="text-[15px] font-bold text-slate-900 mb-1.5">Privacy First</h3>
-            <p className="text-[13px] text-slate-500 leading-relaxed">
-              Your data never leaves your browser. Nothing is sent to our servers, ever.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-7 hover:shadow-md hover:-translate-y-0.5 transition-all">
-            <div className="w-10 h-10 bg-emerald-50 rounded-2xl flex items-center justify-center mb-4">
-              <svg className="w-5 h-5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-              </svg>
-            </div>
-            <h3 className="text-[15px] font-bold text-slate-900 mb-1.5">Lightning Fast</h3>
-            <p className="text-[13px] text-slate-500 leading-relaxed">
-              No loading screens, no bloated UI. Just open the page and start invoicing.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-7 hover:shadow-md hover:-translate-y-0.5 transition-all">
-            <div className="w-10 h-10 bg-amber-50 rounded-2xl flex items-center justify-center mb-4">
-              <svg className="w-5 h-5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 8v4l3 3" />
-              </svg>
-            </div>
-            <h3 className="text-[15px] font-bold text-slate-900 mb-1.5">Built to Last</h3>
-            <p className="text-[13px] text-slate-500 leading-relaxed">
-              No accounts, no subscriptions. InvoiceQuick will always be free, forever.
-            </p>
-          </div>
-
-        </div>
-
-        {/* CTA */}
-        <div className="text-center">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-8 py-3.5 rounded-2xl transition-all shadow-lg shadow-indigo-200 hover:shadow-indigo-300 hover:-translate-y-0.5"
-          >
-            Start Creating Invoices
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </Link>
-        </div>
-
+        ))}
       </div>
-    </div>
+
+      {/* Values */}
+      <div className="mb-12 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {values.map(v => (
+          <div key={v.title} className="rounded-3xl border border-slate-100 bg-white p-7 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+            <div className={`mb-4 flex h-11 w-11 items-center justify-center rounded-2xl text-xl ${v.bg}`}>{v.icon}</div>
+            <h3 className="mb-1.5 text-[15px] font-bold text-slate-900">{v.title}</h3>
+            <p className="text-[13px] leading-relaxed text-slate-500">{v.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Ad — after content, before CTA */}
+      <div className="mb-10">
+        <AdSlot slot={SITE.adSlots.about} />
+      </div>
+
+      <div className="text-center">
+        <CTAButton href="/">Start Creating Documents</CTAButton>
+      </div>
+    </PageShell>
   );
 }
