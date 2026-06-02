@@ -3,14 +3,19 @@ import InvoiceGenerator from "@/components/InvoiceGenerator";
 import SeoContent from "@/components/SeoContent";
 import AdSlot from "@/components/AdSlot";
 import JsonLd from "@/components/JsonLd";
-import { softwareSchema, faqSchema } from "@/lib/schema";
+import { softwareSchema, faqSchema, howToSchema, breadcrumbSchema } from "@/lib/schema";
 import { SITE } from "@/lib/config";
+
+const hreflang = Object.fromEntries([
+  ...SITE.hreflangLocales.map((l) => [l, "/"]),
+  ["x-default", "/"],
+]);
 
 export const metadata: Metadata = {
   title: "Free Invoice Generator — Create & Download PDF Invoices Instantly",
   description:
     "Generate professional invoices, receipts, and quotations online for free. No signup needed. Add line items, apply tax, then download a clean PDF in seconds.",
-  alternates: { canonical: "/" },
+  alternates: { canonical: "/", languages: hreflang },
 };
 
 export default function Home() {
@@ -28,9 +33,11 @@ export default function Home() {
       {/* Ad #2 — after the article, before the footer */}
       <AdSlot slot={SITE.adSlots.homeBottom} />
 
-      {/* Structured data */}
+      {/* Structured data — search + AI engines */}
       <JsonLd data={softwareSchema(SITE.url)} />
+      <JsonLd data={howToSchema(SITE.url)} />
       <JsonLd data={faqSchema()} />
+      <JsonLd data={breadcrumbSchema([{ name: "Home", url: SITE.url }])} />
     </>
   );
 }

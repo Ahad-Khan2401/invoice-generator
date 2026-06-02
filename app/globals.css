@@ -1,8 +1,5 @@
 @import "tailwindcss";
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; overflow-x: hidden; max-width: 100%; }
-
 :root {
   --bg: #f5f7ff;
   --border: #e4e9f2;
@@ -14,19 +11,28 @@ html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; overflow-x:
   --shadow-card: 0 2px 8px rgba(0,0,0,0.04), 0 8px 32px rgba(15,23,42,0.07);
 }
 
-body {
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
-  background: var(--bg);
-  color: var(--text-1);
-  line-height: 1.6;
-  font-size: 14px;
-  min-height: 100vh;
-  overflow-x: hidden;
+/* Base styles live in @layer base so Tailwind UTILITIES (mx-auto, px-*,
+   m-*, flex, etc.) always win. Previously an unlayered `* { margin:0 }`
+   reset was overriding every Tailwind spacing/centering utility. */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body {
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-1);
+    line-height: 1.6;
+    font-size: 14px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4 { letter-spacing: -0.025em; font-weight: 700; }
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: rgba(79, 70, 229, .15); }
 }
-
-h1,h2,h3,h4 { letter-spacing: -0.025em; font-weight: 700; }
-a { color: inherit; text-decoration: none; }
-::selection { background: rgba(79,70,229,.15); }
 
 /* ── Tool: responsive paddings & scroll ───────────────── */
 .ig-toolwrap   { padding: 0 24px 80px; }
@@ -45,6 +51,10 @@ a { color: inherit; text-decoration: none; }
   .ig-formbody { padding: 18px 16px; }
   .ig-formfoot { padding: 14px 16px; }
 }
+
+/* Mobile drawer slide-in */
+.drawer-in { animation: drawerIn .22s cubic-bezier(.16,1,.3,1) both; }
+@keyframes drawerIn { from { transform: translateX(-100%); } to { transform: none; } }
 
 /* Item row enter animation (replaces framer-motion → smaller bundle) */
 .ig-itemrow { animation: igRowIn .16s ease both; }

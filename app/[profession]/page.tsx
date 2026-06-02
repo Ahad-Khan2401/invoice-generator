@@ -4,7 +4,7 @@ import InvoiceGenerator from "@/components/InvoiceGenerator";
 import SeoContent from "@/components/SeoContent";
 import AdSlot from "@/components/AdSlot";
 import JsonLd from "@/components/JsonLd";
-import { softwareSchema, faqSchema } from "@/lib/schema";
+import { softwareSchema, faqSchema, howToSchema, breadcrumbSchema } from "@/lib/schema";
 import { LANDING, LANDING_SLUGS } from "@/lib/landing";
 import { SITE } from "@/lib/config";
 
@@ -23,11 +23,17 @@ export async function generateMetadata(
   const data = LANDING[profession];
   if (!data) return {};
   const url = `${SITE.url}/${profession}`;
+  const languages = Object.fromEntries([
+    ...SITE.hreflangLocales.map((l) => [l, `/${profession}`]),
+    ["x-default", `/${profession}`],
+  ]);
   return {
     title: data.title,
     description: data.desc,
-    alternates: { canonical: `/${profession}` },
-    openGraph: { title: data.title, description: data.desc, url },
+    keywords: data.keywords,
+    alternates: { canonical: `/${profession}`, languages },
+    openGraph: { title: data.title, description: data.desc, url, images: ["/logo.png"] },
+    twitter: { card: "summary_large_image", title: data.title, description: data.desc, images: ["/logo.png"] },
   };
 }
 
@@ -42,7 +48,7 @@ export default async function ProfessionPage(
 
   return (
     <>
-      <InvoiceGenerator heading={data.h1} subheading={data.sub} />
+      <InvoiceGenerator heading={data.h1} subheading={data.sub} defaultCurrency={data.currencySymbol} />
 
       <AdSlot slot={SITE.adSlots.homeTop} />
 
@@ -50,8 +56,14 @@ export default async function ProfessionPage(
 
       <AdSlot slot={SITE.adSlots.homeBottom} />
 
+      {/* Structured data — search + AI engines */}
       <JsonLd data={softwareSchema(url)} />
+      <JsonLd data={howToSchema(url)} />
       <JsonLd data={faqSchema()} />
+      <JsonLd data={breadcrumbSchema([
+        { name: "Home", url: SITE.url },
+        { name: data.h1, url },
+      ])} />
     </>
   );
 }

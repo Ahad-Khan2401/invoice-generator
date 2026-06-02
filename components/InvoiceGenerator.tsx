@@ -78,9 +78,11 @@ const labelStyle:React.CSSProperties = {
 export default function InvoiceGenerator({
   heading,
   subheading,
+  defaultCurrency,
 }: {
   heading?: React.ReactNode;
   subheading?: React.ReactNode;
+  defaultCurrency?: string;
 } = {}) {
 
   /* ── State ── */
@@ -99,7 +101,9 @@ export default function InvoiceGenerator({
   });
   const [items,      setItems]      = useState<Item[]>([{id:1,desc:"",qty:1,rate:0}]);
   const [tax,        setTax]        = useState(0);
-  const [cur,        setCur]        = useState(CURRENCIES[0]);
+  const [cur,        setCur]        = useState(
+    CURRENCIES.find((c) => c.s === defaultCurrency) ?? CURRENCIES[0]
+  );
   const [color,      setColor]      = useState(COLORS[0].hex);
   const [brandLogo,  setBrandLogo]  = useState<string|null>(null);
   const [wmLogo,     setWmLogo]     = useState<string|null>(null);

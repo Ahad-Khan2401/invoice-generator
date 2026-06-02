@@ -8,8 +8,16 @@ export const SITE = {
   url: "https://www.pdfinvoicebuilder.com",
   // ✅ Your real AdSense publisher ID
   adsenseClient: "ca-pub-3004153584501560",
-  // Google Search Console verification token (optional, replace later)
-  googleSiteVerification: "",
+
+  /* ── Analytics & Search-engine verification ──
+     Paste the IDs/tokens once you create the accounts; the code
+     auto-activates each only when its value is filled in. */
+  googleSiteVerification: "",   // Search Console → HTML tag → content="..."
+  bingSiteVerification:   "",   // Bing Webmaster → meta tag → content="..."
+  gaId:                   "",   // Google Analytics 4 → "G-XXXXXXXXXX"
+
+  /* English markets this site targets (used for hreflang). */
+  hreflangLocales: ["en-US", "en-CA", "en-GB", "en-AU", "en-IN", "en-PK"],
 
   /* ───────────────────────────────────────────────
      AD UNIT SLOT IDs
