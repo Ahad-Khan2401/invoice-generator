@@ -413,6 +413,206 @@ export const POSTS: Record<string, Post> = {
       { q: "How do I follow up on an unpaid invoice?", a: "Send a friendly reminder just after the due date, then a firmer polite follow-up a week later, always referencing the invoice number." },
     ],
   },
+
+  /* 11 ──────────────────────────────────────── */
+  "free-invoice-templates": {
+    title: "Free Invoice Templates: Create & Download Online",
+    description:
+      "Skip the Word and Excel templates. Create a professional invoice, receipt, or quotation online for free and download a clean PDF in seconds.",
+    date: "2026-06-02",
+    updated: "2026-06-02",
+    readMins: 5,
+    keywords: ["free invoice template", "invoice template", "invoice template free download", "pdf invoice template"],
+    excerpt: "Why a free online invoice template beats Word and Excel — and how to make a polished PDF invoice in seconds.",
+    body: [
+      { type: "p", text: "Searching for a free invoice template? You can skip the clunky Word and Excel files altogether. An online template fills in the maths for you and exports a clean PDF instantly." },
+      { type: "callout", text: `Try it now — ${CTA}` },
+      { type: "h2", text: "What makes a good invoice template" },
+      { type: "ul", items: [
+        "A clear header with your logo, invoice number, and dates.",
+        "Separate “From” and “Bill To” blocks.",
+        "An itemised table that calculates subtotal, tax, and total automatically.",
+        "Space for payment terms and notes.",
+      ] },
+      { type: "h2", text: "Online template vs Word/Excel" },
+      { type: "p", text: "Word and Excel templates break easily, don't calculate tax reliably, and look inconsistent. An online tool keeps the layout perfect, does the maths, and gives you a print-ready PDF — no formulas, no formatting headaches." },
+      { type: "h2", text: "One template, three documents" },
+      { type: "p", text: "The same template works for invoices, <a href=\"/blog/how-to-make-a-receipt\">receipts</a>, and <a href=\"/blog/how-to-write-a-quotation\">quotations</a> — just switch the document type. Add your logo, pick a currency, apply tax, and download." },
+    ],
+    faq: [
+      { q: "Where can I get a free invoice template?", a: "You can create one online for free with PDF Bill Builder — no download or signup needed. It fills in totals and tax and exports a PDF." },
+      { q: "Is Word or Excel good for invoices?", a: "They work, but break easily and don't calculate tax reliably. An online template keeps the layout perfect and does the maths for you." },
+      { q: "Can I reuse the template for every client?", a: "Yes. Your details can carry over, so you just change the client and items each time." },
+    ],
+  },
+
+  /* 12 ──────────────────────────────────────── */
+  "how-to-make-a-receipt": {
+    title: "How to Make a Receipt (Free Receipt Maker)",
+    description:
+      "Learn how to make a payment receipt for your customer and download it as a PDF for free. What a receipt must include, with a free receipt maker.",
+    date: "2026-06-02",
+    updated: "2026-06-02",
+    readMins: 5,
+    keywords: ["how to make a receipt", "receipt maker", "receipt template", "payment receipt"],
+    excerpt: "What a payment receipt must include and how to create one free in seconds — plus how a receipt differs from an invoice.",
+    body: [
+      { type: "p", text: "A receipt confirms that a customer has paid. It's issued <em>after</em> payment and is important for your customer's records, returns, and expense claims." },
+      { type: "h2", text: "What a receipt should include" },
+      { type: "ul", items: [
+        "The word “Receipt” and a unique receipt number.",
+        "Your business name and contact details.",
+        "The customer's name.",
+        "The date payment was received.",
+        "What was paid for, with amounts and any tax.",
+        "The total amount paid and the payment method.",
+      ] },
+      { type: "callout", text: `Make one now — open the tool, switch the document type to <strong>Receipt</strong>, and ${CTA}` },
+      { type: "h2", text: "Receipt vs invoice" },
+      { type: "p", text: "An <a href=\"/blog/invoice-vs-receipt-vs-quotation\">invoice requests payment</a>; a receipt confirms it was received. If a customer has already paid, issue a receipt, not an invoice." },
+    ],
+    faq: [
+      { q: "How do I make a receipt for free?", a: "Use PDF Bill Builder, set the document type to Receipt, add the customer and amount paid, and download a PDF — no signup." },
+      { q: "What is the difference between a receipt and an invoice?", a: "An invoice asks for payment before it's made; a receipt confirms payment after it's received." },
+      { q: "Do I need to give a receipt?", a: "It's good practice and often expected — customers use receipts for records, returns, and expense claims." },
+    ],
+  },
+
+  /* 13 ──────────────────────────────────────── */
+  "how-to-write-a-quotation": {
+    title: "How to Write a Quotation (Free Quote Template)",
+    description:
+      "Learn how to write a professional price quotation that wins the job — what to include, how it differs from an invoice, and a free quote maker.",
+    date: "2026-06-03",
+    updated: "2026-06-03",
+    readMins: 5,
+    keywords: ["how to write a quotation", "quotation format", "quote template", "price quote"],
+    excerpt: "How to write a clear price quotation that wins work — the must-have fields, validity, and a free way to make one.",
+    body: [
+      { type: "p", text: "A quotation (or quote) tells a potential client what a job will cost <em>before</em> they commit. A clear, professional quote builds trust and wins more work." },
+      { type: "h2", text: "What to include in a quotation" },
+      { type: "ul", items: [
+        "The word “Quotation” and a unique quote number.",
+        "Your business and client details.",
+        "An itemised breakdown of the work and prices.",
+        "The total, including or excluding tax (state which).",
+        "A validity period (e.g. “Valid for 30 days”).",
+        "Any terms or assumptions.",
+      ] },
+      { type: "callout", text: `Create a quote in seconds — switch the document type to <strong>Quotation</strong> and ${CTA}` },
+      { type: "h2", text: "Quotation vs invoice" },
+      { type: "p", text: "A quote is an estimate sent before the work; an invoice requests payment after. Once the client accepts your quote, you do the work and then send an <a href=\"/blog/how-to-make-an-invoice\">invoice</a>." },
+      { type: "h2", text: "Tips to win the job" },
+      { type: "ol", items: [
+        "Be specific so the client knows exactly what's included.",
+        "Add a short validity period to encourage a decision.",
+        "Keep it clean and branded — it's a sales document.",
+      ] },
+    ],
+    faq: [
+      { q: "How do I write a quotation?", a: "List the work with itemised prices, add your and the client's details, show the total and tax, and include a validity period — then send it as a PDF." },
+      { q: "What is the difference between a quote and an invoice?", a: "A quote is a price estimate sent before work begins; an invoice requests payment after the work is delivered." },
+      { q: "How long should a quotation be valid?", a: "30 days is common. Stating a validity period encourages the client to decide and protects you if prices change." },
+    ],
+  },
+
+  /* 14 ──────────────────────────────────────── */
+  "what-is-a-proforma-invoice": {
+    title: "What Is a Proforma Invoice? (Meaning & Free Template)",
+    description:
+      "Proforma invoice meaning explained — what it is, when to use it, how it differs from a commercial invoice, and how to create one free.",
+    date: "2026-06-03",
+    updated: "2026-06-03",
+    readMins: 5,
+    keywords: ["proforma invoice", "what is a proforma invoice", "proforma invoice meaning", "proforma vs invoice"],
+    excerpt: "Proforma invoice meaning in plain English — when to use one, how it differs from a regular invoice, and a free way to make it.",
+    body: [
+      { type: "p", text: "A proforma invoice is a preliminary bill sent to a buyer <em>before</em> goods or services are delivered. It's like a detailed quote: it shows what will be charged, but it isn't a demand for payment." },
+      { type: "h2", text: "When to use a proforma invoice" },
+      { type: "ul", items: [
+        "To give a buyer a firm estimate before confirming an order.",
+        "For international shipping and customs paperwork.",
+        "When a buyer needs a document to arrange payment or financing.",
+      ] },
+      { type: "callout", text: `Need one? <a href="/proforma-invoice">Use the free proforma invoice generator</a> and ${CTA}` },
+      { type: "h2", text: "Proforma vs commercial/tax invoice" },
+      { type: "p", text: "A proforma is provisional and not used for accounting. A <strong>commercial</strong> or <strong>tax invoice</strong> is the final, official bill used for payment and records. Send the proforma first; issue the real invoice once the order is confirmed." },
+    ],
+    faq: [
+      { q: "What does proforma invoice mean?", a: "It's a preliminary invoice sent before delivery that shows the expected charges. It's not a demand for payment and isn't used for final accounting." },
+      { q: "Is a proforma invoice legally binding?", a: "Generally no — it's an estimate of what will be charged. The binding document is the final commercial or tax invoice." },
+      { q: "How do I make a proforma invoice?", a: "Create it like a normal invoice with PDF Bill Builder, label it clearly, and download a PDF — free and no signup." },
+    ],
+  },
+
+  /* 15 ──────────────────────────────────────── */
+  "tax-invoice-australia": {
+    title: "Tax Invoice Australia: GST Rules & Free Template",
+    description:
+      "What an Australian tax invoice must include — ABN, GST, and the words 'Tax Invoice'. Create a compliant-looking tax invoice free online.",
+    date: "2026-06-03",
+    updated: "2026-06-03",
+    readMins: 5,
+    keywords: ["tax invoice australia", "gst invoice australia", "tax invoice template", "abn invoice"],
+    excerpt: "What an Australian tax invoice must show — ABN, GST, and required fields — plus a free way to create one.",
+    body: [
+      { type: "p", text: "If you're registered for GST in Australia, your invoices need to be valid <strong>tax invoices</strong>. Here's what the ATO expects them to show." },
+      { type: "h2", text: "What an Australian tax invoice must include" },
+      { type: "ul", items: [
+        "The words <strong>“Tax Invoice”</strong>.",
+        "Your business name and <strong>ABN</strong>.",
+        "The date of issue.",
+        "A description of the items sold, with quantities.",
+        "The <strong>GST</strong> amount (or a statement that the total includes GST).",
+        "The total price.",
+        "The buyer's identity or ABN for sales of A$1,000 or more.",
+      ] },
+      { type: "callout", text: `Bill in AUD with GST — <a href="/invoice-generator-australia">use the Australia tax invoice generator</a> and ${CTA}` },
+      { type: "h2", text: "GST basics" },
+      { type: "p", text: "GST in Australia is 10%. You can show it as a separate line or state that the total includes GST. Our tool lets you add the tax and label it clearly." },
+      { type: "p", text: "Always confirm current requirements with the ATO or your accountant — this is general guidance, not tax advice." },
+    ],
+    faq: [
+      { q: "What must an Australian tax invoice include?", a: "The words “Tax Invoice”, your ABN, the date, a description of items, the GST amount or a GST-inclusive statement, and the total. Buyer details are needed for sales of A$1,000 or more." },
+      { q: "Do I need an ABN to issue a tax invoice?", a: "Yes — a valid tax invoice must show your ABN. Without one, you can issue a regular invoice but not a GST tax invoice." },
+      { q: "How much is GST in Australia?", a: "GST is 10%. You can list it separately or state that the total price includes GST." },
+    ],
+  },
+
+  /* 16 ──────────────────────────────────────── */
+  "how-to-get-paid-faster": {
+    title: "How to Get Paid Faster (Freelancers & Small Business)",
+    description:
+      "Practical, proven ways to get invoices paid faster — clear terms, deposits, reminders, and easy payment options. Free invoice tool included.",
+    date: "2026-06-03",
+    updated: "2026-06-03",
+    readMins: 6,
+    keywords: ["get paid faster", "how to get paid on time", "late invoice", "invoice payment tips"],
+    excerpt: "Proven tactics to get your invoices paid faster — from clear terms and deposits to friendly reminders.",
+    body: [
+      { type: "p", text: "Late payments are the biggest cash-flow headache for freelancers and small businesses. These simple habits get money in the door faster." },
+      { type: "h2", text: "1. Invoice immediately and clearly" },
+      { type: "p", text: "Send the invoice the day you finish — momentum matters. Make it clear and complete so there's no reason to delay. A clean, professional invoice gets taken seriously." },
+      { type: "callout", text: `Send a polished PDF the same day — ${CTA}` },
+      { type: "h2", text: "2. Use short, specific terms" },
+      { type: "p", text: "“Due on receipt” or “Net 7” beat “Net 30”. Always show the actual due date, not just the term — see our <a href=\"/blog/invoice-payment-terms-explained\">payment terms guide</a>." },
+      { type: "h2", text: "3. Take a deposit for big jobs" },
+      { type: "p", text: "For larger projects, ask for 30–50% upfront. It protects your cash flow and filters out non-serious clients." },
+      { type: "h2", text: "4. Make paying effortless" },
+      { type: "ul", items: [
+        "Put your payment details right on the invoice.",
+        "Offer multiple methods (bank transfer, card, UPI/PayPal).",
+        "Reference the invoice number everywhere.",
+      ] },
+      { type: "h2", text: "5. Follow up without fear" },
+      { type: "p", text: "A friendly reminder right after the due date, then a firmer one a week later, recovers most late invoices. Keeping invoices numbered makes follow-ups quick and professional." },
+    ],
+    faq: [
+      { q: "How can I get my invoices paid faster?", a: "Invoice immediately, use short clear terms with a real due date, take deposits on big jobs, make paying easy, and follow up politely right after the due date." },
+      { q: "Should I ask for a deposit?", a: "For larger projects, yes — 30–50% upfront protects your cash flow and confirms the client is serious." },
+      { q: "What do I do about a late invoice?", a: "Send a friendly reminder just after the due date and a firmer follow-up a week later, always referencing the invoice number. Consider a small late fee stated in your terms." },
+    ],
+  },
 };
 
 export const POST_SLUGS = Object.keys(POSTS);
