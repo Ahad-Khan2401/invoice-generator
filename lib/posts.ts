@@ -235,6 +235,184 @@ export const POSTS: Record<string, Post> = {
       { q: "Can I charge a late fee?", a: "Yes, if you state it in your terms before the work. A small percentage or flat late fee encourages on-time payment." },
     ],
   },
+
+  /* 6 ───────────────────────────────────────── */
+  "how-to-write-an-invoice": {
+    title: "How to Write an Invoice (With a Free Example)",
+    description:
+      "Learn how to write a professional invoice step by step, with an example layout and the exact wording to use. Free invoice maker included.",
+    date: "2026-04-08",
+    updated: "2026-06-01",
+    readMins: 6,
+    keywords: ["how to write an invoice", "write an invoice", "invoice example", "invoice wording"],
+    excerpt: "Exactly how to write a professional invoice — the fields, the wording, and a clean example you can copy.",
+    body: [
+      { type: "p", text: "Writing an invoice is simpler than it looks. A good invoice is clear, complete, and easy to pay. Here's exactly what to write and where." },
+      { type: "callout", text: `Skip the manual work — ${CTA}` },
+      { type: "h2", text: "The structure of a well-written invoice" },
+      { type: "ol", items: [
+        "<strong>Header:</strong> the word “Invoice” and a unique invoice number.",
+        "<strong>Your details:</strong> business name, address, email, phone.",
+        "<strong>Client details:</strong> their name and address under “Bill To”.",
+        "<strong>Dates:</strong> issue date and due date.",
+        "<strong>Line items:</strong> description, quantity, rate, and amount for each.",
+        "<strong>Totals:</strong> subtotal, tax, and the final total due.",
+        "<strong>Payment & notes:</strong> how to pay and your terms.",
+      ] },
+      { type: "h2", text: "Example wording" },
+      { type: "p", text: "Keep descriptions specific: instead of “Design work”, write “Logo design — 3 concepts + 2 revisions”. For notes, a simple line works: “Payment due within 14 days. Bank transfer details below. Thank you!”" },
+      { type: "h2", text: "Common mistakes to avoid" },
+      { type: "ul", items: [
+        "Forgetting a unique invoice number.",
+        "Vague item descriptions that invite questions.",
+        "No clear due date (“Net 30” without an actual date).",
+        "Leaving off your payment details.",
+      ] },
+      { type: "p", text: "See our full <a href=\"/blog/what-to-include-on-an-invoice\">invoice checklist</a> and <a href=\"/blog/invoice-payment-terms-explained\">payment terms guide</a> for more." },
+    ],
+    faq: [
+      { q: "How do I write a simple invoice?", a: "Add a header with an invoice number, your and your client's details, the dates, an itemised list with amounts, the total, and payment terms — then download it as a PDF." },
+      { q: "What should I write in the invoice description?", a: "Be specific about what you delivered, e.g. “Website homepage design — 2 revisions”. Specific descriptions reduce back-and-forth and get you paid faster." },
+      { q: "Do I need accounting software to write an invoice?", a: "No. A free online invoice maker writes a professional invoice for you in minutes — no software or signup required." },
+    ],
+  },
+
+  /* 7 ───────────────────────────────────────── */
+  "invoice-numbering-best-practices": {
+    title: "Invoice Numbering: Formats & Best Practices",
+    description:
+      "How to number your invoices correctly — common invoice number formats, sequential vs date-based, and rules to keep your records clean.",
+    date: "2026-04-22",
+    updated: "2026-06-01",
+    readMins: 5,
+    keywords: ["invoice number", "invoice number format", "invoice numbering", "how to number invoices"],
+    excerpt: "A clear guide to invoice numbering — the formats that work, the rules to follow, and examples you can copy.",
+    body: [
+      { type: "p", text: "Every invoice needs a unique number. It keeps your records organised, helps with tax, and makes follow-ups easy. Here's how to do it right." },
+      { type: "h2", text: "Why invoice numbers matter" },
+      { type: "p", text: "Unique, sequential numbers prove no invoice is missing, make accounting and audits painless, and give you a clean reference when chasing payment." },
+      { type: "h2", text: "Common invoice number formats" },
+      { type: "ul", items: [
+        "<strong>Sequential:</strong> INV-001, INV-002, INV-003…",
+        "<strong>Date-based:</strong> 2026-001, 2026-002 (year + sequence).",
+        "<strong>Client-based:</strong> ACME-001, ACME-002 (per client).",
+        "<strong>Project-based:</strong> P12-001 (project + sequence).",
+      ] },
+      { type: "callout", text: `Set any invoice number you like in the tool — ${CTA}` },
+      { type: "h2", text: "Best practices" },
+      { type: "ol", items: [
+        "Never reuse a number — each invoice must be unique.",
+        "Keep numbers sequential (don't skip), so gaps are obvious.",
+        "Pick one format and stick to it.",
+        "Add a prefix (INV-) so invoices are easy to spot in records.",
+      ] },
+    ],
+    faq: [
+      { q: "What is a good invoice number format?", a: "A simple sequential format like INV-001, INV-002 works for most. Add the year (2026-001) if you reset numbering annually." },
+      { q: "Can invoice numbers have letters?", a: "Yes. Prefixes like INV-, client codes, or project codes are fine and common — just keep the numeric part sequential and unique." },
+      { q: "Should I restart invoice numbers each year?", a: "You can, using a year prefix (2026-001). The key rule is that every number stays unique and sequential within your system." },
+    ],
+  },
+
+  /* 8 ───────────────────────────────────────── */
+  "gst-invoice-format-india": {
+    title: "GST Invoice Format in India: Rules & Free Template",
+    description:
+      "What a GST invoice in India must include — GSTIN, HSN/SAC codes, CGST/SGST/IGST, and mandatory fields. Create one free online.",
+    date: "2026-05-06",
+    updated: "2026-06-01",
+    readMins: 6,
+    keywords: ["gst invoice format", "gst invoice india", "tax invoice format india", "gst bill format"],
+    excerpt: "Everything a GST invoice in India must show — GSTIN, HSN/SAC, and the tax breakup — plus a free way to create one.",
+    body: [
+      { type: "p", text: "If you're registered under GST in India, your tax invoices must include specific fields. Here's a plain-English checklist." },
+      { type: "h2", text: "What a GST invoice must include" },
+      { type: "ul", items: [
+        "Your business name, address, and <strong>GSTIN</strong>.",
+        "A unique, sequential invoice number and the date.",
+        "Customer name, address, and GSTIN (if registered).",
+        "<strong>HSN/SAC code</strong> for each item or service.",
+        "Taxable value and the <strong>CGST, SGST/UTGST, or IGST</strong> breakup with rates.",
+        "Total invoice value (in figures and ideally words).",
+        "Place of supply for inter-state transactions.",
+      ] },
+      { type: "callout", text: `Create a clean GST-style bill online — <a href="/invoice-generator-india">use the India invoice generator</a>, add your tax, and download a PDF free.` },
+      { type: "h2", text: "CGST/SGST vs IGST" },
+      { type: "p", text: "For sales <em>within</em> your state, split the tax into CGST + SGST. For <em>inter-state</em> sales, charge IGST instead. Our tool lets you add your total tax percentage; label it clearly on the invoice." },
+      { type: "p", text: "Always confirm the latest GST rules with a qualified accountant — this is general guidance, not tax advice." },
+    ],
+    faq: [
+      { q: "What is mandatory on a GST invoice in India?", a: "Your GSTIN, a unique invoice number and date, customer details, HSN/SAC codes, the taxable value, the CGST/SGST or IGST breakup with rates, and the total value." },
+      { q: "Is HSN code mandatory on a GST invoice?", a: "Yes, HSN (goods) or SAC (services) codes are required; the number of digits depends on your turnover. Check the current threshold for your business." },
+      { q: "Can I make a GST invoice online for free?", a: "Yes. You can create a professional GST-style invoice with PDF Bill Builder, add your tax, and download it as a PDF — no signup." },
+    ],
+  },
+
+  /* 9 ───────────────────────────────────────── */
+  "vat-invoice-requirements-uk": {
+    title: "VAT Invoice Requirements in the UK",
+    description:
+      "What a UK VAT invoice must include — your VAT number, the VAT rate, and all required fields. Full vs simplified invoices explained.",
+    date: "2026-05-20",
+    updated: "2026-06-01",
+    readMins: 5,
+    keywords: ["vat invoice", "vat invoice uk", "vat invoice requirements", "uk invoice"],
+    excerpt: "A clear checklist of what a UK VAT invoice must show — and the difference between full and simplified invoices.",
+    body: [
+      { type: "p", text: "If your business is VAT-registered in the UK, your invoices must meet HMRC's requirements. Here's what to include." },
+      { type: "h2", text: "What a full VAT invoice must show" },
+      { type: "ul", items: [
+        "A unique invoice number and the invoice date.",
+        "Your business name, address, and <strong>VAT registration number</strong>.",
+        "The customer's name and address.",
+        "A description of the goods or services.",
+        "The <strong>VAT rate</strong> and amount per item, plus the rate applied.",
+        "The total amount excluding VAT, the VAT total, and the total including VAT.",
+      ] },
+      { type: "callout", text: `Bill in pounds with VAT and download a PDF — <a href="/invoice-generator-uk">use the UK invoice generator</a>, free.` },
+      { type: "h2", text: "Full vs simplified invoices" },
+      { type: "p", text: "A <strong>simplified</strong> VAT invoice can be used for retail sales under £250 and needs fewer details. A <strong>full</strong> VAT invoice is required for most B2B sales. When in doubt, issue a full invoice." },
+      { type: "p", text: "Always check the current rules on the HMRC website — this is general guidance, not tax or legal advice." },
+    ],
+    faq: [
+      { q: "What must a UK VAT invoice include?", a: "A unique number, the date, your VAT number, your and the customer's details, a description, the VAT rate and amount, and totals excluding and including VAT." },
+      { q: "Do I need to show my VAT number on invoices?", a: "Yes. If you're VAT-registered, your VAT registration number must appear on your VAT invoices." },
+      { q: "What is a simplified VAT invoice?", a: "A shorter invoice allowed for retail sales up to £250 that needs fewer fields than a full VAT invoice. Most B2B sales still require a full invoice." },
+    ],
+  },
+
+  /* 10 ──────────────────────────────────────── */
+  "how-to-send-an-invoice": {
+    title: "How to Send an Invoice (Email Tips & Template)",
+    description:
+      "The best way to send an invoice by email so it gets opened and paid — what to write, what to attach, and how to follow up.",
+    date: "2026-05-28",
+    updated: "2026-06-01",
+    readMins: 5,
+    keywords: ["how to send an invoice", "send invoice by email", "invoice email template", "emailing an invoice"],
+    excerpt: "How to send an invoice that actually gets paid — the email wording, what to attach, and a polite follow-up template.",
+    body: [
+      { type: "p", text: "How you send an invoice matters almost as much as the invoice itself. A clear email gets opened, understood, and paid faster." },
+      { type: "h2", text: "Send the invoice as a PDF" },
+      { type: "p", text: "Always attach a <strong>PDF</strong> — it looks professional, can't be accidentally edited, and opens on any device. Generate one free and attach it to your email." },
+      { type: "callout", text: `Need the PDF first? ${CTA}` },
+      { type: "h2", text: "A simple invoice email template" },
+      { type: "p", text: "Subject: <em>Invoice INV-001 from [Your Business]</em>" },
+      { type: "p", text: "Body: <em>“Hi [Name], thanks for your business. Please find invoice INV-001 attached for [work], due [date]. Payment details are on the invoice. Let me know if you have any questions!”</em>" },
+      { type: "h2", text: "Following up politely" },
+      { type: "ol", items: [
+        "Send the invoice the day you finish the work.",
+        "A day or two after the due date, send a friendly reminder.",
+        "A week later, send a firmer (but polite) follow-up referencing the invoice number.",
+      ] },
+      { type: "p", text: "For terms that speed up payment, read our <a href=\"/blog/invoice-payment-terms-explained\">payment terms guide</a>." },
+    ],
+    faq: [
+      { q: "What's the best way to send an invoice?", a: "Email a PDF invoice with a short, clear message and the invoice number in the subject line. PDFs look professional and can't be accidentally altered." },
+      { q: "What should I write in an invoice email?", a: "Keep it short: greet the client, state the invoice number and what it's for, mention the due date, and point to the payment details on the invoice." },
+      { q: "How do I follow up on an unpaid invoice?", a: "Send a friendly reminder just after the due date, then a firmer polite follow-up a week later, always referencing the invoice number." },
+    ],
+  },
 };
 
 export const POST_SLUGS = Object.keys(POSTS);
