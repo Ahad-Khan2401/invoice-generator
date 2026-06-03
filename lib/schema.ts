@@ -6,12 +6,13 @@ export function softwareSchema(url: string = SITE.url) {
   return {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: `${SITE.name} — Free Invoice Generator`,
+    name: `${SITE.name} — Free Invoice & Bill Generator`,
+    alternateName: ["Free Bill Generator", "Free Invoice Generator", "Online Bill Maker"],
     url,
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web Browser (Windows, macOS, Android, iOS)",
     description:
-      "Free online invoice generator to create and download professional PDF invoices, receipts, and quotations. No signup required.",
+      "Free online invoice generator and bill maker to create and download professional PDF invoices, bills, receipts, and quotations. No signup required.",
     offers: {
       "@type": "Offer",
       price: "0",
@@ -23,8 +24,8 @@ export function softwareSchema(url: string = SITE.url) {
       ratingCount: "1283",
     },
     featureList: [
-      "Free PDF invoice generator",
-      "Invoice, receipt and quotation templates",
+      "Free PDF invoice generator and bill maker",
+      "Invoice, bill, receipt and quotation templates",
       "Brand logo upload",
       "Tax inclusive or exclusive",
       "Multi-currency support",
@@ -56,7 +57,7 @@ export function organizationSchema() {
     logo: `${SITE.url}/logo.png`,
     description:
       "Free online generator for professional invoices, receipts, and quotations — download as PDF, no signup.",
-    email: "support@pdfinvoicebuilder.com",
+    email: "support@pdfbillbuilder.com",
   };
 }
 

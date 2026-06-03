@@ -20,8 +20,8 @@ export default function SeoContent({ profession, midAdSlot }: { profession?: str
 
         <h2>Free PDF Invoice Generator — Create Invoices Online in Seconds</h2>
         <p>
-          PDF Invoice Builder is a <strong>100% free invoice generator</strong> that lets you create and
-          download professional <strong>PDF invoices</strong> in seconds — no signup, no watermark,
+          PDF Bill Builder is a <strong>100% free invoice generator and bill maker</strong> that lets you create and
+          download professional <strong>PDF invoices and bills</strong> in seconds — no signup, no watermark,
           and no hidden fees. Whether you are sending your first invoice or billing repeat clients,
           our free invoice maker turns your details into a clean, print-ready PDF that helps you get
           paid faster. Everything runs inside your browser, so your financial data is never uploaded
@@ -58,10 +58,19 @@ export default function SeoContent({ profession, midAdSlot }: { profession?: str
 
         <h2>Invoices, Receipts &amp; Quotations — One Free Tool</h2>
         <p>
-          Most free tools only make invoices. PDF Invoice Builder also creates <strong>payment receipts</strong>{" "}
+          Most free tools only make invoices. PDF Bill Builder also creates <strong>payment receipts</strong>{" "}
           and <strong>price quotations</strong>, so you can manage the full client cycle — quote the
           job, invoice the work, and confirm the payment — with a single, consistent design. Switch
           document type with one click and your details carry over instantly.
+        </p>
+
+        <h2>Free Bill Generator &amp; Bill Maker — Make a Bill Online</h2>
+        <p>
+          PDF Bill Builder also works as a free <strong>bill generator</strong> and <strong>bill maker</strong>.
+          Whether you call it a bill or an invoice, the steps are the same — add your line items, apply tax,
+          and download a clean PDF <strong>bill format</strong> in seconds. It&apos;s perfect for shops, service
+          providers, landlords, and anyone who needs to <strong>create a bill online</strong> for free without
+          installing any software.
         </p>
 
         {/* In-article ad — surrounded by content on both sides (policy-safe, high viewability) */}
@@ -71,7 +80,7 @@ export default function SeoContent({ profession, midAdSlot }: { profession?: str
           </div>
         )}
 
-        <h2>Why Choose PDF Invoice Builder?</h2>
+        <h2>Why Choose PDF Bill Builder?</h2>
         <ul>
           <li>Always free, with unlimited invoices and no account.</li>
           <li>Auto-fits to a single A4 page, even with many line items.</li>

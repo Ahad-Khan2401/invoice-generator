@@ -6,7 +6,7 @@ import { SITE } from "@/lib/config";
 export const metadata: Metadata = {
   title: "How to Create a Free Invoice Online",
   description:
-    "Learn how to create and download a free professional PDF invoice, receipt, or quotation in 3 simple steps with PDF Invoice Builder. No account needed.",
+    "Learn how to create and download a free professional PDF invoice, receipt, or quotation in 3 simple steps with PDF Bill Builder. No account needed.",
   alternates: { canonical: "/how-it-works" },
 };
 
@@ -17,7 +17,7 @@ const steps = [
 ];
 
 const faqs = [
-  { q: "Is PDF Invoice Builder really free?",   a: "Yes, 100% free. No hidden fees, no subscription, no credit card — ever." },
+  { q: "Is PDF Bill Builder really free?",   a: "Yes, 100% free. No hidden fees, no subscription, no credit card — ever." },
   { q: "Do I need to create an account?",        a: "No. Just open the page and start creating. Zero signup required." },
   { q: "Is my data saved anywhere?",             a: "No. Everything is processed in your browser. Nothing is sent to our servers." },
   { q: "Can I use this for my small business?",  a: "Absolutely — it's built for freelancers, consultants, and small business owners." },
@@ -57,7 +57,7 @@ export default function HowItWorks() {
       <div className="mb-12">
         <div className="mb-8 text-center">
           <h2 className="mb-2 text-2xl font-extrabold tracking-tight text-slate-900">Frequently Asked Questions</h2>
-          <p className="text-[14px] text-slate-500">Everything you need to know about PDF Invoice Builder.</p>
+          <p className="text-[14px] text-slate-500">Everything you need to know about PDF Bill Builder.</p>
         </div>
         <div className="space-y-3">
           {faqs.map(f => (

@@ -147,6 +147,32 @@ export const LANDING: Record<string, Landing> = {
     profession: "freelancers, consultants, and agencies billing by the hour",
     keywords: ["hourly invoice generator", "hourly rate invoice template", "time based invoice", "consultant hourly invoice"],
   },
+
+  /* ───────── Bill keyword variants ───────── */
+  "bill-generator": {
+    h1: "Free Bill Generator",
+    sub: "Create a professional bill for your customer and download it as PDF in seconds — 100% free, no signup.",
+    title: "Free Bill Generator — Create & Download a PDF Bill Online",
+    desc: "Free online bill generator. Add your items, apply tax, and download a clean PDF bill in seconds. Works as a bill, invoice, receipt, or quotation maker. No signup required.",
+    profession: "shops, service providers, and small businesses",
+    keywords: ["free bill generator", "bill generator", "bill generator pdf", "create a bill online", "online bill generator"],
+  },
+  "online-bill-maker": {
+    h1: "Free Online Bill Maker",
+    sub: "Make a bill online and download a professional PDF in seconds — free, no account, no watermark.",
+    title: "Free Online Bill Maker — Make a Bill & Download PDF",
+    desc: "Make a bill online for free with our bill maker. Enter your details and items, apply tax, and download a professional PDF bill instantly. Also makes invoices, receipts, and quotations.",
+    profession: "shops, freelancers, and small businesses",
+    keywords: ["online bill maker", "bill maker", "make a bill online", "free bill maker", "bill maker app"],
+  },
+  "bill-format": {
+    h1: "Free Bill Format — Create a Bill in PDF",
+    sub: "Use a clean, professional bill format and download your bill as a PDF in seconds — completely free.",
+    title: "Bill Format — Free PDF Bill Format Generator Online",
+    desc: "Create a bill using a professional bill format online for free. Fill in your items and tax, then download a print-ready PDF bill. No signup, no software needed.",
+    profession: "shops, service providers, and small businesses",
+    keywords: ["bill format", "bill format pdf", "bill format in word", "simple bill format", "cash bill format"],
+  },
 };
 
 export const LANDING_SLUGS = Object.keys(LANDING);

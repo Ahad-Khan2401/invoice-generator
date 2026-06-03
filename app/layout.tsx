@@ -26,6 +26,8 @@ export const metadata: Metadata = {
     "free invoice generator", "pdf invoice generator", "invoice maker",
     "invoice template", "create invoice online", "receipt generator",
     "quotation generator", "freelancer invoice",
+    "free bill generator", "bill maker", "online bill maker",
+    "bill format", "create a bill online", "bill generator pdf",
   ],
   applicationName: SITE.name,
   alternates: { canonical: "/" },

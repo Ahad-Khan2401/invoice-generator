@@ -59,7 +59,7 @@ export default function Terms() {
         </Section>
 
         <Section title="10. Contact">
-          <p>Questions? Email <a className="text-indigo-600 hover:underline" href="mailto:support@pdfinvoicebuilder.com">support@pdfinvoicebuilder.com</a>.</p>
+          <p>Questions? Email <a className="text-indigo-600 hover:underline" href="mailto:support@pdfbillbuilder.com">support@pdfbillbuilder.com</a>.</p>
         </Section>
       </Card>
 

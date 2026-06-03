@@ -31,7 +31,7 @@ export default function Footer() {
         <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between md:gap-10 md:px-4">
           {/* Brand */}
           <div className="flex max-w-xs flex-col items-start gap-3">
-            <Link href="/" aria-label="PDF Invoice Builder home">
+            <Link href="/" aria-label="PDF Bill Builder home">
               <Logo size={30} />
             </Link>
             <p className="text-[14px] font-medium leading-relaxed text-slate-400">
@@ -70,7 +70,7 @@ export default function Footer() {
               <div className="flex flex-col gap-2.5 text-[14px]">
                 <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/privacy">Privacy Policy</Link>
                 <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/terms">Terms of Service</Link>
-                <a className="inline-flex items-center gap-1.5 font-medium text-slate-500 transition-colors hover:text-indigo-600" href="mailto:support@pdfinvoicebuilder.com">
+                <a className="inline-flex items-center gap-1.5 font-medium text-slate-500 transition-colors hover:text-indigo-600" href="mailto:support@pdfbillbuilder.com">
                   <Mail className="size-3.5" /> Contact
                 </a>
               </div>
@@ -81,11 +81,11 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="mt-4 flex flex-col items-start justify-between gap-3 px-4 text-[13px] text-slate-400 sm:flex-row sm:items-center">
-        <p>© {year} PDF Invoice Builder. All rights reserved.</p>
+        <p>© {year} PDF Bill Builder. All rights reserved.</p>
         <div className="flex items-center gap-5">
           <Link href="/privacy" className="hover:text-slate-700">Privacy</Link>
           <Link href="/terms" className="hover:text-slate-700">Terms</Link>
-          <a href="mailto:support@pdfinvoicebuilder.com" className="hover:text-slate-700">support@pdfinvoicebuilder.com</a>
+          <a href="mailto:support@pdfbillbuilder.com" className="hover:text-slate-700">support@pdfbillbuilder.com</a>
         </div>
       </div>
     </footer>

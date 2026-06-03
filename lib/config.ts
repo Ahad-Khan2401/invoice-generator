@@ -4,8 +4,8 @@
    once AdSense approves your site.
 ─────────────────────────────────────────────── */
 export const SITE = {
-  name: "PDF Invoice Builder",
-  url: "https://www.pdfinvoicebuilder.com",
+  name: "PDF Bill Builder",
+  url: "https://www.pdfbillbuilder.com",
   // ✅ Your real AdSense publisher ID
   adsenseClient: "ca-pub-3004153584501560",
 

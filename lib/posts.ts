@@ -25,7 +25,7 @@ export interface Post {
 }
 
 const CTA =
-  'You can <a href="/">create one free with PDF Invoice Builder</a> — no signup, download as PDF in seconds.';
+  'You can <a href="/">create one free with PDF Bill Builder</a> — no signup, download as PDF in seconds.';
 
 export const POSTS: Record<string, Post> = {
   /* 1 ───────────────────────────────────────── */
@@ -70,7 +70,7 @@ export const POSTS: Record<string, Post> = {
       { type: "p", text: "If you bill clients regularly, see our guides for <a href=\"/freelancer-invoice\">freelancers</a>, <a href=\"/contractor-invoice\">contractors</a>, and <a href=\"/small-business-invoice\">small businesses</a>." },
     ],
     faq: [
-      { q: "How do I make an invoice for free?", a: "Use a free invoice generator like PDF Invoice Builder: add your details, list your items, apply tax, and download a PDF — no signup or payment needed." },
+      { q: "How do I make an invoice for free?", a: "Use a free invoice generator like PDF Bill Builder: add your details, list your items, apply tax, and download a PDF — no signup or payment needed." },
       { q: "What should every invoice include?", a: "An invoice number, your details, the client's details, issue and due dates, an itemised list with amounts, tax (if any), a clear total, and payment terms." },
       { q: "Do I need software to make an invoice?", a: "No. A free browser-based generator creates a professional PDF invoice in minutes without installing anything." },
     ],
@@ -144,12 +144,12 @@ export const POSTS: Record<string, Post> = {
         "You do the work and send an <strong>invoice</strong> → client pays.",
         "You issue a <strong>receipt</strong> → the cycle is complete.",
       ] },
-      { type: "callout", text: `PDF Invoice Builder creates all three from one place — just switch the document type. <a href="/">Try it free</a>.` },
+      { type: "callout", text: `PDF Bill Builder creates all three from one place — just switch the document type. <a href="/">Try it free</a>.` },
     ],
     faq: [
       { q: "What is the difference between an invoice and a receipt?", a: "An invoice requests payment before it's made; a receipt confirms payment after it's received. An invoice says “please pay”, a receipt says “payment received”." },
       { q: "Is a quotation legally binding?", a: "A quotation is an offer, not a demand for payment. It can become binding once the client accepts it, depending on your terms, but it isn't an invoice." },
-      { q: "Can one tool create invoices, receipts, and quotations?", a: "Yes. PDF Invoice Builder lets you switch between invoice, receipt, and quotation with one click and download any of them as a PDF." },
+      { q: "Can one tool create invoices, receipts, and quotations?", a: "Yes. PDF Bill Builder lets you switch between invoice, receipt, and quotation with one click and download any of them as a PDF." },
     ],
   },
 
@@ -192,7 +192,7 @@ export const POSTS: Record<string, Post> = {
     ],
     faq: [
       { q: "What information is legally required on an invoice?", a: "At minimum: the word “invoice”, a unique number, dates, your and the client's details, an itemised list, the total, and any tax. Tax-registered businesses must also show their tax number and rate." },
-      { q: "Do I need an invoice number?", a: "Yes. A unique, sequential invoice number is important for your records, accounting, and tax. Tools like PDF Invoice Builder let you set it per invoice." },
+      { q: "Do I need an invoice number?", a: "Yes. A unique, sequential invoice number is important for your records, accounting, and tax. Tools like PDF Bill Builder let you set it per invoice." },
       { q: "What are common payment terms to include?", a: "“Due on receipt”, “Net 7”, “Net 15”, or “Net 30” are common. Pick shorter terms if you want to be paid faster." },
     ],
   },

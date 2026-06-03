@@ -89,7 +89,7 @@ export default function Privacy() {
         <Section title="8. Contact">
           <p>
             Questions? Email{" "}
-            <a className="text-indigo-600 hover:underline" href="mailto:support@pdfinvoicebuilder.com">support@pdfinvoicebuilder.com</a>.
+            <a className="text-indigo-600 hover:underline" href="mailto:support@pdfbillbuilder.com">support@pdfbillbuilder.com</a>.
           </p>
         </Section>
       </Card>

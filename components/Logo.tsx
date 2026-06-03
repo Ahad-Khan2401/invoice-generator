@@ -1,6 +1,6 @@
 /* Brand logo — recreated as crisp inline SVG + wordmark so it scales
    sharply at any size and adds zero image-load cost (fast on slow nets).
-   Colours match the brand: red "PDF", navy "Invoice", blue "Builder". */
+   Colours match the brand: red "PDF", navy "Bill", blue "Builder". */
 
 const RED  = "#E5252B";
 const NAVY = "#17243F";
@@ -48,7 +48,7 @@ export function Logo({
           style={{ fontSize: Math.round(size * 0.52) }}
         >
           <span style={{ color: RED }}>PDF</span>
-          <span style={{ color: NAVY }}> Invoice</span>
+          <span style={{ color: NAVY }}> Bill</span>
           <span style={{ color: BLUE }}> Builder</span>
         </span>
       )}

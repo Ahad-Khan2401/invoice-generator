@@ -12,9 +12,14 @@ const hreflang = Object.fromEntries([
 ]);
 
 export const metadata: Metadata = {
-  title: "Free Invoice Generator — Create & Download PDF Invoices Instantly",
+  title: "Free Invoice & Bill Generator — Create & Download PDF Invoices Instantly",
   description:
-    "Generate professional invoices, receipts, and quotations online for free. No signup needed. Add line items, apply tax, then download a clean PDF in seconds.",
+    "Free online invoice generator and bill maker. Create professional invoices, bills, receipts, and quotations — add line items, apply tax, and download a clean PDF in seconds. No signup.",
+  keywords: [
+    "free invoice generator", "invoice maker", "bill generator", "bill maker",
+    "online bill maker", "create invoice online", "make a bill online",
+    "pdf invoice", "receipt generator", "quotation generator",
+  ],
   alternates: { canonical: "/", languages: hreflang },
 };
 

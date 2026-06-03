@@ -6,7 +6,7 @@ import { SITE } from "@/lib/config";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "PDF Invoice Builder is a free, privacy-first generator for invoices, receipts, and quotations — built for freelancers, consultants, and small businesses. No signup, no data storage.",
+    "PDF Bill Builder is a free, privacy-first generator for invoices, receipts, and quotations — built for freelancers, consultants, and small businesses. No signup, no data storage.",
   alternates: { canonical: "/about" },
 };
 
@@ -19,7 +19,7 @@ const stats = [
 const values = [
   { icon: "🔒", title: "Privacy First",  desc: "Your data never leaves your browser. Nothing is sent to our servers, ever.", bg: "bg-indigo-50" },
   { icon: "⚡", title: "Lightning Fast", desc: "No loading screens, no bloat. Open the page and start invoicing instantly.", bg: "bg-emerald-50" },
-  { icon: "♾️", title: "Built to Last",  desc: "No accounts, no subscriptions. PDF Invoice Builder is free, forever.", bg: "bg-amber-50" },
+  { icon: "♾️", title: "Built to Last",  desc: "No accounts, no subscriptions. PDF Bill Builder is free, forever.", bg: "bg-amber-50" },
 ];
 
 export default function About() {
@@ -27,7 +27,7 @@ export default function About() {
     <PageShell>
       <PageHero
         badge="About Us"
-        title="About PDF Invoice Builder"
+        title="About PDF Bill Builder"
         subtitle="Built for the millions of freelancers and small businesses who just need a simple, fast, and completely free way to get paid."
       />
 
