@@ -32,8 +32,8 @@ export async function generateMetadata(
     description: data.desc,
     keywords: data.keywords,
     alternates: { canonical: `/${profession}`, languages },
-    openGraph: { title: data.title, description: data.desc, url, images: ["/logo.png"] },
-    twitter: { card: "summary_large_image", title: data.title, description: data.desc, images: ["/logo.png"] },
+    openGraph: { title: data.title, description: data.desc, url, images: ["/og.png"] },
+    twitter: { card: "summary_large_image", title: data.title, description: data.desc, images: ["/og.png"] },
   };
 }
 

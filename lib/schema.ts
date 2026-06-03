@@ -54,7 +54,7 @@ export function organizationSchema() {
     "@type": "Organization",
     name: SITE.name,
     url: SITE.url,
-    logo: `${SITE.url}/logo.png`,
+    logo: `${SITE.url}/og.png`,
     description:
       "Free online generator for professional invoices, receipts, and quotations — download as PDF, no signup.",
     email: "support@pdfbillbuilder.com",
@@ -119,12 +119,12 @@ export function articleSchema(p: {
     dateModified: p.updated,
     url: p.url,
     mainEntityOfPage: { "@type": "WebPage", "@id": p.url },
-    image: `${SITE.url}/logo.png`,
+    image: `${SITE.url}/og.png`,
     author: { "@type": "Organization", name: SITE.name, url: SITE.url },
     publisher: {
       "@type": "Organization",
       name: SITE.name,
-      logo: { "@type": "ImageObject", url: `${SITE.url}/logo.png` },
+      logo: { "@type": "ImageObject", url: `${SITE.url}/og.png` },
     },
   };
 }

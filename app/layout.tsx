@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   ],
   applicationName: SITE.name,
   alternates: { canonical: "/" },
-  icons: { icon: "/logo.png", apple: "/logo.png" },
+  icons: { icon: "/icon.png", apple: "/icon.png" },
   openGraph: {
     type: "website",
     siteName: SITE.name,
@@ -39,13 +39,13 @@ export const metadata: Metadata = {
     title: "Free Invoice Generator — Create & Download PDF Invoices Instantly",
     description:
       "Create professional invoices, receipts, and quotations online for free. No signup required.",
-    images: [{ url: "/logo.png", width: 1200, height: 1200, alt: SITE.name }],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: SITE.name }],
   },
   twitter: {
     card: "summary_large_image",
-    title: `Free Invoice Generator — ${SITE.name}`,
-    description: "Create & download professional PDF invoices for free. No signup.",
-    images: ["/logo.png"],
+    title: `Free Invoice & Bill Generator — ${SITE.name}`,
+    description: "Create & download professional PDF invoices, bills, receipts & quotations for free. No signup.",
+    images: ["/og.png"],
   },
   robots: { index: true, follow: true },
   // AdSense account meta tag + Bing verification (used during site verification)
