@@ -1,10 +1,18 @@
 import Link from "next/link";
 import { Mail } from "lucide-react";
 import { Logo } from "@/components/Logo";
-import { LANDING_SLUGS } from "@/lib/landing";
 
-const shortLabel = (slug: string) =>
-  slug.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
+const FOOTER_TEMPLATES = [
+  { slug: "freelancer-invoice",       label: "Freelancer Invoice" },
+  { slug: "contractor-invoice",       label: "Contractor Invoice" },
+  { slug: "consultant-invoice",       label: "Consultant Invoice" },
+  { slug: "small-business-invoice",   label: "Small Business Invoice" },
+  { slug: "self-employed-invoice",    label: "Self Employed Invoice" },
+  { slug: "invoice-generator-usa",    label: "Invoice Generator USA" },
+  { slug: "invoice-generator-uk",     label: "Invoice Generator UK" },
+  { slug: "bill-generator",           label: "Bill Generator" },
+  { slug: "proforma-invoice",         label: "Proforma Invoice" },
+];
 
 const Tape = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="95" height="80" viewBox="0 0 95 80" fill="none" className={className} aria-hidden="true">
@@ -52,15 +60,19 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Documents (landing pages) */}
+            {/* Templates (landing pages) */}
             <div className="flex flex-col gap-3">
               <h4 className="text-[12px] font-bold uppercase tracking-wider text-slate-400">Templates</h4>
               <div className="flex flex-col gap-2.5 text-[14px]">
-                {LANDING_SLUGS.map((slug) => (
+                {FOOTER_TEMPLATES.map(({ slug, label }) => (
                   <Link key={slug} className="whitespace-nowrap font-medium text-slate-500 transition-colors hover:text-indigo-600" href={`/${slug}`}>
-                    {shortLabel(slug)}
+                    {label}
                   </Link>
                 ))}
+                <Link href="/#templates" className="inline-flex items-center gap-1 text-[13px] font-semibold text-indigo-500 transition-colors hover:text-indigo-700">
+                  View all
+                  <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                </Link>
               </div>
             </div>
 
