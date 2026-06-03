@@ -14,7 +14,7 @@ export const SITE = {
      auto-activates each only when its value is filled in. */
   googleSiteVerification: "",   // Search Console → HTML tag → content="..."
   bingSiteVerification:   "",   // Bing Webmaster → meta tag → content="..."
-  gaId:                   "",   // Google Analytics 4 → "G-XXXXXXXXXX"
+  gaId:                   "G-GNSHNWJEE3",   // Google Analytics 4
 
   /* English markets this site targets (used for hreflang). */
   hreflangLocales: ["en-US", "en-CA", "en-GB", "en-AU", "en-IN", "en-PK"],
