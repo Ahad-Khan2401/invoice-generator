@@ -35,16 +35,13 @@ export const SITE = {
     downloadModal:"6666666666",
   },
 
-  /* ── Stripe Premium ──────────────────────────────
-     1. Create a Stripe account at stripe.com
-     2. Create a Payment Link (Stripe Dashboard → Payment Links)
-        Price: $3/month recurring
-     3. Paste the link URL below (starts with https://buy.stripe.com/...)
-     4. Run: git push origin main → auto-deploys
+  /* ── Pro (One-time, via Lemon Squeezy) ──────────
+     $9 one-time = "Pro Forever"
+     Update proLink when you change the LS product price.
   ─────────────────────────────────────────────── */
   stripe: {
     proLink:      "https://pdfbillbuilder.lemonsqueezy.com/checkout/buy/3fad7411-41b1-4e5c-b81d-bec39c54da92",
-    priceMonthly: "$3",
-    priceLabel:   "$3 / month",
+    priceMonthly: "$9",
+    priceLabel:   "$9 one-time",
   },
 } as const;

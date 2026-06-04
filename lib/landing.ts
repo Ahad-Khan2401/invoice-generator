@@ -211,6 +211,45 @@ export const LANDING: Record<string, Landing> = {
     currencySymbol: "A$",
     keywords: ["gst invoice generator australia", "australian gst invoice", "abn invoice generator", "tax invoice australia", "gst tax invoice"],
   },
+
+  /* ───────── High-CPC USA/Canada/UK/AUS pages ───────── */
+  "invoice-generator-for-small-business": {
+    h1: "Free Invoice Generator for Small Business",
+    sub: "Create professional invoices for your small business in seconds. Download a clean PDF instantly — no software, no subscription, no signup.",
+    title: "Free Invoice Generator for Small Business — PDF Invoices Online",
+    desc: "Free online invoice generator for small businesses. Create professional invoices, add your logo, apply tax, and download PDF instantly. No signup, no cost. Used by thousands of US and UK small businesses.",
+    profession: "small business owners",
+    keywords: ["invoice generator for small business", "small business invoice generator", "small business invoice template", "invoice maker small business", "free invoicing for small business"],
+  },
+
+  "free-invoice-maker": {
+    h1: "Free Invoice Maker — Create Professional Invoices Online",
+    sub: "The fastest free invoice maker online. Fill in your details and download a professional PDF in under 60 seconds. No signup, no watermark on download.",
+    title: "Free Invoice Maker — Create & Download Professional PDF Invoices",
+    desc: "Create professional invoices free with our online invoice maker. Add your business details, items, tax — download PDF instantly. Perfect for freelancers, contractors and small businesses in the US, UK, Canada and Australia.",
+    profession: "freelancers, contractors, and small businesses",
+    keywords: ["free invoice maker", "invoice maker free", "invoice maker online", "invoice creator free", "make an invoice free"],
+  },
+
+  "freelance-invoice-template-usa": {
+    h1: "Free Freelance Invoice Template — USA",
+    sub: "Create a professional freelance invoice for US clients. Add your rate, apply applicable taxes, and download a clean PDF instantly.",
+    title: "Free Freelance Invoice Template USA — Create PDF Invoices Online",
+    desc: "Free freelance invoice template for US-based freelancers. Set your hourly or project rate, add Net 30 payment terms, and download a professional PDF invoice. No signup required.",
+    profession: "US freelancers and independent contractors",
+    currencySymbol: "$",
+    keywords: ["freelance invoice template usa", "freelancer invoice template usa", "us freelance invoice", "invoice template for freelancers usa", "1099 invoice template"],
+  },
+
+  "invoice-template-canada": {
+    h1: "Free Invoice Template — Canada (GST/HST Ready)",
+    sub: "Create Canadian invoices with proper GST/HST fields. Download a professional PDF invoice in seconds — free, no signup.",
+    title: "Free Invoice Template Canada — GST/HST Invoice Generator Online",
+    desc: "Free Canadian invoice template with GST/HST support. Add your ABN, apply the correct tax rate for your province, and download a clean PDF. Perfect for Canadian freelancers and small businesses.",
+    profession: "Canadian freelancers and small businesses",
+    currencySymbol: "CA$",
+    keywords: ["invoice template canada", "canada invoice template", "canada gst invoice template", "hst invoice template", "canadian invoice generator"],
+  },
 };
 
 export const LANDING_SLUGS = Object.keys(LANDING);
