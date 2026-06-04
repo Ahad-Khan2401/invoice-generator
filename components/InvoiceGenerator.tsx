@@ -121,8 +121,17 @@ export default function InvoiceGenerator({
   const [adModal, setAdModal] = useState<{ open: boolean; status: "working" | "done"; action: "download" | "print" }>({
     open: false, status: "working", action: "download",
   });
-  const [proModalOpen, setProModalOpen] = useState(false);
-  const isPro = useProStatus();
+  const [proModalOpen,   setProModalOpen]   = useState(false);
+  const [paymentTrigger, setPaymentTrigger] = useState(false);
+  const { isPro, justPaid, activate }       = useProStatus();
+
+  // Auto-open modal when returning from Lemon Squeezy payment
+  useEffect(() => {
+    if (justPaid) {
+      setPaymentTrigger(true);
+      setProModalOpen(true);
+    }
+  }, [justPaid]);
 
   const previewRef = useRef<HTMLDivElement>(null);
   const wrapRef    = useRef<HTMLDivElement>(null);
@@ -986,7 +995,12 @@ export default function InvoiceGenerator({
 
       <style>{`@keyframes ping{75%,100%{transform:scale(2);opacity:0}}`}</style>
 
-      <ProModal open={proModalOpen} onClose={()=>setProModalOpen(false)} />
+      <ProModal
+        open={proModalOpen}
+        justPaid={paymentTrigger}
+        onClose={() => { setProModalOpen(false); setPaymentTrigger(false); }}
+        onActivate={(token, keyHash, expires) => { activate(token, keyHash, expires); }}
+      />
 
       {/* Ad shown after Download / Print (user-initiated, non-gating) */}
       <DownloadAdModal
