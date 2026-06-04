@@ -195,6 +195,7 @@ export default function InvoiceGenerator({
       requestAnimationFrame(() => requestAnimationFrame(() => res()))
     );
 
+    let downloadOk = false;
     try {
       const [{default:jsPDF},{default:html2canvas}] = await Promise.all([
         import("jspdf"), import("html2canvas"),
@@ -231,7 +232,18 @@ export default function InvoiceGenerator({
           y += pageHpx;
         }
       }
-      pdf.save(`${meta.no || docType}.pdf`);
+
+      // Reliable cross-browser download via Blob URL
+      const blob = pdf.output("blob");
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement("a");
+      a.href     = url;
+      a.download = `${meta.no || docType}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      downloadOk = true;
     } catch (e) {
       console.error("PDF generation failed:", e);
     } finally {
@@ -244,7 +256,12 @@ export default function InvoiceGenerator({
         wrap.style.overflow = savedWOv;
       }
       setBusy(false);
-      setAdModal(m => m.open ? { ...m, status: "done" } : m);
+      // Only mark modal "done" if download actually succeeded
+      if (downloadOk) {
+        setAdModal(m => m.open ? { ...m, status: "done" } : m);
+      } else {
+        setAdModal({ open: false, status: "working", action: "download" });
+      }
     }
   }
 
