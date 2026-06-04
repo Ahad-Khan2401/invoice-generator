@@ -197,11 +197,13 @@ export default function InvoiceGenerator({
 
     let downloadOk = false;
     try {
+      // html2canvas-pro: drop-in replacement that supports Tailwind v4
+      // lab()/oklch() color functions (html2canvas v1 hangs on them)
       const [{default:jsPDF},{default:html2canvas}] = await Promise.all([
-        import("jspdf"), import("html2canvas"),
+        import("jspdf"), import("html2canvas-pro"),
       ]);
       const canvas = await html2canvas(el, {
-        scale: 2.5,
+        scale: 2,
         useCORS: true,
         allowTaint: true,
         backgroundColor: "#ffffff",
@@ -247,7 +249,7 @@ export default function InvoiceGenerator({
     } catch (e) {
       console.error("PDF generation failed:", e);
     } finally {
-      // Restore all styles
+      // Restore preview transform/layout styles
       el.style.transform       = savedTx;
       el.style.transformOrigin = savedTxO;
       el.style.width           = savedW;
