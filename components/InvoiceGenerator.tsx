@@ -5,6 +5,7 @@ import {
   FileText, Receipt, ClipboardList, Tag, Percent,
 } from "lucide-react";
 import DownloadAdModal from "@/components/DownloadAdModal";
+import ProModal, { useProStatus } from "@/components/ProModal";
 import { SITE } from "@/lib/config";
 
 /* ─── Types ──────────────────────────────────────── */
@@ -16,10 +17,18 @@ type TaxType    = "exclusive" | "inclusive";
 type DiscType   = "%" | "fixed";
 
 /* ─── Constants ──────────────────────────────────── */
-const COLORS = [
+const COLORS_FREE = [
   { hex:"#4f46e5",name:"Indigo"  }, { hex:"#0ea5e9",name:"Sky"    },
   { hex:"#10b981",name:"Emerald" }, { hex:"#f59e0b",name:"Amber"  },
   { hex:"#ef4444",name:"Red"     }, { hex:"#8b5cf6",name:"Violet" },
+];
+const COLORS_PRO = [
+  { hex:"#0f172a",name:"Slate"   }, { hex:"#7f1d1d",name:"Crimson"},
+  { hex:"#14532d",name:"Forest"  }, { hex:"#1e3a5f",name:"Navy"   },
+  { hex:"#713f12",name:"Brown"   }, { hex:"#4a044e",name:"Purple" },
+  { hex:"#134e4a",name:"Teal"    }, { hex:"#1c1917",name:"Carbon" },
+  { hex:"#831843",name:"Rose"    }, { hex:"#1e1b4b",name:"Ink"    },
+  { hex:"#052e16",name:"Pine"    }, { hex:"#450a0a",name:"Maroon" },
 ];
 
 const CURRENCIES = [
@@ -104,7 +113,7 @@ export default function InvoiceGenerator({
   const [cur,        setCur]        = useState(
     CURRENCIES.find((c) => c.s === defaultCurrency) ?? CURRENCIES[0]
   );
-  const [color,      setColor]      = useState(COLORS[0].hex);
+  const [color,      setColor]      = useState(COLORS_FREE[0].hex);
   const [brandLogo,  setBrandLogo]  = useState<string|null>(null);
   const [wmLogo,     setWmLogo]     = useState<string|null>(null);
   const [busy,       setBusy]       = useState(false);
@@ -112,6 +121,8 @@ export default function InvoiceGenerator({
   const [adModal, setAdModal] = useState<{ open: boolean; status: "working" | "done"; action: "download" | "print" }>({
     open: false, status: "working", action: "download",
   });
+  const [proModalOpen, setProModalOpen] = useState(false);
+  const isPro = useProStatus();
 
   const previewRef = useRef<HTMLDivElement>(null);
   const wrapRef    = useRef<HTMLDivElement>(null);
@@ -355,14 +366,29 @@ export default function InvoiceGenerator({
                 <p style={{ fontSize:17,fontWeight:800,color:"#0d1117",letterSpacing:"-0.02em" }}>Document Details</p>
                 <p style={{ fontSize:12,color:"#9ca3af",marginTop:2 }}>Fill in the details below</p>
               </div>
-              <div style={{ display:"flex",gap:7 }}>
-                {COLORS.map(c=>(
+              <div style={{ display:"flex",gap:7,flexWrap:"wrap",alignItems:"center" }}>
+                {COLORS_FREE.map(c=>(
                   <button key={c.hex} title={c.name} onClick={()=>setColor(c.hex)} style={{
                     width:21,height:21,borderRadius:"50%",background:c.hex,border:"none",cursor:"pointer",
                     boxShadow: color===c.hex ? `0 0 0 2.5px #fff,0 0 0 4.5px ${c.hex}` : "none",
                     transform: color===c.hex ? "scale(1.2)" : "scale(1)", transition:"all .2s",
                   }}/>
                 ))}
+                {isPro
+                  ? COLORS_PRO.map(c=>(
+                    <button key={c.hex} title={c.name} onClick={()=>setColor(c.hex)} style={{
+                      width:21,height:21,borderRadius:"50%",background:c.hex,border:"none",cursor:"pointer",
+                      boxShadow: color===c.hex ? `0 0 0 2.5px #fff,0 0 0 4.5px ${c.hex}` : "none",
+                      transform: color===c.hex ? "scale(1.2)" : "scale(1)", transition:"all .2s",
+                    }}/>
+                  ))
+                  : (
+                    <button title="Unlock 12 Pro colours" onClick={()=>setProModalOpen(true)} style={{
+                      fontSize:9,fontWeight:800,padding:"3px 7px",borderRadius:6,border:"1.5px dashed #c4b5fd",
+                      background:"#f5f3ff",color:"#7c3aed",cursor:"pointer",letterSpacing:"0.06em",
+                    }}>✦ PRO</button>
+                  )
+                }
               </div>
             </div>
 
@@ -700,26 +726,40 @@ export default function InvoiceGenerator({
             </div>{/* end form body */}
 
             {/* ── Action buttons ── */}
-            <div className="ig-formfoot" style={{ borderTop:"1px solid #f0f3fa",display:"flex",gap:12,background:"#fafbff",borderRadius:"0 0 20px 20px" }}>
-              <button onClick={startDownload} disabled={busy} style={{
-                flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8,
-                padding:"13px 20px",borderRadius:12,border:"none",
-                background: busy ? "#94a3b8" : color, color:"white",
-                fontSize:14,fontWeight:700,cursor:busy?"not-allowed":"pointer",
-                boxShadow: busy?"none":`0 4px 16px ${color}45`,
-                transition:"all .2s",opacity:busy?0.75:1,
-              }}>
-                {busy ? <><Spinner/> Generating...</> : <><Download size={15}/> Download PDF</>}
-              </button>
-              <button onClick={startPrint} style={{
-                display:"flex",alignItems:"center",justifyContent:"center",gap:7,
-                padding:"13px 20px",borderRadius:12,border:"1.5px solid #e4e9f2",
-                background:"white",color:"#64748b",fontSize:14,fontWeight:600,cursor:"pointer",transition:"all .2s",
-              }}
-                onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#f8fafc";(e.currentTarget as HTMLElement).style.borderColor="#c9d0db";}}
-                onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="white";(e.currentTarget as HTMLElement).style.borderColor="#e4e9f2";}}>
-                <Printer size={15}/> Print
-              </button>
+            <div className="ig-formfoot" style={{ borderTop:"1px solid #f0f3fa",display:"flex",flexDirection:"column",gap:10,background:"#fafbff",borderRadius:"0 0 20px 20px" }}>
+              <div style={{ display:"flex",gap:12 }}>
+                <button onClick={startDownload} disabled={busy} style={{
+                  flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8,
+                  padding:"13px 20px",borderRadius:12,border:"none",
+                  background: busy ? "#94a3b8" : color, color:"white",
+                  fontSize:14,fontWeight:700,cursor:busy?"not-allowed":"pointer",
+                  boxShadow: busy?"none":`0 4px 16px ${color}45`,
+                  transition:"all .2s",opacity:busy?0.75:1,
+                }}>
+                  {busy ? <><Spinner/> Generating...</> : <><Download size={15}/> Download PDF</>}
+                </button>
+                <button onClick={startPrint} style={{
+                  display:"flex",alignItems:"center",justifyContent:"center",gap:7,
+                  padding:"13px 20px",borderRadius:12,border:"1.5px solid #e4e9f2",
+                  background:"white",color:"#64748b",fontSize:14,fontWeight:600,cursor:"pointer",transition:"all .2s",
+                }}
+                  onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#f8fafc";(e.currentTarget as HTMLElement).style.borderColor="#c9d0db";}}
+                  onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="white";(e.currentTarget as HTMLElement).style.borderColor="#e4e9f2";}}>
+                  <Printer size={15}/> Print
+                </button>
+              </div>
+              {!isPro && (
+                <button onClick={()=>setProModalOpen(true)} style={{
+                  display:"flex",alignItems:"center",justifyContent:"center",gap:7,
+                  padding:"10px 16px",borderRadius:12,
+                  border:"1.5px solid #c4b5fd",background:"#f5f3ff",
+                  color:"#7c3aed",fontSize:12.5,fontWeight:700,cursor:"pointer",transition:"all .2s",
+                }}
+                  onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#ede9fe";}}
+                  onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="#f5f3ff";}}>
+                  ✦ Go Pro — Remove watermark &amp; unlock premium colours · {SITE.stripe.priceLabel}
+                </button>
+              )}
             </div>
 
           </div>{/* end form card */}
@@ -889,11 +929,13 @@ export default function InvoiceGenerator({
                       </p>
                     )}
 
-                    {/* ── Footer ── */}
-                    <div style={{ display:"flex",justifyContent:"space-between",marginTop:meta.signNote?12:24,paddingTop:12,borderTop:"1px solid #f8fafc" }}>
-                      <span style={{ fontSize:9.5,color:"#c4c9d4" }}>Generated by pdfbillbuilder.com</span>
-                      <span style={{ fontSize:9.5,color:"#c4c9d4" }}>Thank you for your business</span>
-                    </div>
+                    {/* ── Footer (hidden for Pro users) ── */}
+                    {!isPro && (
+                      <div style={{ display:"flex",justifyContent:"space-between",marginTop:meta.signNote?12:24,paddingTop:12,borderTop:"1px solid #f8fafc" }}>
+                        <span style={{ fontSize:9.5,color:"#c4c9d4" }}>Generated by pdfbillbuilder.com</span>
+                        <span style={{ fontSize:9.5,color:"#c4c9d4" }}>Thank you for your business</span>
+                      </div>
+                    )}
 
                   </div>
                 </div>
@@ -943,6 +985,8 @@ export default function InvoiceGenerator({
       </div>
 
       <style>{`@keyframes ping{75%,100%{transform:scale(2);opacity:0}}`}</style>
+
+      <ProModal open={proModalOpen} onClose={()=>setProModalOpen(false)} />
 
       {/* Ad shown after Download / Print (user-initiated, non-gating) */}
       <DownloadAdModal

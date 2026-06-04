@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/config";
 import { LANDING_SLUGS } from "@/lib/landing";
+import { LANDING_ES_SLUGS } from "@/lib/landing-es";
+import { LANDING_PT_SLUGS } from "@/lib/landing-pt";
 import { POST_SLUGS } from "@/lib/posts";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -39,5 +41,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
     alternates: { languages: langs(`/${slug}`) },
   }));
 
-  return [...core, ...landing, ...posts];
+  // Spanish landing pages
+  const landingEs: MetadataRoute.Sitemap = LANDING_ES_SLUGS.map((slug) => ({
+    url: `${base}/es/${slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.85,
+    alternates: { languages: { "es": `${base}/es/${slug}`, "x-default": base } },
+  }));
+
+  // Portuguese landing pages
+  const landingPt: MetadataRoute.Sitemap = LANDING_PT_SLUGS.map((slug) => ({
+    url: `${base}/pt/${slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.85,
+    alternates: { languages: { "pt-BR": `${base}/pt/${slug}`, "x-default": base } },
+  }));
+
+  return [...core, ...landing, ...landingEs, ...landingPt, ...posts];
 }

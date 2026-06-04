@@ -27,11 +27,24 @@ export const SITE = {
      Until you replace these, ads will load but stay blank.
   ─────────────────────────────────────────────── */
   adSlots: {
-    homeTop:     "1111111111", // home: between tool and article
-    homeMid:     "3333333333", // home: inside the article (in-content)
-    homeBottom:  "2222222222", // home: after the article
-    about:       "4444444444", // About page
-    howItWorks:  "5555555555", // How-it-works page
-    downloadModal:"6666666666", // shown in the "Preparing your PDF" modal on Download/Print
+    homeTop:     "1111111111",
+    homeMid:     "3333333333",
+    homeBottom:  "2222222222",
+    about:       "4444444444",
+    howItWorks:  "5555555555",
+    downloadModal:"6666666666",
+  },
+
+  /* ── Stripe Premium ──────────────────────────────
+     1. Create a Stripe account at stripe.com
+     2. Create a Payment Link (Stripe Dashboard → Payment Links)
+        Price: $3/month recurring
+     3. Paste the link URL below (starts with https://buy.stripe.com/...)
+     4. Run: git push origin main → auto-deploys
+  ─────────────────────────────────────────────── */
+  stripe: {
+    proLink:      process.env.NEXT_PUBLIC_STRIPE_PRO_LINK  || "",
+    priceMonthly: "$3",
+    priceLabel:   "$3 / month",
   },
 } as const;
