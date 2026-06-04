@@ -1,182 +1,112 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
-import { X, Zap, Check, AlertCircle, LogIn } from "lucide-react";
+import { X, Zap, Check, AlertCircle, Crown } from "lucide-react";
 import { SITE } from "@/lib/config";
+import { readAuth, saveAuth, clearAuth, needsVerify, type AuthUser } from "@/lib/auth-storage";
 
 /* ══════════════════════════════════════════════════
-   STORAGE — keeps Pro active across page loads
+   HOOK — useAuth
+   Used by Header, InvoiceGenerator, ProModal
 ══════════════════════════════════════════════════ */
-const STORE_KEY    = "pdfbb_pro_v3";
-const VERIFY_EVERY = 7 * 24 * 60 * 60 * 1000; // re-verify every 7 days
-
-interface ProData {
-  token:        string;
-  emailHash:    string;
-  expires:      number;
-  lastVerified: number;
-  name:         string; // display name e.g. "Ali Khan"
-}
-
-function readPro(): ProData | null {
-  try {
-    const raw = localStorage.getItem(STORE_KEY);
-    if (!raw) return null;
-    const d = JSON.parse(raw) as ProData;
-    if (!d.token || !d.emailHash || !d.expires) return null;
-    return d;
-  } catch { return null; }
-}
-
-function savePro(d: ProData): void {
-  try {
-    localStorage.setItem(STORE_KEY, JSON.stringify(d));
-    // clean up old keys
-    ["pdfbb_pro_v2", "pdfbb_pro_until"].forEach(k => {
-      try { localStorage.removeItem(k); } catch {}
-    });
-  } catch {}
-}
-
-function clearPro(): void {
-  try {
-    ["pdfbb_pro_v3", "pdfbb_pro_v2", "pdfbb_pro_until"].forEach(k => {
-      try { localStorage.removeItem(k); } catch {}
-    });
-  } catch {}
-}
-
-/* ══════════════════════════════════════════════════
-   HOOK — useProStatus
-══════════════════════════════════════════════════ */
-export function useProStatus() {
-  const [isPro,     setIsPro]     = useState(false);
-  const [isLoaded,  setIsLoaded]  = useState(false);
-  const [proName,   setProName]   = useState("");
-  const [justPaid,  setJustPaid]  = useState(false);
+export function useAuth() {
+  const [user,     setUser]     = useState<AuthUser | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [justPaid, setJustPaid] = useState(false);
 
   const refresh = useCallback(async () => {
-    const d = readPro();
+    const stored = readAuth();
+    if (!stored) { setUser(null); setIsLoaded(true); return; }
 
-    if (!d || Date.now() > d.expires) {
-      clearPro();
-      setIsPro(false);
-      setIsLoaded(true);
-      return;
-    }
-
-    setIsPro(true);
-    setProName(d.name || "");
+    setUser(stored);
     setIsLoaded(true);
 
     // Background re-verify every 7 days
-    if (Date.now() - d.lastVerified > VERIFY_EVERY) {
+    if (needsVerify(stored)) {
       try {
         const res  = await fetch("/api/verify", {
           method:  "POST",
           headers: { "Content-Type": "application/json" },
-          body:    JSON.stringify({ token: d.token }),
+          body:    JSON.stringify({ token: stored.token }),
         });
-        const json: { valid: boolean } = await res.json();
+        const json: { valid: boolean; isPro: boolean } = await res.json();
         if (!json.valid) {
-          clearPro();
-          setIsPro(false);
-          setProName("");
+          clearAuth();
+          setUser(null);
         } else {
-          savePro({ ...d, lastVerified: Date.now() });
+          const updated = { ...stored, isPro: json.isPro, lastVerified: Date.now() };
+          saveAuth(updated);
+          setUser(updated);
         }
       } catch {
-        // Network error — keep Pro (benefit of doubt)
+        // Network error — keep session (benefit of doubt)
       }
     }
   }, []);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get("pro") === "success") {
-        window.history.replaceState({}, "", window.location.pathname);
-        setJustPaid(true);
-      }
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("pro") === "success") {
+      window.history.replaceState({}, "", window.location.pathname);
+      setJustPaid(true);
     }
     refresh();
   }, [refresh]);
 
-  const activate = useCallback(
-    (token: string, emailHash: string, expires: number, name: string) => {
-      savePro({ token, emailHash, expires, name, lastVerified: Date.now() });
-      setIsPro(true);
-      setProName(name);
-      setJustPaid(false);
-    },
-    []
-  );
-
-  const deactivate = useCallback(() => {
-    clearPro();
-    setIsPro(false);
-    setProName("");
+  const signIn = useCallback((u: AuthUser) => {
+    saveAuth(u);
+    setUser(u);
+    setJustPaid(false);
   }, []);
 
-  return { isPro, isLoaded, proName, justPaid, activate, deactivate };
+  const signOut = useCallback(() => {
+    clearAuth();
+    setUser(null);
+  }, []);
+
+  return {
+    user,
+    isLoaded,
+    isLoggedIn: !!user,
+    isPro:      user?.isPro ?? false,
+    justPaid,
+    signIn,
+    signOut,
+  };
 }
 
 /* ══════════════════════════════════════════════════
-   FEATURES LIST
+   FEATURES
 ══════════════════════════════════════════════════ */
-const FEATURES = [
-  'Remove "Generated by pdfbillbuilder.com" footer',
-  "Zero ads — no ad modal on download or print",
-  "12 premium accent colour themes",
-  "White-label PDF — zero branding",
-  "Works on all your devices (just sign in)",
+const FREE_FEATURES = [
+  "Save last 5 invoices to dashboard",
+  "Basic invoice, receipt & quotation",
+  "Download PDF (with watermark)",
+];
+
+const PRO_FEATURES = [
+  "Unlimited invoice history & dashboard",
+  "No ads — zero interruptions",
+  'Remove "Generated by" watermark',
+  "12 premium colour themes",
+  "White-label PDF — your brand only",
+  "Client address book (coming soon)",
+  "Auto invoice numbering (coming soon)",
 ];
 
 /* ══════════════════════════════════════════════════
-   TYPES
+   GOOGLE SIGN-IN BUTTON
 ══════════════════════════════════════════════════ */
-type View = "upgrade" | "login" | "loading" | "success" | "not-subscribed";
-
-interface Props {
-  open:       boolean;
-  onClose:    () => void;
-  onActivate: (token: string, emailHash: string, expires: number, name: string) => void;
-  justPaid?:  boolean;
-}
-
-/* ══════════════════════════════════════════════════
-   GOOGLE BUTTON — extracted so it can use the hook
-══════════════════════════════════════════════════ */
-function GoogleSignInBtn({
-  label,
-  onIdToken,
-  disabled,
+function GoogleBtn({
+  label, onToken, disabled,
 }: {
-  label: string;
-  onIdToken: (idToken: string) => void;
-  disabled: boolean;
+  label: string; onToken: (t: string) => void; disabled?: boolean;
 }) {
   const login = useGoogleLogin({
-    flow:    "implicit",
-    onSuccess: async (tokenRes) => {
-      // exchange access token for ID token via userinfo
-      try {
-        const r = await fetch(
-          "https://www.googleapis.com/oauth2/v3/userinfo",
-          { headers: { Authorization: `Bearer ${tokenRes.access_token}` } }
-        );
-        const info = await r.json();
-        // We send the access token to our server which will verify via tokeninfo
-        // But we actually need the ID token — use the credential flow instead.
-        // For now pass the sub + email in a custom way; the server will re-verify.
-        // NOTE: useGoogleLogin implicit flow returns access_token, not id_token.
-        // We work around this by sending the access_token and verifying via userinfo server-side.
-        onIdToken(`access:${tokenRes.access_token}`);
-      } catch {
-        onIdToken(`access:${tokenRes.access_token}`);
-      }
-    },
-    onError: () => {},
+    flow:      "implicit",
+    onSuccess: (r) => onToken(`access:${r.access_token}`),
+    onError:   () => {},
   });
 
   return (
@@ -186,14 +116,13 @@ function GoogleSignInBtn({
       style={{
         display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
         width: "100%", padding: "13px 20px", borderRadius: 12,
-        border: "1.5px solid #e4e9f2", background: disabled ? "#f8fafc" : "white",
+        border: "1.5px solid #e4e9f2",
+        background: disabled ? "#f8fafc" : "white",
         cursor: disabled ? "not-allowed" : "pointer",
         fontSize: 14, fontWeight: 600, color: "#374151",
-        boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-        transition: "all .15s",
+        boxShadow: "0 1px 4px rgba(0,0,0,0.06)", transition: "all .15s",
       }}
     >
-      {/* Google logo SVG */}
       <svg width="18" height="18" viewBox="0 0 48 48" fill="none">
         <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
         <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
@@ -206,70 +135,78 @@ function GoogleSignInBtn({
 }
 
 /* ══════════════════════════════════════════════════
-   MAIN COMPONENT
+   MAIN MODAL
 ══════════════════════════════════════════════════ */
-export default function ProModal({ open, onClose, onActivate, justPaid }: Props) {
-  const [view,      setView]      = useState<View>("upgrade");
-  const [error,     setError]     = useState("");
-  const [userEmail, setUserEmail] = useState("");
+type View = "choose" | "signin" | "upgrade" | "loading" | "success-free" | "success-pro" | "no-sub";
 
-  // Reset on open
+interface Props {
+  open:       boolean;
+  onClose:    () => void;
+  onSignIn:   (u: AuthUser) => void;
+  isLoggedIn: boolean;
+  isPro:      boolean;
+  justPaid?:  boolean;
+}
+
+export default function ProModal({ open, onClose, onSignIn, isLoggedIn, isPro, justPaid }: Props) {
+  const [view,  setView]  = useState<View>("choose");
+  const [error, setError] = useState("");
+
   useEffect(() => {
-    if (open) {
-      setView(justPaid ? "login" : "upgrade");
-      setError("");
-      setUserEmail("");
-    }
-  }, [open, justPaid]);
+    if (!open) return;
+    if (justPaid)           setView("signin");
+    else if (!isLoggedIn)   setView("choose");
+    else if (!isPro)        setView("upgrade");
+    else                    onClose(); // already pro, nothing to show
+    setError("");
+  }, [open, justPaid, isLoggedIn, isPro]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  async function handleIdToken(idToken: string) {
+  async function handleToken(idToken: string) {
     setView("loading");
     setError("");
-
     try {
-      const res = await fetch("/api/auth/google", {
+      const res  = await fetch("/api/auth/google", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify({ idToken }),
       });
-
       const data: {
-        valid: boolean;
-        subscribed?: boolean;
-        token?: string;
-        emailHash?: string;
-        expires?: number;
-        name?: string;
-        email?: string;
-        error?: string;
+        loggedIn?: boolean; isPro?: boolean; token?: string;
+        emailHash?: string; expires?: number; name?: string; error?: string;
       } = await res.json();
 
-      if (data.valid && data.token && data.emailHash && data.expires) {
-        onActivate(data.token, data.emailHash, data.expires, data.name ?? "");
-        setView("success");
-      } else if (data.subscribed === false) {
-        setUserEmail(data.email ?? "");
-        setView("not-subscribed");
+      if (data.loggedIn && data.token && data.emailHash && data.expires) {
+        const user: AuthUser = {
+          name:         data.name ?? "User",
+          emailHash:    data.emailHash,
+          token:        data.token,
+          expires:      data.expires,
+          isPro:        data.isPro ?? false,
+          lastVerified: Date.now(),
+        };
+        onSignIn(user);
+        setView(data.isPro ? "success-pro" : "success-free");
       } else {
-        setError(data.error ?? "Something went wrong. Please try again.");
-        setView("login");
+        setError(data.error ?? "Sign-in failed. Please try again.");
+        setView(justPaid ? "signin" : "choose");
       }
     } catch {
       setError("Network error. Please check your connection.");
-      setView("login");
+      setView(justPaid ? "signin" : "choose");
     }
   }
 
   if (!open) return null;
-
   const busy = view === "loading";
 
   const heading =
-    view === "success"         ? "Pro Activated! 🎉" :
-    view === "loading"         ? "Verifying…"        :
-    view === "not-subscribed"  ? "No Active Plan"    :
-    justPaid                   ? "Payment Successful! 🎉" :
-                                 `Unlock Pro · ${SITE.stripe.priceLabel}`;
+    view === "success-pro"  ? "Pro Activated! 🎉" :
+    view === "success-free" ? "Welcome! 👋"       :
+    view === "loading"      ? "Signing in…"        :
+    view === "no-sub"       ? "No Active Plan"     :
+    view === "upgrade"      ? `Upgrade to Pro · ${SITE.stripe.priceLabel}` :
+    justPaid                ? "Payment Successful! 🎉" :
+                              "Sign in / Upgrade";
 
   return (
     <div
@@ -281,181 +218,200 @@ export default function ProModal({ open, onClose, onActivate, justPaid }: Props)
         className="relative w-full max-w-md rounded-3xl bg-white shadow-2xl overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
-        {/* ── Header ── */}
+        {/* Header */}
         <div style={{ background: "linear-gradient(135deg,#4f46e5,#7c3aed)", padding: "24px 28px 20px" }}>
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            style={{ position: "absolute", top: 16, right: 16, background: "none", border: "none", cursor: "pointer", padding: 4 }}
-          >
+          <button onClick={onClose} aria-label="Close" style={{ position:"absolute", top:16, right:16, background:"none", border:"none", cursor:"pointer", padding:4 }}>
             <X size={20} color="rgba(255,255,255,0.7)" />
           </button>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+          <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
             <Zap size={15} color="#fde68a" />
-            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" as const, color: "rgba(255,255,255,0.7)" }}>
-              PDF Bill Builder Pro
+            <span style={{ fontSize:11, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase" as const, color:"rgba(255,255,255,0.7)" }}>
+              PDF Bill Builder
             </span>
           </div>
-          <p style={{ fontSize: 22, fontWeight: 900, color: "white", letterSpacing: "-0.03em", lineHeight: 1.25, margin: 0 }}>
+          <p style={{ fontSize:22, fontWeight:900, color:"white", letterSpacing:"-0.03em", lineHeight:1.25, margin:0 }}>
             {heading}
           </p>
-          {view === "upgrade" && (
-            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", marginTop: 6 }}>
-              Cancel anytime · All devices · No ads
+          {view === "choose" && !justPaid && (
+            <p style={{ fontSize:13, color:"rgba(255,255,255,0.7)", marginTop:6 }}>
+              Free account for everyone · Pro for power users
             </p>
           )}
-          {view === "login" && justPaid && (
-            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", marginTop: 6 }}>
+          {justPaid && view === "signin" && (
+            <p style={{ fontSize:13, color:"rgba(255,255,255,0.8)", marginTop:6 }}>
               Sign in with the Google account you used to pay.
             </p>
           )}
         </div>
 
-        {/* ── Body ── */}
-        <div style={{ padding: "22px 28px 26px" }}>
+        {/* Body */}
+        <div style={{ padding:"22px 28px 26px" }}>
 
-          {/* UPGRADE */}
-          {view === "upgrade" && (
+          {/* ── CHOOSE ── */}
+          {view === "choose" && (
             <>
-              <ul style={{ listStyle: "none", margin: "0 0 20px", padding: 0, display: "flex", flexDirection: "column", gap: 10 }}>
-                {FEATURES.map(f => (
-                  <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                    <span style={{ width: 20, height: 20, borderRadius: "50%", background: "#ede9fe", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>
-                      <Check size={11} color="#7c3aed" strokeWidth={3} />
-                    </span>
-                    <span style={{ fontSize: 13.5, color: "#374151", fontWeight: 500 }}>{f}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <a
-                href={`${SITE.stripe.proLink}?checkout[redirect_url]=${encodeURIComponent("https://www.pdfbillbuilder.com/?pro=success")}`}
-                style={{
-                  display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  width: "100%", padding: "14px 20px", borderRadius: 14,
-                  background: "linear-gradient(135deg,#4f46e5,#7c3aed)",
-                  color: "white", fontSize: 15, fontWeight: 700,
-                  textDecoration: "none", boxShadow: "0 4px 16px rgba(79,70,229,0.35)",
-                }}
-              >
-                <Zap size={16} /> Get Pro — {SITE.stripe.priceLabel}
-              </a>
-
-              <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "14px 0 10px" }}>
-                <div style={{ flex: 1, height: 1, background: "#f0f3fa" }} />
-                <span style={{ fontSize: 12, color: "#94a3b8", fontWeight: 500 }}>Already subscribed?</span>
-                <div style={{ flex: 1, height: 1, background: "#f0f3fa" }} />
+              {/* Free tier */}
+              <div style={{ border:"1.5px solid #e4e9f2", borderRadius:14, padding:"14px 16px", marginBottom:12 }}>
+                <p style={{ fontSize:13, fontWeight:700, color:"#374151", marginBottom:8 }}>Free Account</p>
+                <ul style={{ listStyle:"none", margin:0, padding:0, display:"flex", flexDirection:"column", gap:7 }}>
+                  {FREE_FEATURES.map(f => (
+                    <li key={f} style={{ display:"flex", alignItems:"center", gap:8, fontSize:13, color:"#64748b" }}>
+                      <Check size={12} color="#10b981" strokeWidth={3} />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <div style={{ marginTop:12 }}>
+                  <GoogleBtn label="Continue with Google — Free" onToken={handleToken} disabled={busy} />
+                </div>
               </div>
 
-              <GoogleSignInBtn
-                label="Sign in with Google to activate"
-                onIdToken={handleIdToken}
-                disabled={busy}
-              />
-              <p style={{ textAlign: "center" as const, fontSize: 11.5, color: "#94a3b8", marginTop: 10 }}>
-                Secure checkout via Lemon Squeezy.
+              {/* Pro tier */}
+              <div style={{ border:"1.5px solid #c4b5fd", borderRadius:14, padding:"14px 16px", background:"#faf5ff" }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
+                  <p style={{ fontSize:13, fontWeight:700, color:"#7c3aed", margin:0 }}>
+                    <Crown size={13} style={{ display:"inline", marginRight:5 }} />
+                    Pro Account
+                  </p>
+                  <span style={{ fontSize:12, fontWeight:700, color:"#7c3aed", background:"#ede9fe", borderRadius:99, padding:"2px 8px" }}>
+                    {SITE.stripe.priceLabel}
+                  </span>
+                </div>
+                <ul style={{ listStyle:"none", margin:"0 0 12px", padding:0, display:"flex", flexDirection:"column", gap:7 }}>
+                  {PRO_FEATURES.slice(0,4).map(f => (
+                    <li key={f} style={{ display:"flex", alignItems:"center", gap:8, fontSize:13, color:"#374151" }}>
+                      <Check size={12} color="#7c3aed" strokeWidth={3} />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href={`${SITE.stripe.proLink}?checkout[redirect_url]=${encodeURIComponent("https://www.pdfbillbuilder.com/?pro=success")}`}
+                  style={{
+                    display:"flex", alignItems:"center", justifyContent:"center", gap:8,
+                    width:"100%", padding:"12px 20px", borderRadius:12,
+                    background:"linear-gradient(135deg,#4f46e5,#7c3aed)",
+                    color:"white", fontSize:14, fontWeight:700,
+                    textDecoration:"none", boxShadow:"0 4px 14px rgba(79,70,229,0.3)",
+                  }}
+                >
+                  <Zap size={15} /> Get Pro — {SITE.stripe.priceLabel}
+                </a>
+              </div>
+              <p style={{ textAlign:"center" as const, fontSize:11.5, color:"#94a3b8", marginTop:10 }}>
+                Already subscribed?{" "}
+                <button onClick={() => { setView("signin"); setError(""); }} style={{ background:"none", border:"none", color:"#7c3aed", fontSize:11.5, fontWeight:600, cursor:"pointer" }}>
+                  Sign in with Google →
+                </button>
               </p>
             </>
           )}
 
-          {/* LOGIN */}
-          {(view === "login" || view === "loading") && (
+          {/* ── UPGRADE (logged in, not pro) ── */}
+          {view === "upgrade" && (
+            <>
+              <ul style={{ listStyle:"none", margin:"0 0 18px", padding:0, display:"flex", flexDirection:"column", gap:10 }}>
+                {PRO_FEATURES.map(f => (
+                  <li key={f} style={{ display:"flex", alignItems:"flex-start", gap:10 }}>
+                    <span style={{ width:20, height:20, borderRadius:"50%", background:"#ede9fe", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:1 }}>
+                      <Check size={11} color="#7c3aed" strokeWidth={3} />
+                    </span>
+                    <span style={{ fontSize:13.5, color:"#374151", fontWeight:500 }}>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={`${SITE.stripe.proLink}?checkout[redirect_url]=${encodeURIComponent("https://www.pdfbillbuilder.com/?pro=success")}`}
+                style={{
+                  display:"flex", alignItems:"center", justifyContent:"center", gap:8,
+                  width:"100%", padding:"14px 20px", borderRadius:14,
+                  background:"linear-gradient(135deg,#4f46e5,#7c3aed)",
+                  color:"white", fontSize:15, fontWeight:700,
+                  textDecoration:"none", boxShadow:"0 4px 16px rgba(79,70,229,0.35)",
+                }}
+              >
+                <Zap size={16} /> Upgrade to Pro — {SITE.stripe.priceLabel}
+              </a>
+              <p style={{ textAlign:"center" as const, fontSize:11.5, color:"#94a3b8", marginTop:10 }}>
+                Already paid?{" "}
+                <button onClick={() => { setView("signin"); setError(""); }} style={{ background:"none", border:"none", color:"#7c3aed", fontSize:11.5, fontWeight:600, cursor:"pointer" }}>
+                  Sign in again →
+                </button>
+              </p>
+            </>
+          )}
+
+          {/* ── SIGN IN ── */}
+          {(view === "signin" || view === "loading") && (
             <>
               {justPaid && (
-                <div style={{ padding: "11px 14px", borderRadius: 10, background: "#f0fdf4", border: "1.5px solid #bbf7d0", marginBottom: 16 }}>
-                  <p style={{ fontSize: 13, color: "#15803d", fontWeight: 600, margin: 0 }}>
-                    ✅ Payment confirmed! Now sign in with Google to activate Pro.
+                <div style={{ padding:"11px 14px", borderRadius:10, background:"#f0fdf4", border:"1.5px solid #bbf7d0", marginBottom:16 }}>
+                  <p style={{ fontSize:13, color:"#15803d", fontWeight:600, margin:0 }}>
+                    ✅ Payment confirmed! Sign in to activate Pro.
                   </p>
                 </div>
               )}
               {error && (
-                <div style={{ display: "flex", gap: 8, padding: "10px 14px", borderRadius: 10, background: "#fef2f2", border: "1.5px solid #fecaca", marginBottom: 14 }}>
-                  <AlertCircle size={15} color="#ef4444" style={{ flexShrink: 0, marginTop: 1 }} />
-                  <p style={{ fontSize: 13, color: "#ef4444", margin: 0 }}>{error}</p>
+                <div style={{ display:"flex", gap:8, padding:"10px 14px", borderRadius:10, background:"#fef2f2", border:"1.5px solid #fecaca", marginBottom:14 }}>
+                  <AlertCircle size={15} color="#ef4444" style={{ flexShrink:0, marginTop:1 }} />
+                  <p style={{ fontSize:13, color:"#ef4444", margin:0 }}>{error}</p>
                 </div>
               )}
-              <p style={{ fontSize: 13.5, color: "#475569", lineHeight: 1.65, marginBottom: 18 }}>
-                Sign in with the Google account you used when purchasing Pro.
-                Your email is your unique ID — no passwords needed.
+              <p style={{ fontSize:13.5, color:"#475569", lineHeight:1.65, marginBottom:18 }}>
+                Sign in with the Google account you used when subscribing.
               </p>
-              <GoogleSignInBtn
-                label={busy ? "Verifying…" : "Continue with Google"}
-                onIdToken={handleIdToken}
-                disabled={busy}
-              />
+              <GoogleBtn label={busy ? "Signing in…" : "Continue with Google"} onToken={handleToken} disabled={busy} />
               {busy && (
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 14, color: "#94a3b8", fontSize: 13 }}>
-                  <svg style={{ animation: "spin .8s linear infinite", width: 16, height: 16 }} fill="none" viewBox="0 0 24 24">
-                    <circle style={{ opacity: .25 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                    <path style={{ opacity: .8 }} fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8, marginTop:14, color:"#94a3b8", fontSize:13 }}>
+                  <svg style={{ animation:"spin .8s linear infinite", width:16, height:16 }} fill="none" viewBox="0 0 24 24">
+                    <circle style={{ opacity:.25 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                    <path style={{ opacity:.8 }} fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
                   </svg>
                   Checking subscription…
                 </div>
               )}
-              {!justPaid && !busy && (
-                <button
-                  onClick={() => { setView("upgrade"); setError(""); }}
-                  style={{ display: "block", width: "100%", marginTop: 12, padding: 10, background: "none", border: "none", color: "#94a3b8", fontSize: 13, cursor: "pointer", textAlign: "center" as const }}
-                >
+              {!busy && !justPaid && (
+                <button onClick={() => { setView("choose"); setError(""); }} style={{ display:"block", width:"100%", marginTop:10, padding:10, background:"none", border:"none", color:"#94a3b8", fontSize:13, cursor:"pointer", textAlign:"center" as const }}>
                   ← Back
                 </button>
               )}
             </>
           )}
 
-          {/* NOT SUBSCRIBED */}
-          {view === "not-subscribed" && (
-            <>
-              <div style={{ padding: "12px 14px", borderRadius: 10, background: "#fff7ed", border: "1.5px solid #fed7aa", marginBottom: 16 }}>
-                <p style={{ fontSize: 13, color: "#c2410c", fontWeight: 600, margin: 0 }}>
-                  No active Pro subscription found{userEmail ? ` for ${userEmail}` : ""}.
+          {/* ── SUCCESS FREE ── */}
+          {view === "success-free" && (
+            <div style={{ textAlign:"center" as const }}>
+              <div style={{ fontSize:48, marginBottom:12 }}>👋</div>
+              <p style={{ fontSize:16, fontWeight:800, color:"#0d1117", marginBottom:8 }}>You&apos;re signed in!</p>
+              <p style={{ fontSize:13.5, color:"#64748b", lineHeight:1.7, marginBottom:8 }}>
+                Your last 5 invoices will be saved to your dashboard.
+              </p>
+              <div style={{ padding:"10px 14px", borderRadius:10, background:"#faf5ff", border:"1.5px solid #c4b5fd", marginBottom:20 }}>
+                <p style={{ fontSize:13, color:"#7c3aed", fontWeight:600, margin:0 }}>
+                  <Crown size={13} style={{ display:"inline", marginRight:4 }} />
+                  Upgrade to Pro for unlimited history, no ads & no watermark — {SITE.stripe.priceLabel}
                 </p>
               </div>
-              <p style={{ fontSize: 13.5, color: "#475569", lineHeight: 1.65, marginBottom: 18 }}>
-                Make sure you sign in with the same Google account you used to purchase.
-                If you just paid, please wait 1–2 minutes and try again.
-              </p>
-              <a
-                href={`${SITE.stripe.proLink}?checkout[redirect_url]=${encodeURIComponent("https://www.pdfbillbuilder.com/?pro=success")}`}
-                style={{
-                  display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  width: "100%", padding: "13px 20px", borderRadius: 12,
-                  background: "linear-gradient(135deg,#4f46e5,#7c3aed)",
-                  color: "white", fontSize: 14, fontWeight: 700,
-                  textDecoration: "none", boxShadow: "0 4px 16px rgba(79,70,229,0.3)",
-                }}
-              >
-                <Zap size={15} /> Subscribe Now — {SITE.stripe.priceLabel}
-              </a>
-              <button
-                onClick={() => { setView("login"); setError(""); }}
-                style={{ display: "block", width: "100%", marginTop: 10, padding: 10, background: "none", border: "none", color: "#94a3b8", fontSize: 13, cursor: "pointer", textAlign: "center" as const }}
-              >
-                Try a different account
-              </button>
-            </>
+              <div style={{ display:"flex", gap:10 }}>
+                <button onClick={onClose} style={{ flex:1, padding:"11px", borderRadius:12, border:"1.5px solid #e4e9f2", background:"white", color:"#374151", fontSize:14, fontWeight:600, cursor:"pointer" }}>
+                  Continue
+                </button>
+                <button onClick={() => setView("upgrade")} style={{ flex:1, padding:"11px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#4f46e5,#7c3aed)", color:"white", fontSize:14, fontWeight:600, cursor:"pointer" }}>
+                  Upgrade →
+                </button>
+              </div>
+            </div>
           )}
 
-          {/* SUCCESS */}
-          {view === "success" && (
-            <div style={{ textAlign: "center" as const, padding: "4px 0 2px" }}>
-              <div style={{ fontSize: 52, marginBottom: 14 }}>🎉</div>
-              <p style={{ fontSize: 16, fontWeight: 800, color: "#0d1117", marginBottom: 8, letterSpacing: "-0.02em" }}>
-                Pro is now active!
+          {/* ── SUCCESS PRO ── */}
+          {view === "success-pro" && (
+            <div style={{ textAlign:"center" as const }}>
+              <div style={{ fontSize:52, marginBottom:14 }}>🎉</div>
+              <p style={{ fontSize:16, fontWeight:800, color:"#0d1117", marginBottom:8 }}>Pro is Active!</p>
+              <p style={{ fontSize:13.5, color:"#64748b", lineHeight:1.7, marginBottom:22 }}>
+                Watermark removed · Ads disabled · 12 premium colours unlocked · Unlimited dashboard history
               </p>
-              <p style={{ fontSize: 13.5, color: "#64748b", lineHeight: 1.7, marginBottom: 22 }}>
-                Watermark removed. Ads disabled. 12 premium colours unlocked.<br />
-                Sign in with Google any time to restore Pro on a new device.
-              </p>
-              <button
-                onClick={onClose}
-                style={{
-                  padding: "12px 36px", borderRadius: 12, border: "none",
-                  background: "linear-gradient(135deg,#4f46e5,#7c3aed)",
-                  color: "white", fontSize: 14, fontWeight: 700, cursor: "pointer",
-                  boxShadow: "0 4px 16px rgba(79,70,229,0.3)",
-                }}
-              >
+              <button onClick={onClose} style={{ padding:"12px 36px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#4f46e5,#7c3aed)", color:"white", fontSize:14, fontWeight:700, cursor:"pointer", boxShadow:"0 4px 16px rgba(79,70,229,0.3)" }}>
                 Start Using Pro ✓
               </button>
             </div>

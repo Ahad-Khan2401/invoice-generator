@@ -5,7 +5,7 @@ import {
   FileText, Receipt, ClipboardList, Tag, Percent,
 } from "lucide-react";
 import DownloadAdModal from "@/components/DownloadAdModal";
-import ProModal, { useProStatus } from "@/components/ProModal";
+import ProModal, { useAuth } from "@/components/ProModal";
 import { SITE } from "@/lib/config";
 
 /* ─── Types ──────────────────────────────────────── */
@@ -123,15 +123,18 @@ export default function InvoiceGenerator({
   });
   const [proModalOpen,   setProModalOpen]   = useState(false);
   const [paymentTrigger, setPaymentTrigger] = useState(false);
-  const { isPro, isLoaded, justPaid, activate } = useProStatus();
+  const { user, isLoggedIn, isPro, isLoaded, justPaid, signIn } = useAuth();
 
-  // Auto-open Pro modal after Lemon Squeezy payment redirect
+  // Auto-open modal after payment redirect or "pdfbb:openSignIn" event
   useEffect(() => {
-    if (justPaid) {
-      setPaymentTrigger(true);
-      setProModalOpen(true);
-    }
+    if (justPaid) { setPaymentTrigger(true); setProModalOpen(true); }
   }, [justPaid]);
+
+  useEffect(() => {
+    const handler = () => setProModalOpen(true);
+    window.addEventListener("pdfbb:openSignIn", handler);
+    return () => window.removeEventListener("pdfbb:openSignIn", handler);
+  }, []);
 
   const previewRef = useRef<HTMLDivElement>(null);
   const wrapRef    = useRef<HTMLDivElement>(null);
@@ -266,6 +269,22 @@ export default function InvoiceGenerator({
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 2000);
       downloadOk = true;
+
+      // Auto-save to dashboard (signed-in users only — fire-and-forget)
+      if (user?.token) {
+        fetch("/api/invoices", {
+          method:  "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${user.token}` },
+          body: JSON.stringify({
+            invoice_no:  meta.no,
+            doc_type:    docType,
+            client_name: to.name,
+            total,
+            currency: cur.l,
+            data: { from, to, meta, items, tax, taxType, discount, discType, docType, status, cur, color },
+          }),
+        }).catch(() => {}); // silent — dashboard is a convenience, not critical
+      }
     } catch (e) {
       console.error("PDF generation failed:", e);
     } finally {
@@ -768,7 +787,9 @@ export default function InvoiceGenerator({
                 }}
                   onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#ede9fe";}}
                   onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="#f5f3ff";}}>
-                  ✦ Go Pro — Remove watermark &amp; unlock premium colours · {SITE.stripe.priceLabel}
+                  {isLoggedIn
+                    ? `✦ Upgrade to Pro — Remove watermark & ads · ${SITE.stripe.priceLabel}`
+                    : "✦ Sign In — Save invoices to dashboard (free)"}
                 </button>
               )}
             </div>
@@ -1000,8 +1021,10 @@ export default function InvoiceGenerator({
       <ProModal
         open={proModalOpen}
         justPaid={paymentTrigger}
+        isLoggedIn={isLoggedIn}
+        isPro={isPro}
         onClose={() => { setProModalOpen(false); setPaymentTrigger(false); }}
-        onActivate={(token, emailHash, expires, name) => activate(token, emailHash, expires, name)}
+        onSignIn={signIn}
       />
 
       {/* Ad shown after Download / Print (user-initiated, non-gating) */}
