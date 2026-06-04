@@ -1,19 +1,21 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { X, Zap, Check, Key, AlertCircle } from "lucide-react";
+import { useGoogleLogin } from "@react-oauth/google";
+import { X, Zap, Check, AlertCircle, LogIn } from "lucide-react";
 import { SITE } from "@/lib/config";
 
 /* ══════════════════════════════════════════════════
-   STORAGE
+   STORAGE — keeps Pro active across page loads
 ══════════════════════════════════════════════════ */
-const STORE_KEY    = "pdfbb_pro_v2";
-const VERIFY_EVERY = 7 * 24 * 60 * 60 * 1000; // 7 days
+const STORE_KEY    = "pdfbb_pro_v3";
+const VERIFY_EVERY = 7 * 24 * 60 * 60 * 1000; // re-verify every 7 days
 
 interface ProData {
   token:        string;
-  keyHash:      string;
+  emailHash:    string;
   expires:      number;
   lastVerified: number;
+  name:         string; // display name e.g. "Ali Khan"
 }
 
 function readPro(): ProData | null {
@@ -21,19 +23,26 @@ function readPro(): ProData | null {
     const raw = localStorage.getItem(STORE_KEY);
     if (!raw) return null;
     const d = JSON.parse(raw) as ProData;
-    if (!d.token || !d.keyHash || !d.expires || !d.lastVerified) return null;
+    if (!d.token || !d.emailHash || !d.expires) return null;
     return d;
   } catch { return null; }
 }
 
 function savePro(d: ProData): void {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(d)); } catch {}
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify(d));
+    // clean up old keys
+    ["pdfbb_pro_v2", "pdfbb_pro_until"].forEach(k => {
+      try { localStorage.removeItem(k); } catch {}
+    });
+  } catch {}
 }
 
 function clearPro(): void {
   try {
-    localStorage.removeItem(STORE_KEY);
-    localStorage.removeItem("pdfbb_pro_until"); // remove legacy v1
+    ["pdfbb_pro_v3", "pdfbb_pro_v2", "pdfbb_pro_until"].forEach(k => {
+      try { localStorage.removeItem(k); } catch {}
+    });
   } catch {}
 }
 
@@ -41,15 +50,14 @@ function clearPro(): void {
    HOOK — useProStatus
 ══════════════════════════════════════════════════ */
 export function useProStatus() {
-  const [isPro,         setIsPro]         = useState(false);
-  const [isLoaded,      setIsLoaded]      = useState(false);
-  const [justPaid,      setJustPaid]      = useState(false);
+  const [isPro,     setIsPro]     = useState(false);
+  const [isLoaded,  setIsLoaded]  = useState(false);
+  const [proName,   setProName]   = useState("");
+  const [justPaid,  setJustPaid]  = useState(false);
 
-  /** Re-check stored token (called on mount + after activation) */
   const refresh = useCallback(async () => {
     const d = readPro();
 
-    // No data or expired → not pro
     if (!d || Date.now() > d.expires) {
       clearPro();
       setIsPro(false);
@@ -57,11 +65,11 @@ export function useProStatus() {
       return;
     }
 
-    // Expiry OK → mark as pro immediately (fast, no network)
     setIsPro(true);
+    setProName(d.name || "");
     setIsLoaded(true);
 
-    // Background re-verify with server every 7 days
+    // Background re-verify every 7 days
     if (Date.now() - d.lastVerified > VERIFY_EVERY) {
       try {
         const res  = await fetch("/api/verify", {
@@ -70,21 +78,20 @@ export function useProStatus() {
           body:    JSON.stringify({ token: d.token }),
         });
         const json: { valid: boolean } = await res.json();
-
         if (!json.valid) {
           clearPro();
           setIsPro(false);
+          setProName("");
         } else {
           savePro({ ...d, lastVerified: Date.now() });
         }
       } catch {
-        // Network error — keep pro (benefit of doubt)
+        // Network error — keep Pro (benefit of doubt)
       }
     }
   }, []);
 
   useEffect(() => {
-    // Handle ?pro=success redirect from Lemon Squeezy
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       if (params.get("pro") === "success") {
@@ -95,14 +102,23 @@ export function useProStatus() {
     refresh();
   }, [refresh]);
 
-  /** Call this after successful key activation */
-  const activate = useCallback((token: string, keyHash: string, expires: number) => {
-    savePro({ token, keyHash, expires, lastVerified: Date.now() });
-    setIsPro(true);
-    setJustPaid(false);
+  const activate = useCallback(
+    (token: string, emailHash: string, expires: number, name: string) => {
+      savePro({ token, emailHash, expires, name, lastVerified: Date.now() });
+      setIsPro(true);
+      setProName(name);
+      setJustPaid(false);
+    },
+    []
+  );
+
+  const deactivate = useCallback(() => {
+    clearPro();
+    setIsPro(false);
+    setProName("");
   }, []);
 
-  return { isPro, isLoaded, justPaid, activate };
+  return { isPro, isLoaded, proName, justPaid, activate, deactivate };
 }
 
 /* ══════════════════════════════════════════════════
@@ -110,82 +126,150 @@ export function useProStatus() {
 ══════════════════════════════════════════════════ */
 const FEATURES = [
   'Remove "Generated by pdfbillbuilder.com" footer',
+  "Zero ads — no ad modal on download or print",
   "12 premium accent colour themes",
-  "White-label — zero branding on your PDFs",
-  "Use on up to 5 devices with one key",
-  "All future Pro features included",
+  "White-label PDF — zero branding",
+  "Works on all your devices (just sign in)",
 ];
 
 /* ══════════════════════════════════════════════════
    TYPES
 ══════════════════════════════════════════════════ */
-type View = "upgrade" | "activate" | "loading" | "success";
+type View = "upgrade" | "login" | "loading" | "success" | "not-subscribed";
 
 interface Props {
-  open:            boolean;
-  onClose:         () => void;
-  onActivate:      (token: string, keyHash: string, expires: number) => void;
-  justPaid?:       boolean;
+  open:       boolean;
+  onClose:    () => void;
+  onActivate: (token: string, emailHash: string, expires: number, name: string) => void;
+  justPaid?:  boolean;
 }
 
 /* ══════════════════════════════════════════════════
-   COMPONENT
+   GOOGLE BUTTON — extracted so it can use the hook
+══════════════════════════════════════════════════ */
+function GoogleSignInBtn({
+  label,
+  onIdToken,
+  disabled,
+}: {
+  label: string;
+  onIdToken: (idToken: string) => void;
+  disabled: boolean;
+}) {
+  const login = useGoogleLogin({
+    flow:    "implicit",
+    onSuccess: async (tokenRes) => {
+      // exchange access token for ID token via userinfo
+      try {
+        const r = await fetch(
+          "https://www.googleapis.com/oauth2/v3/userinfo",
+          { headers: { Authorization: `Bearer ${tokenRes.access_token}` } }
+        );
+        const info = await r.json();
+        // We send the access token to our server which will verify via tokeninfo
+        // But we actually need the ID token — use the credential flow instead.
+        // For now pass the sub + email in a custom way; the server will re-verify.
+        // NOTE: useGoogleLogin implicit flow returns access_token, not id_token.
+        // We work around this by sending the access_token and verifying via userinfo server-side.
+        onIdToken(`access:${tokenRes.access_token}`);
+      } catch {
+        onIdToken(`access:${tokenRes.access_token}`);
+      }
+    },
+    onError: () => {},
+  });
+
+  return (
+    <button
+      onClick={() => !disabled && login()}
+      disabled={disabled}
+      style={{
+        display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+        width: "100%", padding: "13px 20px", borderRadius: 12,
+        border: "1.5px solid #e4e9f2", background: disabled ? "#f8fafc" : "white",
+        cursor: disabled ? "not-allowed" : "pointer",
+        fontSize: 14, fontWeight: 600, color: "#374151",
+        boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+        transition: "all .15s",
+      }}
+    >
+      {/* Google logo SVG */}
+      <svg width="18" height="18" viewBox="0 0 48 48" fill="none">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+      </svg>
+      {label}
+    </button>
+  );
+}
+
+/* ══════════════════════════════════════════════════
+   MAIN COMPONENT
 ══════════════════════════════════════════════════ */
 export default function ProModal({ open, onClose, onActivate, justPaid }: Props) {
-  const [view,  setView]  = useState<View>("upgrade");
-  const [key,   setKey]   = useState("");
-  const [error, setError] = useState("");
+  const [view,      setView]      = useState<View>("upgrade");
+  const [error,     setError]     = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
-  // Reset state on open
+  // Reset on open
   useEffect(() => {
     if (open) {
-      setView(justPaid ? "activate" : "upgrade");
-      setKey("");
+      setView(justPaid ? "login" : "upgrade");
       setError("");
+      setUserEmail("");
     }
   }, [open, justPaid]);
 
-  async function handleActivate() {
-    const trimmed = key.trim();
-
-    // Client-side format check (UUID pattern)
-    if (!trimmed) {
-      setError("Please enter your license key.");
-      return;
-    }
-    const uuidRe = /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i;
-    if (!uuidRe.test(trimmed)) {
-      setError("Invalid format. Your key looks like: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX");
-      return;
-    }
-
+  async function handleIdToken(idToken: string) {
     setView("loading");
     setError("");
 
     try {
-      const res = await fetch("/api/activate", {
+      const res = await fetch("/api/auth/google", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({ key: trimmed }),
+        body:    JSON.stringify({ idToken }),
       });
-      const data: { valid: boolean; token?: string; keyHash?: string; expires?: number; error?: string } = await res.json();
 
-      if (data.valid && data.token && data.keyHash && data.expires) {
-        onActivate(data.token, data.keyHash, data.expires);
+      const data: {
+        valid: boolean;
+        subscribed?: boolean;
+        token?: string;
+        emailHash?: string;
+        expires?: number;
+        name?: string;
+        email?: string;
+        error?: string;
+      } = await res.json();
+
+      if (data.valid && data.token && data.emailHash && data.expires) {
+        onActivate(data.token, data.emailHash, data.expires, data.name ?? "");
         setView("success");
+      } else if (data.subscribed === false) {
+        setUserEmail(data.email ?? "");
+        setView("not-subscribed");
       } else {
-        setError(data.error ?? "Activation failed. Please try again.");
-        setView("activate");
+        setError(data.error ?? "Something went wrong. Please try again.");
+        setView("login");
       }
     } catch {
-      setError("Network error. Please check your connection and try again.");
-      setView("activate");
+      setError("Network error. Please check your connection.");
+      setView("login");
     }
   }
 
   if (!open) return null;
 
   const busy = view === "loading";
+
+  const heading =
+    view === "success"         ? "Pro Activated! 🎉" :
+    view === "loading"         ? "Verifying…"        :
+    view === "not-subscribed"  ? "No Active Plan"    :
+    justPaid                   ? "Payment Successful! 🎉" :
+                                 `Unlock Pro · ${SITE.stripe.priceLabel}`;
 
   return (
     <div
@@ -202,33 +286,27 @@ export default function ProModal({ open, onClose, onActivate, justPaid }: Props)
           <button
             onClick={onClose}
             aria-label="Close"
-            style={{ position: "absolute", top: 16, right: 16, background: "none", border: "none", cursor: "pointer", color: "rgba(255,255,255,0.7)", lineHeight: 1 }}
+            style={{ position: "absolute", top: 16, right: 16, background: "none", border: "none", cursor: "pointer", padding: 4 }}
           >
-            <X size={20} />
+            <X size={20} color="rgba(255,255,255,0.7)" />
           </button>
-
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
             <Zap size={15} color="#fde68a" />
             <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" as const, color: "rgba(255,255,255,0.7)" }}>
               PDF Bill Builder Pro
             </span>
           </div>
-
           <p style={{ fontSize: 22, fontWeight: 900, color: "white", letterSpacing: "-0.03em", lineHeight: 1.25, margin: 0 }}>
-            {view === "success"  ? "Pro Activated! 🎉"
-            : view === "loading" ? "Verifying…"
-            : justPaid           ? "Payment Successful! 🎉"
-            :                      `Unlock Pro · ${SITE.stripe.priceLabel}`}
+            {heading}
           </p>
-
           {view === "upgrade" && (
             <p style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", marginTop: 6 }}>
-              Cancel anytime · Instant access · 5 devices
+              Cancel anytime · All devices · No ads
             </p>
           )}
-          {(view === "activate" || view === "loading") && justPaid && (
+          {view === "login" && justPaid && (
             <p style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", marginTop: 6 }}>
-              Check your email for the license key and paste it below.
+              Sign in with the Google account you used to pay.
             </p>
           )}
         </div>
@@ -236,10 +314,10 @@ export default function ProModal({ open, onClose, onActivate, justPaid }: Props)
         {/* ── Body ── */}
         <div style={{ padding: "22px 28px 26px" }}>
 
-          {/* UPGRADE VIEW */}
+          {/* UPGRADE */}
           {view === "upgrade" && (
             <>
-              <ul style={{ listStyle: "none", margin: "0 0 20px", padding: 0, display: "flex", flexDirection: "column", gap: 11 }}>
+              <ul style={{ listStyle: "none", margin: "0 0 20px", padding: 0, display: "flex", flexDirection: "column", gap: 10 }}>
                 {FEATURES.map(f => (
                   <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
                     <span style={{ width: 20, height: 20, borderRadius: "50%", background: "#ede9fe", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>
@@ -260,106 +338,64 @@ export default function ProModal({ open, onClose, onActivate, justPaid }: Props)
                   textDecoration: "none", boxShadow: "0 4px 16px rgba(79,70,229,0.35)",
                 }}
               >
-                <Zap size={16} /> Upgrade to Pro — {SITE.stripe.priceLabel}
+                <Zap size={16} /> Get Pro — {SITE.stripe.priceLabel}
               </a>
 
-              <button
-                onClick={() => { setView("activate"); setError(""); }}
-                style={{
-                  display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-                  width: "100%", marginTop: 10, padding: "10px 16px", borderRadius: 12,
-                  border: "1.5px solid #e4e9f2", background: "white",
-                  color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer",
-                }}
-              >
-                <Key size={13} /> I already have a license key
-              </button>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "14px 0 10px" }}>
+                <div style={{ flex: 1, height: 1, background: "#f0f3fa" }} />
+                <span style={{ fontSize: 12, color: "#94a3b8", fontWeight: 500 }}>Already subscribed?</span>
+                <div style={{ flex: 1, height: 1, background: "#f0f3fa" }} />
+              </div>
 
-              <p style={{ textAlign: "center", fontSize: 11.5, color: "#94a3b8", marginTop: 12 }}>
-                Secure checkout via Lemon Squeezy. Cancel anytime.
+              <GoogleSignInBtn
+                label="Sign in with Google to activate"
+                onIdToken={handleIdToken}
+                disabled={busy}
+              />
+              <p style={{ textAlign: "center" as const, fontSize: 11.5, color: "#94a3b8", marginTop: 10 }}>
+                Secure checkout via Lemon Squeezy.
               </p>
             </>
           )}
 
-          {/* ACTIVATE VIEW */}
-          {(view === "activate" || view === "loading") && (
+          {/* LOGIN */}
+          {(view === "login" || view === "loading") && (
             <>
-              {/* Payment success banner */}
               {justPaid && (
                 <div style={{ padding: "11px 14px", borderRadius: 10, background: "#f0fdf4", border: "1.5px solid #bbf7d0", marginBottom: 16 }}>
                   <p style={{ fontSize: 13, color: "#15803d", fontWeight: 600, margin: 0 }}>
-                    ✅ Payment confirmed! Lemon Squeezy has sent your license key to your email.
+                    ✅ Payment confirmed! Now sign in with Google to activate Pro.
                   </p>
                 </div>
               )}
-
-              <label style={{ display: "block", fontSize: 11.5, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase" as const, color: "#64748b", marginBottom: 8 }}>
-                License Key
-              </label>
-              <input
-                type="text"
-                value={key}
-                onChange={e => { setKey(e.target.value); setError(""); }}
-                onKeyDown={e => e.key === "Enter" && !busy && handleActivate()}
-                placeholder="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
-                disabled={busy}
-                autoFocus
-                style={{
-                  width: "100%", padding: "11px 14px", fontSize: 13,
-                  fontFamily: "monospace", letterSpacing: "0.05em",
-                  border: `1.5px solid ${error ? "#fca5a5" : "#e4e9f2"}`,
-                  borderRadius: 10, background: busy ? "#f8fafc" : "white",
-                  color: "#0d1117", outline: "none", boxSizing: "border-box" as const,
-                  transition: "border-color .15s",
-                }}
-              />
-
-              {/* Error message */}
               {error && (
-                <div style={{ display: "flex", alignItems: "flex-start", gap: 6, marginTop: 8 }}>
-                  <AlertCircle size={14} color="#ef4444" style={{ flexShrink: 0, marginTop: 1 }} />
-                  <p style={{ fontSize: 12.5, color: "#ef4444", margin: 0, lineHeight: 1.5 }}>{error}</p>
+                <div style={{ display: "flex", gap: 8, padding: "10px 14px", borderRadius: 10, background: "#fef2f2", border: "1.5px solid #fecaca", marginBottom: 14 }}>
+                  <AlertCircle size={15} color="#ef4444" style={{ flexShrink: 0, marginTop: 1 }} />
+                  <p style={{ fontSize: 13, color: "#ef4444", margin: 0 }}>{error}</p>
                 </div>
               )}
-
-              <p style={{ fontSize: 12, color: "#94a3b8", margin: "8px 0 18px", lineHeight: 1.5 }}>
-                Your license key was emailed to you by Lemon Squeezy right after purchase.
+              <p style={{ fontSize: 13.5, color: "#475569", lineHeight: 1.65, marginBottom: 18 }}>
+                Sign in with the Google account you used when purchasing Pro.
+                Your email is your unique ID — no passwords needed.
               </p>
-
-              <button
-                onClick={handleActivate}
+              <GoogleSignInBtn
+                label={busy ? "Verifying…" : "Continue with Google"}
+                onIdToken={handleIdToken}
                 disabled={busy}
-                style={{
-                  display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  width: "100%", padding: "13px 20px", borderRadius: 12, border: "none",
-                  background: busy ? "#94a3b8" : "linear-gradient(135deg,#4f46e5,#7c3aed)",
-                  color: "white", fontSize: 14, fontWeight: 700,
-                  cursor: busy ? "not-allowed" : "pointer",
-                  boxShadow: busy ? "none" : "0 4px 16px rgba(79,70,229,0.35)",
-                  transition: "all .2s",
-                }}
-              >
-                {busy ? (
-                  <>
-                    <svg style={{ animation: "spin .8s linear infinite", width: 16, height: 16 }} fill="none" viewBox="0 0 24 24">
-                      <circle style={{ opacity: .25 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                      <path style={{ opacity: .8 }} fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
-                    </svg>
-                    Verifying…
-                  </>
-                ) : (
-                  <><Key size={15} /> Activate Pro</>
-                )}
-              </button>
-
-              {!justPaid && (
+              />
+              {busy && (
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 14, color: "#94a3b8", fontSize: 13 }}>
+                  <svg style={{ animation: "spin .8s linear infinite", width: 16, height: 16 }} fill="none" viewBox="0 0 24 24">
+                    <circle style={{ opacity: .25 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                    <path style={{ opacity: .8 }} fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                  </svg>
+                  Checking subscription…
+                </div>
+              )}
+              {!justPaid && !busy && (
                 <button
-                  onClick={() => { setView("upgrade"); setError(""); setKey(""); }}
-                  style={{
-                    display: "block", width: "100%", marginTop: 10, padding: "10px",
-                    background: "none", border: "none", color: "#94a3b8",
-                    fontSize: 13, cursor: "pointer", textAlign: "center" as const,
-                  }}
+                  onClick={() => { setView("upgrade"); setError(""); }}
+                  style={{ display: "block", width: "100%", marginTop: 12, padding: 10, background: "none", border: "none", color: "#94a3b8", fontSize: 13, cursor: "pointer", textAlign: "center" as const }}
                 >
                   ← Back
                 </button>
@@ -367,7 +403,40 @@ export default function ProModal({ open, onClose, onActivate, justPaid }: Props)
             </>
           )}
 
-          {/* SUCCESS VIEW */}
+          {/* NOT SUBSCRIBED */}
+          {view === "not-subscribed" && (
+            <>
+              <div style={{ padding: "12px 14px", borderRadius: 10, background: "#fff7ed", border: "1.5px solid #fed7aa", marginBottom: 16 }}>
+                <p style={{ fontSize: 13, color: "#c2410c", fontWeight: 600, margin: 0 }}>
+                  No active Pro subscription found{userEmail ? ` for ${userEmail}` : ""}.
+                </p>
+              </div>
+              <p style={{ fontSize: 13.5, color: "#475569", lineHeight: 1.65, marginBottom: 18 }}>
+                Make sure you sign in with the same Google account you used to purchase.
+                If you just paid, please wait 1–2 minutes and try again.
+              </p>
+              <a
+                href={`${SITE.stripe.proLink}?checkout[redirect_url]=${encodeURIComponent("https://www.pdfbillbuilder.com/?pro=success")}`}
+                style={{
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                  width: "100%", padding: "13px 20px", borderRadius: 12,
+                  background: "linear-gradient(135deg,#4f46e5,#7c3aed)",
+                  color: "white", fontSize: 14, fontWeight: 700,
+                  textDecoration: "none", boxShadow: "0 4px 16px rgba(79,70,229,0.3)",
+                }}
+              >
+                <Zap size={15} /> Subscribe Now — {SITE.stripe.priceLabel}
+              </a>
+              <button
+                onClick={() => { setView("login"); setError(""); }}
+                style={{ display: "block", width: "100%", marginTop: 10, padding: 10, background: "none", border: "none", color: "#94a3b8", fontSize: 13, cursor: "pointer", textAlign: "center" as const }}
+              >
+                Try a different account
+              </button>
+            </>
+          )}
+
+          {/* SUCCESS */}
           {view === "success" && (
             <div style={{ textAlign: "center" as const, padding: "4px 0 2px" }}>
               <div style={{ fontSize: 52, marginBottom: 14 }}>🎉</div>
@@ -375,8 +444,8 @@ export default function ProModal({ open, onClose, onActivate, justPaid }: Props)
                 Pro is now active!
               </p>
               <p style={{ fontSize: 13.5, color: "#64748b", lineHeight: 1.7, marginBottom: 22 }}>
-                Watermark removed. 12 premium colour themes unlocked.<br />
-                Enjoy white-label, professional PDFs!
+                Watermark removed. Ads disabled. 12 premium colours unlocked.<br />
+                Sign in with Google any time to restore Pro on a new device.
               </p>
               <button
                 onClick={onClose}

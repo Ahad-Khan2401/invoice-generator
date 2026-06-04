@@ -123,9 +123,9 @@ export default function InvoiceGenerator({
   });
   const [proModalOpen,   setProModalOpen]   = useState(false);
   const [paymentTrigger, setPaymentTrigger] = useState(false);
-  const { isPro, justPaid, activate }       = useProStatus();
+  const { isPro, isLoaded, justPaid, activate } = useProStatus();
 
-  // Auto-open modal when returning from Lemon Squeezy payment
+  // Auto-open Pro modal after Lemon Squeezy payment redirect
   useEffect(() => {
     if (justPaid) {
       setPaymentTrigger(true);
@@ -290,12 +290,14 @@ export default function InvoiceGenerator({
   /* ── User-initiated actions: open the ad modal, then run the action.
         The download/print ALWAYS proceeds — it is never gated by the ad. ── */
   function startDownload() {
+    // Pro users skip the ad modal entirely
+    if (isPro) { downloadPDF(); return; }
     setAdModal({ open: true, status: "working", action: "download" });
     downloadPDF();
   }
   function startPrint() {
+    if (isPro) { setTimeout(() => window.print(), 50); return; }
     setAdModal({ open: true, status: "working", action: "print" });
-    // Let the modal + ad paint before the blocking print dialog appears.
     setTimeout(() => {
       window.print();
       setAdModal(m => m.open ? { ...m, status: "done" } : m);
@@ -999,7 +1001,7 @@ export default function InvoiceGenerator({
         open={proModalOpen}
         justPaid={paymentTrigger}
         onClose={() => { setProModalOpen(false); setPaymentTrigger(false); }}
-        onActivate={(token, keyHash, expires) => { activate(token, keyHash, expires); }}
+        onActivate={(token, emailHash, expires, name) => activate(token, emailHash, expires, name)}
       />
 
       {/* Ad shown after Download / Print (user-initiated, non-gating) */}

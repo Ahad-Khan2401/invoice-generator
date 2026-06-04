@@ -8,6 +8,7 @@ import Analytics from "@/components/Analytics";
 import JsonLd from "@/components/JsonLd";
 import { organizationSchema, websiteSchema } from "@/lib/schema";
 import { SITE } from "@/lib/config";
+import GoogleProvider from "@/components/GoogleProvider";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
@@ -61,6 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${inter.className} min-h-screen flex flex-col bg-[#f5f7ff] text-slate-900 antialiased`}>
+        <GoogleProvider>
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
@@ -82,6 +84,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsenseClient}`}
           />
         )}
+        </GoogleProvider>
       </body>
     </html>
   );
