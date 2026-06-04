@@ -2,112 +2,118 @@
  * GET  /api/invoices  — list invoices for the authenticated user
  * POST /api/invoices  — save a new invoice
  *
- * Auth: Bearer token in Authorization header (our HMAC token).
- * Free users: returns last 5 invoices.
- * Pro  users: returns all invoices.
+ * Auth : Bearer {our HMAC token} in Authorization header
+ * Free : last 5 invoices (oldest deleted when full)
+ * Pro  : unlimited
  */
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/lib/pro-token";
-import { getSupabase } from "@/lib/supabase-server";
+import { getDb, isDbReady } from "@/lib/db";
 
-const NO_CACHE = { "Cache-Control": "no-store" };
+const NO_CACHE   = { "Cache-Control": "no-store" };
 const FREE_LIMIT = 5;
 
-/* ─── Auth helper ─────────────────────────────────── */
-function getToken(req: NextRequest) {
-  const auth = req.headers.get("authorization") ?? "";
-  return auth.startsWith("Bearer ") ? auth.slice(7) : "";
+/* ─── Auth ──────────────────────────────────────── */
+function bearerToken(req: NextRequest): string {
+  const h = req.headers.get("authorization") ?? "";
+  return h.startsWith("Bearer ") ? h.slice(7) : "";
 }
 
-/* ─── GET — list invoices ─────────────────────────── */
+/* ─── GET — list invoices ───────────────────────── */
 export async function GET(req: NextRequest) {
-  const rawToken = getToken(req);
+  const rawToken = bearerToken(req);
   if (!rawToken) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const payload = verifyToken(rawToken);
-  if (!payload.valid) return NextResponse.json({ error: "Invalid or expired session" }, { status: 401 });
+  const p = verifyToken(rawToken);
+  if (!p.valid) return NextResponse.json({ error: "Invalid or expired session" }, { status: 401 });
 
-  const db = getSupabase();
-  if (!db) return NextResponse.json({ invoices: [], dbReady: false }, { headers: NO_CACHE });
+  if (!isDbReady()) {
+    return NextResponse.json({ invoices: [], dbReady: false }, { headers: NO_CACHE });
+  }
 
-  const limit = payload.isPro ? 1000 : FREE_LIMIT;
+  const db    = getDb()!;
+  const limit = p.isPro ? 1000 : FREE_LIMIT;
 
-  const { data, error } = await db
-    .from("invoices")
-    .select("id, invoice_no, doc_type, client_name, total, currency, created_at")
-    .eq("email_hash", payload.emailHash)
-    .order("created_at", { ascending: false })
-    .limit(limit);
-
-  if (error) {
-    console.error("[invoices/GET]", error);
+  try {
+    const rows = await db`
+      SELECT id, invoice_no, doc_type, client_name, total, currency, created_at
+        FROM invoices
+       WHERE email_hash = ${p.emailHash}
+       ORDER BY created_at DESC
+       LIMIT ${limit}
+    `;
+    return NextResponse.json(
+      { invoices: rows, isPro: p.isPro, dbReady: true },
+      { headers: NO_CACHE }
+    );
+  } catch (e) {
+    console.error("[invoices/GET]", e);
     return NextResponse.json({ error: "Failed to load invoices" }, { status: 500 });
   }
-
-  return NextResponse.json({ invoices: data ?? [], isPro: payload.isPro, dbReady: true }, { headers: NO_CACHE });
 }
 
-/* ─── POST — save invoice ─────────────────────────── */
+/* ─── POST — save invoice ───────────────────────── */
 export async function POST(req: NextRequest) {
-  const rawToken = getToken(req);
+  const rawToken = bearerToken(req);
   if (!rawToken) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const payload = verifyToken(rawToken);
-  if (!payload.valid) return NextResponse.json({ error: "Invalid or expired session" }, { status: 401 });
+  const p = verifyToken(rawToken);
+  if (!p.valid) return NextResponse.json({ error: "Invalid or expired session" }, { status: 401 });
 
   let body: {
-    invoice_no?: string;
-    doc_type?: string;
+    invoice_no?:  string;
+    doc_type?:    string;
     client_name?: string;
-    total?: number;
-    currency?: string;
-    data?: object;
+    total?:       number;
+    currency?:    string;
+    data?:        object;
   };
-  try { body = await req.json(); }
+  try   { body = await req.json(); }
   catch { return NextResponse.json({ error: "Invalid body" }, { status: 400 }); }
 
-  const db = getSupabase();
-  if (!db) return NextResponse.json({ saved: false, reason: "db_not_configured" });
+  if (!isDbReady()) {
+    return NextResponse.json({ saved: false, reason: "db_not_configured" });
+  }
 
-  // Free users: enforce 5-invoice limit
-  if (!payload.isPro) {
-    const { count } = await db
-      .from("invoices")
-      .select("*", { count: "exact", head: true })
-      .eq("email_hash", payload.emailHash);
+  const db = getDb()!;
 
-    if ((count ?? 0) >= FREE_LIMIT) {
-      // Delete the oldest to make room
-      const { data: oldest } = await db
-        .from("invoices")
-        .select("id")
-        .eq("email_hash", payload.emailHash)
-        .order("created_at", { ascending: true })
-        .limit(1);
-      if (oldest?.length) {
-        await db.from("invoices").delete().eq("id", oldest[0].id);
+  try {
+    // Free users: keep only the latest FREE_LIMIT invoices (delete oldest first)
+    if (!p.isPro) {
+      const countRows = await db`
+        SELECT COUNT(*)::int AS count FROM invoices WHERE email_hash = ${p.emailHash}
+      ` as { count: number }[];
+
+      const count = countRows[0]?.count ?? 0;
+      if (count >= FREE_LIMIT) {
+        await db`
+          DELETE FROM invoices
+           WHERE id = (
+             SELECT id FROM invoices
+              WHERE email_hash = ${p.emailHash}
+              ORDER BY created_at ASC
+              LIMIT 1
+           )
+        `;
       }
     }
-  }
 
-  const { data, error } = await db
-    .from("invoices")
-    .insert({
-      email_hash:  payload.emailHash,
-      invoice_no:  body.invoice_no  ?? "—",
-      doc_type:    body.doc_type    ?? "invoice",
-      client_name: body.client_name ?? "—",
-      total:       body.total       ?? 0,
-      currency:    body.currency    ?? "USD",
-      data:        body.data        ?? {},
-    })
-    .select("id")
-    .single();
+    const invoiceNo  = body.invoice_no  ?? "—";
+    const docType    = body.doc_type    ?? "invoice";
+    const clientName = body.client_name ?? "—";
+    const total      = body.total       ?? 0;
+    const currency   = body.currency    ?? "USD";
+    const data       = JSON.stringify(body.data ?? {});
 
-  if (error) {
-    console.error("[invoices/POST]", error);
+    const rows = await db`
+      INSERT INTO invoices (email_hash, invoice_no, doc_type, client_name, total, currency, data)
+      VALUES (${p.emailHash}, ${invoiceNo}, ${docType}, ${clientName}, ${total}, ${currency}, ${data})
+      RETURNING id
+    ` as { id: string }[];
+
+    return NextResponse.json({ saved: true, id: rows[0]?.id });
+  } catch (e) {
+    console.error("[invoices/POST]", e);
     return NextResponse.json({ saved: false, reason: "db_error" });
   }
-
-  return NextResponse.json({ saved: true, id: data?.id });
 }
