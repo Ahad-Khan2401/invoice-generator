@@ -169,28 +169,50 @@ export default function InvoiceGenerator({
 
   /* ── PDF download ── */
   async function downloadPDF() {
-    const el = previewRef.current;
+    const el   = previewRef.current;
+    const wrap = wrapRef.current;
     if (!el) return;
     setBusy(true);
 
-    // Temporarily reset scale for capture
-    const savedTx = el.style.transform;
-    const savedW  = el.style.width;
-    el.style.transform = "none";
-    el.style.width     = "100%";
+    // Save ALL scale-related styles (el + wrapper)
+    const savedTx   = el.style.transform;
+    const savedTxO  = el.style.transformOrigin;
+    const savedW    = el.style.width;
+    const savedWH   = wrap ? wrap.style.height   : "";
+    const savedWOv  = wrap ? wrap.style.overflow  : "";
+
+    // Expand to natural size so html2canvas captures the full document
+    el.style.transform       = "none";
+    el.style.transformOrigin = "top left";
+    el.style.width           = "100%";
+    if (wrap) {
+      wrap.style.height   = "auto";
+      wrap.style.overflow = "visible";
+    }
+
+    // Two animation frames: first lets React flush, second lets browser reflow
+    await new Promise<void>(res =>
+      requestAnimationFrame(() => requestAnimationFrame(() => res()))
+    );
 
     try {
       const [{default:jsPDF},{default:html2canvas}] = await Promise.all([
         import("jspdf"), import("html2canvas"),
       ]);
-      const canvas = await html2canvas(el, { scale:2.5, useCORS:true, backgroundColor:"#fff" });
-      const pdf    = new jsPDF({ unit:"mm", format:"a4" });
-      const pw     = pdf.internal.pageSize.getWidth();
-      const ph     = pdf.internal.pageSize.getHeight();
-      const ih     = canvas.height * pw / canvas.width;
+      const canvas = await html2canvas(el, {
+        scale: 2.5,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+      });
+      const pdf = new jsPDF({ unit:"mm", format:"a4" });
+      const pw  = pdf.internal.pageSize.getWidth();
+      const ph  = pdf.internal.pageSize.getHeight();
+      const ih  = (canvas.height * pw) / canvas.width;
 
       if (ih <= ph) {
-        // Fits one page
+        // Single page
         pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, pw, ih);
       } else {
         // Multi-page split
@@ -205,17 +227,23 @@ export default function InvoiceGenerator({
           const ctx = pageCanvas.getContext("2d")!;
           ctx.drawImage(canvas, 0, y, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
           if (y > 0) pdf.addPage();
-          pdf.addImage(pageCanvas.toDataURL("image/png"), "PNG", 0, 0, pw, sliceH/pxPerMm);
+          pdf.addImage(pageCanvas.toDataURL("image/png"), "PNG", 0, 0, pw, sliceH / pxPerMm);
           y += pageHpx;
         }
       }
       pdf.save(`${meta.no || docType}.pdf`);
-    } catch (e) { console.error(e); }
-    finally {
-      el.style.transform = savedTx;
-      el.style.width     = savedW;
+    } catch (e) {
+      console.error("PDF generation failed:", e);
+    } finally {
+      // Restore all styles
+      el.style.transform       = savedTx;
+      el.style.transformOrigin = savedTxO;
+      el.style.width           = savedW;
+      if (wrap) {
+        wrap.style.height   = savedWH;
+        wrap.style.overflow = savedWOv;
+      }
       setBusy(false);
-      // File is generated regardless of the ad — mark the modal as done.
       setAdModal(m => m.open ? { ...m, status: "done" } : m);
     }
   }

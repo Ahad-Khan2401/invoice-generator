@@ -173,6 +173,44 @@ export const LANDING: Record<string, Landing> = {
     profession: "shops, service providers, and small businesses",
     keywords: ["bill format", "bill format pdf", "bill format in word", "simple bill format", "cash bill format"],
   },
+
+  /* ───────── High-volume keyword pages ───────── */
+  "free-invoice-generator": {
+    h1: "Free Invoice Generator — Create & Download PDF Invoices",
+    sub: "The fastest free invoice generator online. Fill in your details, add items, and download a professional PDF invoice instantly — no signup, no watermark.",
+    title: "Free Invoice Generator — Create PDF Invoices Online Instantly",
+    desc: "Use our free invoice generator to create professional PDF invoices in seconds. Add your logo, apply tax, and download — 100% free, no account required. Trusted by freelancers and small businesses worldwide.",
+    profession: "freelancers, consultants, and small businesses",
+    keywords: ["free invoice generator", "invoice generator free", "free invoice maker", "create invoice free", "free invoice creator", "invoice generator online free"],
+  },
+
+  "invoice-template-free": {
+    h1: "Free Invoice Template — Download & Fill Online",
+    sub: "Use a professional free invoice template — fill it out in your browser and download a clean PDF in seconds. No software, no signup.",
+    title: "Free Invoice Template — Fill Out & Download PDF Online",
+    desc: "Get a free invoice template you can fill out and download as a PDF instantly. Customise with your logo, tax rate, and payment terms. Free for freelancers and small businesses.",
+    profession: "freelancers, contractors, and small businesses",
+    keywords: ["free invoice template", "invoice template free", "free invoice template pdf", "invoice template download free", "simple invoice template free"],
+  },
+
+  "construction-invoice": {
+    h1: "Free Construction Invoice Generator",
+    sub: "Create professional construction invoices for labour, materials, and projects. Download a clean PDF in seconds — free, no signup.",
+    title: "Free Construction Invoice Generator — PDF Construction Invoice",
+    desc: "Generate construction invoices online for free. Add labour, materials, and project details, apply GST/VAT, and download a professional PDF. Perfect for builders, contractors, and tradespeople.",
+    profession: "builders, contractors, and tradespeople",
+    keywords: ["construction invoice", "construction invoice template", "builder invoice", "contractor invoice template", "construction billing", "labour invoice"],
+  },
+
+  "invoice-generator-australia-gst": {
+    h1: "Free GST Invoice Generator — Australia",
+    sub: "Create compliant GST invoices for Australia. Add your ABN, apply 10% GST, and download a professional PDF invoice instantly.",
+    title: "Free GST Invoice Generator Australia — Create ABN PDF Invoices",
+    desc: "Generate GST-compliant invoices for Australia online for free. Add your ABN, apply 10% GST, and download a clean PDF. Perfect for sole traders, contractors, and small businesses.",
+    profession: "Australian freelancers, sole traders, and small businesses",
+    currencySymbol: "A$",
+    keywords: ["gst invoice generator australia", "australian gst invoice", "abn invoice generator", "tax invoice australia", "gst tax invoice"],
+  },
 };
 
 export const LANDING_SLUGS = Object.keys(LANDING);
