@@ -43,7 +43,7 @@ export const SITE = {
      4. Run: git push origin main → auto-deploys
   ─────────────────────────────────────────────── */
   stripe: {
-    proLink:      process.env.NEXT_PUBLIC_STRIPE_PRO_LINK  || "",
+    proLink:      "https://pdfbillbuilder.lemonsqueezy.com/checkout/buy/3fad7411-41b1-4e5c-b81d-bec39c54da92",
     priceMonthly: "$3",
     priceLabel:   "$3 / month",
   },

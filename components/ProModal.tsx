@@ -89,7 +89,7 @@ export default function ProModal({ open, onClose }: { open: boolean; onClose: ()
           <div style={{ marginTop: 22 }}>
             {proLink ? (
               <a
-                href={`${proLink}?success_url=${encodeURIComponent(window.location.origin + window.location.pathname + "?pro=success")}`}
+                href={`${proLink}?checkout[redirect_url]=${encodeURIComponent("https://www.pdfbillbuilder.com/?pro=success")}`}
                 style={{
                   display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                   width: "100%", padding: "14px 20px", borderRadius: 14, border: "none",
