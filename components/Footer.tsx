@@ -82,8 +82,11 @@ export default function Footer() {
               <div className="flex flex-col gap-2.5 text-[14px]">
                 <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/privacy">Privacy Policy</Link>
                 <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/terms">Terms of Service</Link>
-                <a className="inline-flex items-center gap-1.5 font-medium text-slate-500 transition-colors hover:text-indigo-600" href="mailto:support@pdfbillbuilder.com">
-                  <Mail className="size-3.5" /> Contact
+                <Link className="inline-flex items-center gap-1.5 font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/contact">
+                  <Mail className="size-3.5" /> Contact Us
+                </Link>
+                <a className="font-medium text-slate-500 transition-colors hover:text-indigo-600 text-[12px]" href="mailto:support@pdfbillbuilder.com">
+                  support@pdfbillbuilder.com
                 </a>
               </div>
             </div>
