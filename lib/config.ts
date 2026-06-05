@@ -27,12 +27,12 @@ export const SITE = {
      Until you replace these, ads will load but stay blank.
   ─────────────────────────────────────────────── */
   adSlots: {
-    homeTop:     "1111111111",
-    homeMid:     "3333333333",
-    homeBottom:  "2222222222",
-    about:       "4444444444",
-    howItWorks:  "5555555555",
-    downloadModal:"6666666666",
+    homeTop:      "2945686556",
+    homeMid:      "9594855382",
+    homeBottom:   "1097948499",
+    about:        "6968692049",
+    howItWorks:   "5411078115",
+    downloadModal:"7755160104",
   },
 
   /* ── Pro (One-time, via Lemon Squeezy) ──────────
