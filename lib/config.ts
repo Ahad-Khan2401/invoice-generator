@@ -42,6 +42,6 @@ export const SITE = {
   stripe: {
     proLink:      "https://pdfbillbuilder.lemonsqueezy.com/checkout/buy/3fad7411-41b1-4e5c-b81d-bec39c54da92",
     priceMonthly: "$9",
-    priceLabel:   "$9 one-time",
+    priceLabel:   "$9 / year",
   },
 } as const;
