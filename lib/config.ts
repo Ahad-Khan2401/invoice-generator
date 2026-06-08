@@ -40,8 +40,10 @@ export const SITE = {
      Update proLink when you change the LS product price.
   ─────────────────────────────────────────────── */
   stripe: {
-    proLink:      "https://pdfbillbuilder.lemonsqueezy.com/checkout/buy/94cf5dec-ef98-4595-8e88-8ff23712bead",
+    proLink:      "https://pdfbillbuilder.lemonsqueezy.com/checkout/buy/a3a702f4-2023-4117-b2a7-326dc34cbb9c",
     priceMonthly: "$9",
     priceLabel:   "$9 / year",
   },
 } as const;
+
+
