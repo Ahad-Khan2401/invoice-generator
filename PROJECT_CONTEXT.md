@@ -81,7 +81,7 @@
 |---|---|
 | **Google account** | kkahad316@gmail.com (the correct one; an older `kahad316@gmail.com` is a different/wrong one) |
 | **AdSense** | publisher `ca-pub-3004153584501560` — site verified (ads.txt method), **review REQUESTED** (awaiting Google approval), GDPR CMP **published** (3-choice) |
-| **Google Analytics 4** | `G-GNSHNWJEE3` — **live & tracking** |
+| **Google Analytics 4** | `G-TLB5627NQ9` — dedicated PDF Bill Builder property, **live & tracking** (old `G-GNSHNWJEE3` was shared with ShifaNest — now separated) |
 | **Google Search Console** | Domain property `pdfbillbuilder.com` **verified** (DNS TXT), **sitemap submitted** |
 | **Bing Webmaster** | **imported from GSC** (done) |
 | **Vercel** | account `kkahad316-5926`, project `invoice-generator`, auto-deploy from GitHub |

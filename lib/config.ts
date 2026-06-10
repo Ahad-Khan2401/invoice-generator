@@ -14,7 +14,7 @@ export const SITE = {
      auto-activates each only when its value is filled in. */
   googleSiteVerification: "",   // Search Console → HTML tag → content="..."
   bingSiteVerification:   "",   // Bing Webmaster → meta tag → content="..."
-  gaId:                   "G-GNSHNWJEE3",   // Google Analytics 4
+  gaId:                   "G-TLB5627NQ9",   // Google Analytics 4 (dedicated PDF Bill Builder property)
 
   /* English markets this site targets (used for hreflang). */
   hreflangLocales: ["en-US", "en-CA", "en-GB", "en-AU", "en-IN", "en-PK"],
