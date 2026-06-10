@@ -596,4 +596,317 @@ export const LANDING_CONTENT: Record<string, LandingContentEntry> = {
       },
     ],
   },
+
+  /* ───────── By profession (batch 2) ───────── */
+  "photographer-invoice": {
+    intro:
+      "Photography invoicing is rarely just one number. A single job can include the shoot itself, hours of editing, prints, albums, and image licensing — each of which a client expects to see broken out clearly. A professional photographer invoice protects your usage rights, justifies your pricing, and gets you paid faster, while looking as polished as the images you deliver.",
+    sections: [
+      {
+        h: "What to itemise on a photography invoice",
+        p: "Splitting your work into clear line items shows clients the value behind your fee and avoids awkward questions later. It also makes deposits and licensing terms unmistakable.",
+        list: [
+          "Session or shoot fee (hours or day rate)",
+          "Editing and retouching time",
+          "Prints, albums, or physical products",
+          "Image licensing or usage rights",
+          "Travel, deposit, and any rush fees",
+        ],
+      },
+      {
+        h: "Deposits and licensing — bill them clearly",
+        p: "Most photographers take a non-refundable deposit to secure a date, then bill the balance on delivery. Add the deposit as its own line (or a negative line once paid) so the remaining amount is obvious. If you license images rather than sell them outright, state the usage rights on the invoice — it's the document clients keep on file.",
+      },
+      {
+        h: "Get paid before the gallery goes out",
+        p: "A common, effective approach is to invoice the balance before releasing the final gallery. Send a clean, numbered PDF with your payment details and a clear due date, and clients almost always pay promptly to receive their photos. The generator above totals shoot, editing, and products automatically.",
+      },
+    ],
+  },
+
+  "graphic-designer-invoice": {
+    intro:
+      "For graphic designers, the invoice is part of the brand experience — it should look as considered as the work it bills for. Whether you charge per project, hourly, or by deliverable, a clear design invoice spells out the scope, the revisions included, and any licensing, which keeps projects profitable and prevents scope creep from eating your margins.",
+    sections: [
+      {
+        h: "Per-project vs hourly design billing",
+        p: "Fixed-fee projects look cleanest as a single line with the agreed amount, plus separate lines for extras outside the original scope. Hourly work should show the hours against your rate so clients see the breakdown. Either way, spelling out what's included protects you when 'just one more tweak' arrives.",
+        list: [
+          "The agreed project fee or hourly rate",
+          "Number of revision rounds included",
+          "Extra revisions or out-of-scope work",
+          "Source files or licensing, if charged",
+          "Deposit and balance for larger projects",
+        ],
+      },
+      {
+        h: "Handle revisions and source files",
+        p: "Design disputes usually come down to revisions and file ownership. State on your invoice how many revision rounds the fee covers, and bill additional rounds as their own line. If you charge separately for editable source files or extended licensing, list that explicitly — it sets expectations and adds a clean upsell.",
+      },
+      {
+        h: "Protect your cash flow",
+        p: "For anything beyond a small job, invoice a deposit up front and the balance on delivery. Send numbered, dated PDFs with short payment terms, and keep a copy of every invoice for your records. The tool above calculates subtotals and tax instantly so your design invoices are always accurate.",
+      },
+    ],
+  },
+
+  "web-developer-invoice": {
+    intro:
+      "Web development projects often mix one-off build work with ongoing costs like hosting, maintenance, and retainers — and clients want to see each clearly separated. A well-structured developer invoice makes milestones, hourly work, and recurring charges easy to understand, which means faster approvals from the finance teams that actually pay you.",
+    sections: [
+      {
+        h: "Billing builds, milestones, and retainers",
+        p: "Large builds are best billed in milestones (deposit, mid-point, on launch) so neither side carries all the risk. Ongoing work — maintenance, hosting, support — suits a monthly retainer. Itemising these separately keeps your invoice clear and your cash flow predictable.",
+        list: [
+          "Development hours or fixed milestone fees",
+          "Hosting, domains, and third-party services",
+          "Maintenance or support retainer",
+          "Out-of-scope change requests",
+          "Deposit and remaining balance",
+        ],
+      },
+      {
+        h: "Pass-through costs and change requests",
+        p: "Hosting, premium plugins, and API fees are often passed through to the client — list them as their own lines so it's clear what's your work and what's a third-party cost. Change requests outside the original brief should always be a separate line item, which keeps fixed-price projects from quietly losing money.",
+      },
+      {
+        h: "Recurring invoices for ongoing work",
+        p: "If you support a site monthly, send a consistent recurring invoice each period with the same layout and an incrementing number — clients come to expect it and pay on schedule. Save your template once, update the date and period, and download a fresh PDF in seconds with the generator above.",
+      },
+    ],
+  },
+
+  "plumber-invoice": {
+    intro:
+      "A clear plumbing invoice does two jobs: it gets you paid on the spot and it serves as a record for any warranty on the work. Customers want to see the call-out fee, the labour, and the parts laid out plainly — and a professional, itemised invoice is what separates a trusted trade business from someone working cash-in-hand.",
+    sections: [
+      {
+        h: "Itemise call-out, labour, and parts",
+        p: "Breaking the job into clear lines avoids disputes and shows the customer exactly what they're paying for. It also makes it easy to handle jobs where a landlord or insurer is footing the bill.",
+        list: [
+          "Call-out or diagnostic fee",
+          "Labour — hours worked at your rate",
+          "Parts and materials, itemised",
+          "Emergency or out-of-hours surcharge",
+          "Tax (VAT/GST) where applicable",
+        ],
+      },
+      {
+        h: "Emergency call-outs and surcharges",
+        p: "Out-of-hours and emergency work usually carries a surcharge — make it a clearly labelled line so there's no surprise. Stating your call-out fee up front, and again on the invoice, sets expectations and heads off the most common cause of trade payment disputes.",
+      },
+      {
+        h: "Invoice on site, get paid faster",
+        p: "Many plumbers now invoice straight after finishing the job, while still on site or the same day. A numbered PDF with your bank details and a short payment window means customers can pay immediately. The generator above adds up labour, parts, and tax automatically so you never miscalculate a total.",
+      },
+    ],
+  },
+
+  "electrician-invoice": {
+    intro:
+      "Electrical work comes with paperwork — and your invoice is a key part of it. Customers, landlords, and insurers expect labour, materials, and any testing or certification to be itemised clearly. A professional electrician invoice gets you paid quickly and provides the documented record that electrical work so often needs.",
+    sections: [
+      {
+        h: "What to include on an electrical invoice",
+        p: "Clear, separated line items make your invoice easy to approve and easy to keep on file for compliance. They also make it simple to bill landlords or letting agents who need detailed records.",
+        list: [
+          "Labour — hours or day rate",
+          "Materials and fittings, itemised",
+          "Testing, inspection, or certification",
+          "Call-out or assessment fee",
+          "Tax (VAT/GST) where it applies",
+        ],
+      },
+      {
+        h: "Certificates and compliance records",
+        p: "Where you issue test certificates or compliance documents, referencing them on the invoice ties the paperwork together — useful for landlords, insurers, and your own records. A consistent invoice number on every job makes those records easy to find years later if a query comes up.",
+      },
+      {
+        h: "Keep your trade business looking professional",
+        p: "A tidy, branded invoice signals a reliable contractor and helps win repeat work. Add your logo, list everything clearly, set a short payment term, and download a print-ready PDF. The tool above totals labour, materials, and tax for you in real time.",
+      },
+    ],
+  },
+
+  "cleaning-services-invoice": {
+    intro:
+      "Cleaning businesses bill in lots of ways — per visit, by the hour, by the square foot, or on a recurring weekly or monthly plan. A clear cleaning invoice makes your pricing transparent and your recurring jobs effortless to bill, which is exactly what keeps domestic and commercial clients paying on time, month after month.",
+    sections: [
+      {
+        h: "One-off and recurring cleaning jobs",
+        p: "For a one-off deep clean, a single line with the agreed price works well. For regular contracts, list the period clearly (e.g. 'Office clean — June 2026') and keep the layout consistent each month so clients recognise it instantly.",
+        list: [
+          "Service type (standard, deep, end-of-tenancy)",
+          "Per visit, hourly, or monthly rate",
+          "Number of visits in the period",
+          "Supplies or equipment, if charged",
+          "Tax where applicable",
+        ],
+      },
+      {
+        h: "Make recurring billing effortless",
+        p: "Regular cleaning contracts are perfect for recurring invoices. Save your template, update the month and invoice number, and send the same clean PDF on the same day each cycle. Predictable invoicing means predictable payment — and far less admin for you.",
+      },
+      {
+        h: "Look professional to win contracts",
+        p: "Commercial clients in particular expect proper invoices for their own bookkeeping. A branded, itemised PDF with your logo and clear payment details helps you win and keep contracts. The generator above handles the totals and tax so every invoice is accurate.",
+      },
+    ],
+  },
+
+  "tutor-invoice": {
+    intro:
+      "Whether you teach in person or online, a clear tutoring invoice makes billing parents and students straightforward and professional. Listing lessons, dates, and your rate removes any confusion about what's owed — and a tidy PDF invoice reassures parents that they're dealing with a serious, organised tutor.",
+    sections: [
+      {
+        h: "Billing per lesson, hour, or package",
+        p: "List each lesson with its date so parents can match the invoice to their calendar, or bill a block of lessons as a package for simplicity. Many tutors offer a small discount for prepaid packages — show it as its own line so the saving is clear.",
+        list: [
+          "Subject and student name",
+          "Lesson dates or number of sessions",
+          "Hourly rate or package price",
+          "Any prepaid discount",
+          "Payment due date and method",
+        ],
+      },
+      {
+        h: "Prepaid packages and cancellations",
+        p: "Selling lessons in blocks improves your cash flow and reduces no-shows. State your cancellation policy near your terms, and if you charge for late cancellations, add it as a clearly labelled line. Numbered invoices make it easy to track which packages a family has paid for.",
+      },
+      {
+        h: "Simple, professional, and free",
+        p: "You don't need accounting software to invoice well as a tutor. Add your details, list the lessons, set a due date, and download a clean PDF in seconds. The generator above totals everything for you, so billing takes a couple of minutes between lessons.",
+      },
+    ],
+  },
+
+  "virtual-assistant-invoice": {
+    intro:
+      "Virtual assistants often juggle several clients, each on a different arrangement — some hourly, some on monthly retainers, some by task or package. A clear VA invoice keeps each client's billing transparent and your own income easy to track, which is essential when you're managing multiple income streams remotely.",
+    sections: [
+      {
+        h: "Hourly, retainer, or per-task billing",
+        p: "Hourly clients should see hours logged against your rate; retainer clients suit a single monthly line for the agreed package, with overage hours billed separately. Per-task work is clearest as one line per deliverable. Spelling this out keeps every client relationship clean.",
+        list: [
+          "Hours worked or retainer package",
+          "Tasks or deliverables completed",
+          "Overage hours beyond the retainer",
+          "The billing period covered",
+          "Your preferred payment method",
+        ],
+      },
+      {
+        h: "Retainers and overage hours",
+        p: "Retainers give you predictable income, but clients sometimes exceed their hours. Track and bill overage as its own line so the base retainer stays clean and the extra work is clearly justified. A consistent monthly invoice with an incrementing number keeps the relationship professional.",
+      },
+      {
+        h: "Bill clients worldwide, in any currency",
+        p: "Working with international clients means invoicing in different currencies. The generator above supports multiple currency symbols, so you can bill a US client in dollars and a UK client in pounds. Add your details, list your work, and download a polished PDF in seconds.",
+      },
+    ],
+  },
+
+  "handyman-invoice": {
+    intro:
+      "Handyman work spans dozens of small jobs, and a clear invoice for each keeps your business organised and your customers confident. Listing labour, materials, and any call-out fee plainly means there's never a question about what's owed — and a professional PDF invoice helps you stand out from casual, cash-only competitors.",
+    sections: [
+      {
+        h: "Itemise labour, materials, and call-outs",
+        p: "Even for small jobs, separating your time from the cost of materials shows customers exactly what they're paying for. It also makes it easy to bill landlords or property managers who need a clear breakdown for their records.",
+        list: [
+          "Description of the job done",
+          "Labour — hours or a flat job price",
+          "Materials and parts, itemised",
+          "Call-out or minimum charge",
+          "Tax where applicable",
+        ],
+      },
+      {
+        h: "Flat-rate vs hourly jobs",
+        p: "Quick, predictable jobs are often cleanest as a flat price, while bigger or open-ended work suits hourly billing. Whichever you use, stating it clearly on the invoice prevents misunderstandings. For repeat customers, a consistent invoice format builds trust and repeat bookings.",
+      },
+      {
+        h: "Invoice on the spot and get paid",
+        p: "Finishing a job and handing over a clean, numbered invoice the same day is the fastest route to payment. Add your bank details or payment link, set a short due date, and download a print-ready PDF. The generator above adds up labour, materials, and tax automatically.",
+      },
+    ],
+  },
+
+  "catering-invoice": {
+    intro:
+      "Catering invoices can be complex — guest counts, menus, staff, rentals, and deposits all have to add up correctly for an event that may be months away. A clear, itemised catering invoice builds client confidence, locks in deposits, and ensures the final balance is paid before or promptly after the big day.",
+    sections: [
+      {
+        h: "Build a clear event invoice",
+        p: "Breaking the event into clear sections — food, staff, equipment, and fees — lets clients see exactly where their budget goes and makes it easy to adjust as guest numbers change.",
+        list: [
+          "Per-head menu price × guest count",
+          "Additional menu items or upgrades",
+          "Service staff and hours",
+          "Equipment, rentals, and delivery",
+          "Deposit, balance, and tax",
+        ],
+      },
+      {
+        h: "Deposits and final balances",
+        p: "Most caterers take a deposit to confirm the booking, then invoice the balance close to the event once the final guest count is set. Show the deposit as its own line so the remaining balance is unmistakable. Clear deposit terms protect you against last-minute cancellations.",
+      },
+      {
+        h: "Handle changing guest numbers",
+        p: "Guest counts shift right up to the event, so a per-head structure makes adjustments simple — change the quantity and the total recalculates. The generator above updates subtotals, tax, and the grand total instantly, so your catering invoice is always accurate no matter how many times the numbers move.",
+      },
+    ],
+  },
+
+  "auto-repair-invoice": {
+    intro:
+      "An auto repair invoice is both a bill and a service record — customers keep it for warranties, resale, and their own maintenance history. Clearly separating parts, labour, and diagnostics builds trust at the counter and gets you paid faster, while giving the customer the documented breakdown they expect from a professional garage.",
+    sections: [
+      {
+        h: "Separate parts, labour, and diagnostics",
+        p: "Customers scrutinise repair bills, so a transparent breakdown is essential. Listing each part and the labour against each task shows fair pricing and reduces pushback at payment time.",
+        list: [
+          "Diagnostic or inspection fee",
+          "Parts, itemised with quantities",
+          "Labour per task at your shop rate",
+          "Sundries (oil, fluids, consumables)",
+          "Tax where applicable",
+        ],
+      },
+      {
+        h: "Build trust with a clear breakdown",
+        p: "A detailed invoice is your best defence against 'why is it so expensive?' Showing parts and labour separately, with a line for each job done, demonstrates fair, itemised pricing. Including the vehicle details (make, model, registration) turns the invoice into a useful service record too.",
+      },
+      {
+        h: "A record customers keep",
+        p: "Repair invoices often resurface — at resale, for warranty claims, or for the next service. A numbered, dated PDF with your garage's branding is easy for customers to file and find. The generator above totals parts, labour, and tax automatically so every repair invoice is accurate and professional.",
+      },
+    ],
+  },
+
+  "personal-trainer-invoice": {
+    intro:
+      "Personal trainers bill in a variety of ways — single sessions, multi-session packages, or monthly coaching plans — and a clear invoice keeps each client's payments easy to track. A professional, branded invoice also reinforces that you run a real business, which helps justify your rates and retain clients long term.",
+    sections: [
+      {
+        h: "Sessions, packages, and monthly plans",
+        p: "Single sessions are clearest billed individually, while packages and monthly plans suit a single line for the agreed amount. Showing the per-session value of a package highlights the saving and encourages clients to commit to more sessions up front.",
+        list: [
+          "Session type (1-to-1, group, online)",
+          "Number of sessions or plan period",
+          "Per-session or package rate",
+          "Any program or nutrition add-ons",
+          "Payment due date and method",
+        ],
+      },
+      {
+        h: "Prepaid packages improve cash flow",
+        p: "Selling blocks of sessions or monthly plans gives you predictable income and keeps clients committed. Bill the package up front as a single line, and track which clients have sessions remaining. A consistent invoice number per client makes this easy to follow month to month.",
+      },
+      {
+        h: "Professional invoicing, zero hassle",
+        p: "You don't need complex software to invoice clients well. Add your branding, list the sessions or plan, set a due date, and download a clean PDF in seconds. The generator above handles the totals, so you can spend your time training clients rather than doing admin.",
+      },
+    ],
+  },
 };
