@@ -42,3 +42,8 @@ next-env.d.ts
 
 .vercel
 .env*.local
+
+# internal docs — keep local, do NOT publish to the public repo
+PROJECT_CONTEXT.md
+BACKLINKS_GUIDE.md
+TRAFFIC_PLAYBOOK.md
