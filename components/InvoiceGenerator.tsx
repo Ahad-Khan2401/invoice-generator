@@ -1036,6 +1036,10 @@ export default function InvoiceGenerator({
         accent={color}
         onClose={() => setAdModal(m => ({ ...m, open: false }))}
         onRetry={() => (adModal.action === "download" ? startDownload() : startPrint())}
+        isLoggedIn={isLoggedIn}
+        isPro={isPro}
+        onSignIn={() => { setAdModal(m => ({ ...m, open: false })); setProModalOpen(true); }}
+        onUpgrade={() => { setAdModal(m => ({ ...m, open: false })); setProModalOpen(true); }}
       />
     </div>
   );

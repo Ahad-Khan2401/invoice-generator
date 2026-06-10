@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { X, CheckCircle2, Download, Printer } from "lucide-react";
+import { X, CheckCircle2, Download, Printer, Save, Crown } from "lucide-react";
 import AdSlot from "@/components/AdSlot";
 
 /* ───────────────────────────────────────────────
@@ -21,6 +21,10 @@ export default function DownloadAdModal({
   accent,
   onClose,
   onRetry,
+  isLoggedIn = false,
+  isPro = false,
+  onSignIn,
+  onUpgrade,
 }: {
   open: boolean;
   status: "working" | "done";
@@ -29,6 +33,10 @@ export default function DownloadAdModal({
   accent: string;
   onClose: () => void;
   onRetry: () => void;
+  isLoggedIn?: boolean;
+  isPro?: boolean;
+  onSignIn?: () => void;
+  onUpgrade?: () => void;
 }) {
   // Close on Esc
   useEffect(() => {
@@ -98,6 +106,63 @@ export default function DownloadAdModal({
         <div style={{ padding: "16px 20px" }}>
           <AdSlot slot={slot} />
         </div>
+
+        {/* ── Conversion CTA — only after the file is ready ── */}
+        {status === "done" && !isPro && !isLoggedIn && onSignIn && (
+          <div style={{ padding: "0 20px 4px" }}>
+            <div style={{
+              display: "flex", alignItems: "center", gap: 12,
+              background: "linear-gradient(135deg,#eef2ff,#faf5ff)",
+              border: "1px solid #e0e7ff", borderRadius: 14, padding: "13px 14px",
+            }}>
+              <span style={{
+                width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                background: "#fff", color: "#6366f1",
+              }}>
+                <Save size={18} />
+              </span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontSize: 13, fontWeight: 800, color: "#1e1b4b" }}>Save this invoice</p>
+                <p style={{ fontSize: 11.5, color: "#6366f1", marginTop: 1, lineHeight: 1.35 }}>
+                  Sign in free to access &amp; re-edit it on any device.
+                </p>
+              </div>
+              <button onClick={onSignIn}
+                style={{ fontSize: 12.5, fontWeight: 700, color: "#fff", background: "#4f46e5", border: "none", borderRadius: 9, padding: "8px 14px", cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap" }}>
+                Sign in
+              </button>
+            </div>
+          </div>
+        )}
+
+        {status === "done" && !isPro && isLoggedIn && onUpgrade && (
+          <div style={{ padding: "0 20px 4px" }}>
+            <div style={{
+              display: "flex", alignItems: "center", gap: 12,
+              background: "linear-gradient(135deg,#fef3c7,#fde68a55)",
+              border: "1px solid #fde68a", borderRadius: 14, padding: "13px 14px",
+            }}>
+              <span style={{
+                width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                background: "#fff", color: "#d97706",
+              }}>
+                <Crown size={18} />
+              </span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontSize: 13, fontWeight: 800, color: "#78350f" }}>Go ad-free with Pro</p>
+                <p style={{ fontSize: 11.5, color: "#b45309", marginTop: 1, lineHeight: 1.35 }}>
+                  No ads, unlimited history &amp; premium templates — $9/year.
+                </p>
+              </div>
+              <button onClick={onUpgrade}
+                style={{ fontSize: 12.5, fontWeight: 700, color: "#fff", background: "#d97706", border: "none", borderRadius: 9, padding: "8px 14px", cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap" }}>
+                Upgrade
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Footer */}
         <div style={{ padding: "0 20px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
