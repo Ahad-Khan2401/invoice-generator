@@ -1,0 +1,599 @@
+/* ───────────────────────────────────────────────
+   UNIQUE per-page content for each landing page.
+   This is what makes every /slug page genuinely different
+   from the others — critical for SEO (no duplicate content)
+   AND for AdSense approval (no "low value / scaled content").
+
+   Rendered by app/[profession]/page.tsx via <LandingContent>.
+   Each entry: a unique intro + 2-3 unique sections.
+─────────────────────────────────────────────── */
+export interface LandingSection {
+  h: string;
+  p: string;
+  list?: string[];
+}
+export interface LandingContentEntry {
+  intro: string;
+  sections: LandingSection[];
+}
+
+export const LANDING_CONTENT: Record<string, LandingContentEntry> = {
+  /* ───────── By profession ───────── */
+  "freelancer-invoice": {
+    intro:
+      "As a freelancer, your invoice is often the last impression a client has of a project — so it needs to look as polished as the work itself. Whether you charge by the hour, by the day, or a fixed project fee, a clear freelance invoice spells out exactly what you did, what it costs, and when payment is due, which is the single biggest factor in getting paid on time.",
+    sections: [
+      {
+        h: "What every freelance invoice should include",
+        p: "Freelance clients pay faster when there is no ambiguity. A complete freelance invoice removes the back-and-forth that delays payment and protects you if a dispute ever comes up.",
+        list: [
+          "Your name or business name, plus how clients should pay you",
+          "A unique invoice number so both sides can reference it",
+          "A line item for each deliverable, with hours or quantity and your rate",
+          "The project or retainer name, so the client's finance team can match it to a PO",
+          "A clear due date and your accepted payment methods",
+        ],
+      },
+      {
+        h: "Hourly, day-rate, or fixed fee — how to bill each",
+        p: "If you bill hourly, list the hours against your rate so the client sees the breakdown. For a day rate, one line per day worked keeps it simple. For fixed-fee projects, a single line with the agreed amount looks cleanest — and you can add milestone lines (deposit, on delivery) for larger jobs. The generator above totals everything automatically, so you never send a maths error to a client.",
+      },
+      {
+        h: "Getting paid on time as a freelancer",
+        p: "Send the invoice the day you deliver, use short terms like Net 7 or Net 14, and include your payment details directly on the document. If a client is late, a polite reminder a day or two after the due date resolves most cases — keeping every invoice numbered and dated makes those follow-ups quick and professional.",
+      },
+    ],
+  },
+
+  "contractor-invoice": {
+    intro:
+      "Contractor invoices live or die on detail. Clients want to see exactly what they are paying for — the labour, the materials, the equipment, and the tax — broken out line by line. A clear contractor invoice not only gets you paid faster, it also doubles as a record for warranties, change orders, and tax season.",
+    sections: [
+      {
+        h: "Separate labour from materials",
+        p: "The cleanest contractor invoices split labour and materials into their own line items. This lets the client see the value of your work versus the cost of supplies, makes change orders easy to add, and is essential if any portion of the job is taxed differently or reimbursed by a third party.",
+        list: [
+          "Labour — hours or days worked, with your rate",
+          "Materials — itemised with quantities and unit costs",
+          "Equipment or plant hire, if charged separately",
+          "Permits, disposal, or call-out fees",
+          "Tax applied to the appropriate lines",
+        ],
+      },
+      {
+        h: "Deposits, progress payments, and retention",
+        p: "For larger jobs, few contractors invoice the full amount at the end. Take a deposit up front, invoice progress payments at agreed milestones, and issue a final invoice on completion. If your contract holds back a retention percentage, show it clearly so the client knows the balance is due once the defects period ends.",
+      },
+      {
+        h: "Why a professional invoice protects you",
+        p: "A detailed, numbered invoice is your paper trail. If a client questions a charge months later, your itemised record settles it instantly. It also keeps your bookkeeping clean for tax and helps you spot which types of jobs are actually the most profitable.",
+      },
+    ],
+  },
+
+  "consultant-invoice": {
+    intro:
+      "Consulting is sold on credibility, and your invoice is part of that brand. A consultant's invoice should look as considered as your advice — clean, branded, and unambiguous about scope and fees. Whether you bill a monthly retainer, a project fee, or by the hour, the right invoice reinforces that clients are working with a professional.",
+    sections: [
+      {
+        h: "Retainers vs project fees vs hourly",
+        p: "Each billing model needs a slightly different invoice. A retainer invoice states the monthly fee and the period it covers. A project invoice references the statement of work and any milestones. An hourly invoice lists sessions or days with a short description of what was delivered, so the client can connect the fee to outcomes.",
+        list: [
+          "Retainer — fixed monthly amount and the service period",
+          "Project — reference the SOW and bill by milestone",
+          "Hourly — list dates, hours, and a brief deliverable note",
+          "Expenses — travel or software, itemised and clearly marked",
+        ],
+      },
+      {
+        h: "Brand every invoice",
+        p: "Add your logo, set an accent colour, and keep your layout consistent across every client. Consistent branding makes your invoices instantly recognisable to a client's finance team, which means fewer queries and faster approval.",
+      },
+      {
+        h: "Make scope visible to avoid disputes",
+        p: "Consulting disputes almost always come down to scope. A short description on each line — what was advised, delivered, or reviewed — turns your invoice into a record of value delivered, not just a number, and makes renewal conversations far easier.",
+      },
+    ],
+  },
+
+  "small-business-invoice": {
+    intro:
+      "Running a small business means wearing every hat, and billing should never be the bottleneck. A reliable invoicing routine — consistent numbering, clear terms, and a professional layout — keeps cash flowing and your records audit-ready, whether you are sending five invoices a month or fifty.",
+    sections: [
+      {
+        h: "One tool for invoices, receipts, and quotes",
+        p: "Small businesses rarely need just invoices. You quote a job, you invoice the work, and you confirm payment with a receipt. Handling all three with one consistent design saves time and looks far more professional to your customers than a patchwork of Word and Excel files.",
+        list: [
+          "Quotations — win the work with a clear, branded estimate",
+          "Invoices — bill with itemised lines, tax, and due dates",
+          "Receipts — confirm payment and keep customers' records clean",
+        ],
+      },
+      {
+        h: "Keep your numbering and records clean",
+        p: "Sequential invoice numbers (INV-001, INV-002…) make it impossible to lose track of what's been billed and what's outstanding. Clean, dated records also make tax filing painless and protect you in the event of an audit.",
+      },
+      {
+        h: "Look bigger than you are",
+        p: "A branded, well-formatted invoice signals reliability. For a small business competing with larger players, that polish builds trust with new customers and encourages repeat business — at no extra cost.",
+      },
+    ],
+  },
+
+  "self-employed-invoice": {
+    intro:
+      "When you are self-employed, every invoice you send is both a request for payment and a record for your own tax return. Keeping them simple, consistent, and professional means you get paid without friction and have a clean paper trail when it's time to report your income.",
+    sections: [
+      {
+        h: "Invoicing basics for the self-employed",
+        p: "You don't need accounting software to invoice well. You need your details, the client's details, a clear list of what you did, and a due date. The generator above handles the formatting and the maths so you can focus on the work.",
+        list: [
+          "Your name, address, and payment details",
+          "The client's name and contact info",
+          "A unique invoice number and the date",
+          "What you did, with amounts, plus any tax",
+          "A clear due date and payment method",
+        ],
+      },
+      {
+        h: "Keep records for tax time",
+        p: "Self-employment means you are responsible for your own tax. Numbered, dated PDF invoices are the simplest possible record of your income — keep a copy of every one, and reporting your earnings becomes a matter of adding them up rather than reconstructing the year from memory.",
+      },
+      {
+        h: "Should you charge tax?",
+        p: "Only if you are registered for sales tax, VAT, or GST in your country. If you are, show the tax separately and clearly. If you are not registered, do not add tax to your invoices — just bill the agreed amount.",
+      },
+    ],
+  },
+
+  /* ───────── By country ───────── */
+  "invoice-generator-usa": {
+    intro:
+      "Invoicing US clients comes with its own conventions — billing in US dollars, applying state sales tax where it's due, and supplying clean records for 1099 reporting. This free generator is set up for the way American freelancers, contractors, and small businesses bill, so you can send a professional invoice in dollars in under a minute.",
+    sections: [
+      {
+        h: "Sales tax in the United States",
+        p: "Unlike VAT, US sales tax is set at the state (and sometimes city) level, and many services are not taxable at all. If you sell taxable goods, apply your state's rate and show it as its own line. If your work isn't taxable or you're billing across state lines, you may not charge sales tax at all — when in doubt, check your state's department of revenue.",
+      },
+      {
+        h: "1099 contractors and W-9s",
+        p: "If you're an independent contractor, your clients may report payments to you on a 1099 form and ask for a W-9. Your invoices are the matching record of what you were paid. Keep them numbered and dated so your reported income lines up cleanly with any 1099s you receive at year end.",
+        list: [
+          "Bill in US dollars with clear line items",
+          "Add state sales tax only where it applies",
+          "Keep numbered invoices to match 1099 income",
+          "Include your payment details (ACH, Zelle, check, PayPal)",
+        ],
+      },
+    ],
+  },
+
+  "invoice-generator-canada": {
+    intro:
+      "Canadian invoicing revolves around GST/HST and, in some provinces, PST or QST. This generator lets you bill in Canadian dollars and apply the right tax for your province, so freelancers, contractors, and small businesses across Canada can send a compliant, professional invoice in seconds.",
+    sections: [
+      {
+        h: "GST, HST, PST — what applies to you",
+        p: "Canada's sales tax depends on your province. Provinces like Ontario use a single Harmonised Sales Tax (HST), while others charge the federal GST plus a separate provincial tax (PST), and Quebec uses QST. Apply the combined rate for your province and show it clearly on the invoice.",
+        list: [
+          "HST provinces (e.g. Ontario, Nova Scotia) — one combined rate",
+          "GST + PST provinces (e.g. BC, Saskatchewan, Manitoba)",
+          "GST only (e.g. Alberta and the territories)",
+          "Quebec — GST plus QST",
+        ],
+      },
+      {
+        h: "When you must register for GST/HST",
+        p: "If your revenue exceeds the CRA's small-supplier threshold of $30,000 over four consecutive quarters, you must register for GST/HST, charge it, and include your registration number on invoices. Below that you can register voluntarily, but you don't have to — in which case you should not charge GST/HST.",
+      },
+    ],
+  },
+
+  "invoice-generator-uk": {
+    intro:
+      "UK invoicing centres on VAT and, for many, the realities of being a sole trader. This generator bills in pounds sterling and lets you add VAT at the right rate, so sole traders, freelancers, and small businesses can produce an HMRC-friendly invoice in seconds.",
+    sections: [
+      {
+        h: "VAT and the registration threshold",
+        p: "You only charge VAT once you're VAT-registered, which becomes mandatory when your taxable turnover passes the HMRC threshold (£90,000 as of 2024/25). If you're registered, show your VAT number, the rate (usually 20%), and the VAT amount in sterling. If you're not registered, you must not add VAT to your invoices.",
+        list: [
+          "Standard rate — 20% on most goods and services",
+          "Reduced rate — 5% (e.g. domestic energy)",
+          "Zero rate — 0% (e.g. most food, children's clothes, books)",
+          "Show your VAT number once registered",
+        ],
+      },
+      {
+        h: "Sole traders and record-keeping",
+        p: "As a sole trader you report business income through Self Assessment, so clean invoice records matter. HMRC expects you to keep invoices for at least five years (six if VAT-registered). Numbered, dated PDFs make your annual return — and any HMRC enquiry — far simpler to handle.",
+      },
+    ],
+  },
+
+  "invoice-generator-australia": {
+    intro:
+      "Australian invoicing is built around the ABN and GST. Whether you're a sole trader or a growing business, getting these right keeps you compliant with the ATO and ensures your clients can claim their GST credits. This generator bills in Australian dollars and supports GST out of the box.",
+    sections: [
+      {
+        h: "You need an ABN to invoice",
+        p: "If you're carrying on an enterprise in Australia, your invoice should show your Australian Business Number. Without an ABN, the paying business is legally required to withhold 47% of the payment under the no-ABN withholding rules — so getting your free ABN before you bill is essential.",
+      },
+      {
+        h: "GST and tax invoices",
+        p: "Once your turnover reaches $75,000 you must register for GST, charge 10%, and issue 'tax invoices'. A compliant tax invoice shows the words 'Tax Invoice', your ABN, the GST amount, and the GST-inclusive total. For sales over $1,000 you must also show the buyer's details.",
+        list: [
+          "Display the words 'Tax Invoice' clearly",
+          "Show your ABN and the date",
+          "Show the 10% GST amount or state 'includes GST'",
+          "For invoices over $1,000, include the buyer's identity",
+        ],
+      },
+    ],
+  },
+
+  "invoice-generator-india": {
+    intro:
+      "Invoicing in India is shaped by GST, and for B2B work the right invoice lets your client claim input tax credit. This generator bills in rupees and supports the tax fields Indian freelancers, consultants, and small businesses need to issue a clean, GST-ready invoice.",
+    sections: [
+      {
+        h: "GST invoices and input tax credit",
+        p: "If you're GST-registered, a proper tax invoice lets your business clients claim input tax credit, which makes you easier to work with. A GST invoice should show your GSTIN, the place of supply, the applicable CGST/SGST or IGST split, and the HSN/SAC code for what you're selling.",
+        list: [
+          "Your GSTIN and the client's GSTIN (for B2B)",
+          "CGST + SGST for intra-state, or IGST for inter-state supply",
+          "HSN code (goods) or SAC code (services)",
+          "Invoice number and date in a continuous series",
+        ],
+      },
+      {
+        h: "Do you need to register for GST?",
+        p: "GST registration is generally required once turnover crosses the threshold (commonly ₹20 lakh for services, ₹40 lakh for goods, lower in some states), or immediately for inter-state supply and most online selling. Below the threshold you can issue a simple bill of supply without charging GST.",
+      },
+    ],
+  },
+
+  "invoice-generator-pakistan": {
+    intro:
+      "For freelancers and businesses in Pakistan — especially those billing overseas clients — a clean, professional invoice in the right currency is essential for getting paid and keeping records for the State Bank and FBR. This generator lets you bill in rupees or dollars and download a polished PDF in seconds.",
+    sections: [
+      {
+        h: "Invoicing international clients",
+        p: "Many Pakistani freelancers bill clients in the US, UK, and Gulf in foreign currency. Set the currency to dollars (or your client's currency), include your full details and a clear description of the service, and keep every invoice — they support your foreign-remittance records when funds arrive through your bank or a service like Payoneer or Wise.",
+        list: [
+          "Bill in USD, GBP, AED, or PKR as needed",
+          "Add a clear service description for each line",
+          "Keep numbered invoices for your remittance records",
+          "Include your payment details for faster settlement",
+        ],
+      },
+      {
+        h: "Records for FBR and tax",
+        p: "Whether you're a freelancer or run a registered business, organised invoice records make filing your annual income tax return with the FBR far simpler. Sequential, dated PDF invoices are the easiest way to total your income accurately and back it up if ever questioned.",
+      },
+    ],
+  },
+
+  /* ───────── By document type / topic ───────── */
+  "rent-receipt": {
+    intro:
+      "A rent receipt is proof that a tenant has paid their rent for a given period. Landlords use them to keep clean records, and tenants often need them to claim House Rent Allowance (HRA), apply for visas or loans, or simply have evidence of payment. This free tool creates a clear rent receipt you can download and hand over in seconds.",
+    sections: [
+      {
+        h: "What a rent receipt should include",
+        p: "A valid rent receipt leaves no room for doubt about who paid, how much, and for which period. Include all of the details below so the receipt stands up as evidence for tax or any dispute.",
+        list: [
+          "Tenant's name and the property address",
+          "Landlord's name and signature",
+          "The amount paid and the payment method",
+          "The rental period the payment covers (e.g. month and year)",
+          "The date of payment and a receipt number",
+        ],
+      },
+      {
+        h: "Rent receipts for HRA and tax",
+        p: "Salaried employees in many countries need rent receipts to claim House Rent Allowance and reduce their taxable income. Some tax authorities also require the landlord's PAN or tax ID on receipts above a certain monthly rent. Issuing a clean, numbered receipt each month keeps both landlord and tenant covered.",
+      },
+    ],
+  },
+
+  "proforma-invoice": {
+    intro:
+      "A proforma invoice is a preliminary bill of sale sent before a transaction is finalised. It tells the buyer exactly what to expect — the goods or services, the quantities, and the estimated cost — without being a formal demand for payment. It's widely used for quotes, advance payments, and international shipping.",
+    sections: [
+      {
+        h: "Proforma vs a commercial invoice",
+        p: "A proforma is sent before the sale is confirmed and is not recorded as a sale or used to reclaim tax. A commercial invoice comes once the sale is agreed or delivered, demands payment, and is your official accounting record. Think of the proforma as a detailed, binding-looking estimate.",
+      },
+      {
+        h: "When to use a proforma invoice",
+        p: "Reach for a proforma when a customer needs a formal document to approve a purchase or arrange funds, when you're taking a deposit, or when shipping goods internationally so customs can estimate duties before arrival.",
+        list: [
+          "To give a customer a formal quote for internal approval",
+          "To request an advance payment or deposit",
+          "For customs on international shipments",
+          "When final quantities or prices may still change",
+        ],
+      },
+    ],
+  },
+
+  "commercial-invoice": {
+    intro:
+      "A commercial invoice is the primary document used in international trade. Customs authorities rely on it to assess duties and taxes, and it serves as the legal record of a cross-border sale. Getting it right keeps your shipments moving and avoids costly delays at the border.",
+    sections: [
+      {
+        h: "What customs needs on a commercial invoice",
+        p: "Customs officers use the commercial invoice to value a shipment and apply the correct duties. Missing or vague information is one of the most common causes of shipments being held, so be thorough and accurate.",
+        list: [
+          "Full exporter (seller) and importer (buyer) details",
+          "A detailed description of each item and its quantity",
+          "The value of each item and the currency",
+          "Country of origin of the goods",
+          "Harmonised System (HS) codes where required",
+          "Shipping terms (Incoterms) and reason for export",
+        ],
+      },
+      {
+        h: "Commercial vs proforma invoice in shipping",
+        p: "A proforma invoice is often sent first so the buyer and customs can preview the shipment. The commercial invoice is the final, definitive document that accompanies the goods and is used to clear customs and collect payment. The values on both should match unless something genuinely changed.",
+      },
+    ],
+  },
+
+  "hourly-invoice": {
+    intro:
+      "An hourly invoice bills a client based on the time you worked rather than a fixed fee. It's the standard for many freelancers, consultants, lawyers, and agencies. The key to a good hourly invoice is transparency — showing the hours, the rate, and what was done so the total is never a surprise.",
+    sections: [
+      {
+        h: "Show your hours clearly",
+        p: "List each block of work as its own line with the hours, your rate, and a short description of the task. This lets the client connect the time billed to the value delivered and dramatically reduces queries. The generator above multiplies hours by rate and totals everything automatically.",
+        list: [
+          "One line per task or session",
+          "Hours worked × your hourly rate",
+          "A brief description of what was done",
+          "Tax applied if you're registered, then the grand total",
+        ],
+      },
+      {
+        h: "Track time so invoicing is painless",
+        p: "Whether you use a timer app or a simple spreadsheet, recording hours as you go means your invoice writes itself at the end of the period. Round consistently (to 6, 15, or 30 minutes), agree the rounding with your client up front, and keep your notes so you can answer any question about a line.",
+      },
+    ],
+  },
+
+  "bill-generator": {
+    intro:
+      "A bill generator lets you create a clean, professional bill for any product or service and download it as a PDF — no software, no signup. Whether you run a shop, provide a service, or just need to bill a one-off, this free tool turns your line items into a tidy bill in seconds.",
+    sections: [
+      {
+        h: "Bill or invoice — what's the difference?",
+        p: "In everyday use, 'bill' and 'invoice' mean almost the same thing: a document requesting payment for goods or services. 'Bill' is the more casual term a customer hears ('here's your bill'), while 'invoice' is the formal business term. The structure and the steps to create one are identical.",
+      },
+      {
+        h: "Make a bill in seconds",
+        p: "Add your business name, list what you're charging for with quantities and prices, apply tax if needed, and download. The total calculates itself and the layout fits neatly onto a single page, so your bill looks professional whether it's for a customer at the counter or a client by email.",
+        list: [
+          "Add your details and the customer's",
+          "List items with quantity and price",
+          "Apply tax, inclusive or exclusive",
+          "Download a clean PDF bill to print or send",
+        ],
+      },
+    ],
+  },
+
+  "online-bill-maker": {
+    intro:
+      "An online bill maker lets you create bills from any device with a browser — no installs, no accounts, no cost. It's ideal when you need to send a professional bill quickly, from a laptop or a phone, without opening clunky software or wrestling with a spreadsheet.",
+    sections: [
+      {
+        h: "Why use an online bill maker",
+        p: "Because it works anywhere. Everything runs in your browser, so you can make a bill on a job site from your phone, at a market stall on a tablet, or at your desk — and the PDF comes out identical every time. Your data stays on your device and is never uploaded.",
+        list: [
+          "Works on phone, tablet, and desktop",
+          "Nothing to install or update",
+          "No signup and no fees",
+          "Private — your data never leaves your browser",
+        ],
+      },
+      {
+        h: "Professional results, zero learning curve",
+        p: "You don't need design skills or accounting knowledge. Fill in a few fields, add your logo if you want, and download. The layout, totals, and tax are handled for you, so even your first bill looks like it came from an established business.",
+      },
+    ],
+  },
+
+  "bill-format": {
+    intro:
+      "Getting your bill format right matters: a well-structured bill is easy to read, looks professional, and gets paid faster. A standard bill format follows a predictable order so customers and finance teams can scan it instantly and find exactly what they need.",
+    sections: [
+      {
+        h: "The standard bill format, top to bottom",
+        p: "A professional bill follows a familiar structure. Sticking to it means your customers always know where to look, which reduces questions and speeds up payment.",
+        list: [
+          "Header — 'Bill' or 'Invoice', your logo and business name",
+          "Your details and the customer's details",
+          "Bill number and date, plus a due date",
+          "Itemised table — description, quantity, rate, amount",
+          "Subtotal, tax, and a clear grand total",
+          "Payment details and any notes or terms",
+        ],
+      },
+      {
+        h: "Format once, reuse forever",
+        p: "Once you settle on a clean format, every bill you send should follow it. Consistency builds trust and recognition with repeat customers, and it makes your own record-keeping effortless because every document looks and reads the same way.",
+      },
+    ],
+  },
+
+  "free-invoice-generator": {
+    intro:
+      "A genuinely free invoice generator should let you create unlimited invoices, with no watermark, no signup, and no surprise paywall. This one does exactly that — you fill in your details, list your work, and download a clean PDF invoice, as many times as you like, at no cost.",
+    sections: [
+      {
+        h: "What 'free' should actually mean",
+        p: "Many 'free' tools limit you to a handful of invoices, stamp a watermark on the PDF, or require a credit card. A truly free generator has none of those catches. Everything you need to bill a client professionally is available without paying or creating an account.",
+        list: [
+          "Unlimited invoices, receipts, and quotations",
+          "No watermark on your PDF",
+          "No signup or credit card required",
+          "Logo, colours, multi-currency, and tax included",
+        ],
+      },
+      {
+        h: "Private by design",
+        p: "Because the invoice is built entirely in your browser, your business and client details are never uploaded to a server. Free shouldn't mean your data becomes the product — here, your information stays on your device, full stop.",
+      },
+    ],
+  },
+
+  "invoice-template-free": {
+    intro:
+      "A free invoice template gives you a professional structure without starting from a blank page. Instead of formatting a Word or Excel file and hoping the maths is right, you fill in a ready-made layout and download a polished PDF — with the totals and tax calculated for you.",
+    sections: [
+      {
+        h: "Why a template beats Word or Excel",
+        p: "Word templates break when you add rows, and Excel sheets are easy to misformat or miscalculate. A purpose-built invoice template keeps the layout intact no matter how many items you add, totals everything automatically, and always exports a clean, single-page PDF.",
+        list: [
+          "Totals and tax calculate automatically",
+          "Layout never breaks when you add line items",
+          "Consistent, professional design every time",
+          "One-click PDF export — no print-to-PDF hassle",
+        ],
+      },
+      {
+        h: "Customise it to your brand",
+        p: "A good template is a starting point, not a straitjacket. Add your logo, choose an accent colour, set your currency, and pick tax-inclusive or tax-exclusive billing. The result looks bespoke to your business while saving you all the formatting work.",
+      },
+    ],
+  },
+
+  "construction-invoice": {
+    intro:
+      "Construction invoices have to capture a lot: labour across trades, materials, equipment, permits, and often progress payments across a long job. A clear, itemised construction invoice keeps clients confident about what they're paying for and gives you a solid record for every stage of the build.",
+    sections: [
+      {
+        h: "Itemise every part of the job",
+        p: "On a construction job, lumping everything into one figure invites disputes. Break the invoice into clear sections so the client can see exactly where their money is going and approve it without hesitation.",
+        list: [
+          "Labour by trade, with hours or days and rates",
+          "Materials, itemised with quantities and costs",
+          "Equipment and plant hire",
+          "Permits, inspections, and disposal fees",
+          "Tax applied to the relevant lines",
+        ],
+      },
+      {
+        h: "Progress billing and retention",
+        p: "Few construction jobs are billed in a single invoice. Take a deposit, invoice at agreed milestones as the work progresses, and issue a final invoice on completion. If the contract holds a retention percentage until the defects period ends, show it clearly so everyone knows what's outstanding and when it's due.",
+      },
+    ],
+  },
+
+  "invoice-generator-australia-gst": {
+    intro:
+      "If you're registered for GST in Australia, every sale over $82.50 needs a compliant tax invoice. This generator is set up for Australian GST billing — it lets you show your ABN, apply 10% GST, and produce a 'Tax Invoice' the ATO and your clients will accept.",
+    sections: [
+      {
+        h: "Anatomy of a compliant Australian tax invoice",
+        p: "The ATO is specific about what a tax invoice must contain. Include each of the following and your client can confidently claim their GST credit while you stay compliant.",
+        list: [
+          "The words 'Tax Invoice' displayed prominently",
+          "Your business or trading name and your ABN",
+          "The date of issue",
+          "A description of the goods or services",
+          "The GST amount, or a statement that the price includes GST",
+          "For invoices over $1,000, the buyer's name and ABN",
+        ],
+      },
+      {
+        h: "When GST applies",
+        p: "You must register for and charge GST once your turnover reaches $75,000 a year. GST is 10% on most taxable sales, though some items are GST-free (such as basic food and exports). Exports and most services to overseas clients are generally GST-free — show these clearly so the zero rate is obvious.",
+      },
+    ],
+  },
+
+  "invoice-generator-for-small-business": {
+    intro:
+      "Small businesses need invoicing that's fast, professional, and free — not another monthly subscription. This generator lets you create branded invoices, receipts, and quotations and download them as PDFs instantly, so billing never slows your business down or eats into your margins.",
+    sections: [
+      {
+        h: "Built for how small businesses bill",
+        p: "From a single line item to a long, itemised order, the generator keeps every invoice on one clean page with the totals and tax worked out for you. Add your logo and colour once, and every document reinforces your brand.",
+        list: [
+          "Branded invoices, receipts, and quotes in one place",
+          "Multi-currency for customers abroad",
+          "Tax-inclusive or tax-exclusive billing",
+          "Sequential numbering for tidy records",
+        ],
+      },
+      {
+        h: "Save money as you grow",
+        p: "Dedicated invoicing software can cost hundreds a year — money better spent growing your business. A free generator covers everything most small businesses need, and if you ever want invoice history and an ad-free workspace, an affordable Pro upgrade is there when you need it.",
+      },
+    ],
+  },
+
+  "free-invoice-maker": {
+    intro:
+      "A free invoice maker should be exactly that: open it, make a professional invoice, download it, done — with no account and no cost. This tool turns your details and line items into a clean PDF invoice in under a minute, as often as you need.",
+    sections: [
+      {
+        h: "Make an invoice in four steps",
+        p: "There's no learning curve. The whole process takes about a minute and produces a polished, single-page PDF every time.",
+        list: [
+          "Choose Invoice, Receipt, or Quotation",
+          "Add your details, the client's, and your logo",
+          "List items with quantity and rate — totals auto-calculate",
+          "Download the PDF or print it to send",
+        ],
+      },
+      {
+        h: "No catch, no watermark",
+        p: "Unlike many free tools, there's no watermark on your invoice, no cap on how many you can make, and no credit card required. Your data stays in your browser, so making invoices for free never costs you your privacy either.",
+      },
+    ],
+  },
+
+  "freelance-invoice-template-usa": {
+    intro:
+      "US freelancers need an invoice template that bills in dollars, handles sales tax where it applies, and produces records that line up with 1099 reporting. This free template is tailored for American freelancers, so you can send a clean, professional invoice that gets you paid and keeps your taxes tidy.",
+    sections: [
+      {
+        h: "What US freelance clients expect",
+        p: "American clients — especially agencies and larger companies — expect a clear, itemised invoice with a unique number, your payment details, and a defined due date. Many will report your earnings on a 1099, so your invoices should be easy to reconcile against those forms at year end.",
+        list: [
+          "Bill in US dollars with itemised lines",
+          "A unique invoice number and clear due date",
+          "Your payment details (ACH, Zelle, PayPal, check)",
+          "Numbered records that match any 1099s you receive",
+        ],
+      },
+      {
+        h: "Sales tax for freelancers",
+        p: "Most freelance services aren't subject to sales tax, but rules vary by state and by what you sell. If you provide taxable goods or services, apply your state's rate as a separate line; if not, you typically won't charge sales tax at all. Check your state's department of revenue if you're unsure.",
+      },
+    ],
+  },
+
+  "invoice-template-canada": {
+    intro:
+      "A Canadian invoice template should bill in Canadian dollars and handle GST/HST (and PST or QST where it applies) correctly. This free template is set up for Canada, so freelancers and small businesses can issue a compliant, professional invoice without wrestling with tax formatting.",
+    sections: [
+      {
+        h: "Apply the right tax for your province",
+        p: "Canada's sales tax depends on where you are. HST provinces use a single combined rate, others charge GST plus PST, Alberta and the territories charge GST only, and Quebec adds QST. Apply your province's rate, show it as its own line, and include your GST/HST number if you're registered.",
+        list: [
+          "HST (e.g. Ontario) — one combined rate",
+          "GST + PST (e.g. BC, Manitoba, Saskatchewan)",
+          "GST only (Alberta and the territories)",
+          "Quebec — GST plus QST",
+        ],
+      },
+      {
+        h: "Registration and record-keeping",
+        p: "You must register for GST/HST once revenue tops $30,000 over four consecutive quarters; below that it's optional. Either way, keep numbered, dated invoices — the CRA expects you to retain business records for six years, and clean invoices make filing your return straightforward.",
+      },
+    ],
+  },
+};

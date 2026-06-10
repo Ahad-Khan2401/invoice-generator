@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import InvoiceGenerator from "@/components/InvoiceGenerator";
+import LandingContent from "@/components/LandingContent";
 import SeoContent from "@/components/SeoContent";
 import AdSlot from "@/components/AdSlot";
 import JsonLd from "@/components/JsonLd";
@@ -51,6 +52,9 @@ export default async function ProfessionPage(
       <InvoiceGenerator heading={data.h1} subheading={data.sub} defaultCurrency={data.currencySymbol} />
 
       <AdSlot slot={SITE.adSlots.homeTop} />
+
+      {/* Unique, page-specific content — differentiates every landing page */}
+      <LandingContent slug={profession} />
 
       <SeoContent profession={data.profession} midAdSlot={SITE.adSlots.homeMid} />
 

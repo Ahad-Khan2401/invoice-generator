@@ -1051,6 +1051,205 @@ export const POSTS: Record<string, Post> = {
       { q: "Do I charge GST to overseas clients?", a: "Generally no. Most exports of goods and cross-border services to non-Australian clients are GST-free (zero-rated). However, digital services supplied to Australian consumers may be subject to GST — check the ATO website for your specific situation." },
     ],
   },
+
+  /* ══════════════════════════════════════════════
+     POST 24 — Invoice vs Receipt (high informational volume)
+  ══════════════════════════════════════════════ */
+  "invoice-vs-receipt-difference": {
+    title: "Invoice vs Receipt: What's the Difference? (2026 Guide)",
+    description: "Invoice vs receipt explained simply — what each document means, when to use which, and what legally must appear on each. With free templates for both.",
+    date: "2026-06-08",
+    updated: "2026-06-08",
+    readMins: 5,
+    keywords: ["invoice vs receipt", "difference between invoice and receipt", "is a receipt the same as an invoice", "when to use invoice or receipt"],
+    excerpt: "An invoice requests payment; a receipt confirms it. Here's the full difference, when to use each, and what must appear on both — with free templates.",
+    body: [
+      { type: "p", text: "People use the words 'invoice' and 'receipt' as if they mean the same thing, but they are two different documents with two different jobs. Mixing them up can confuse clients, mess up your bookkeeping, and even cause tax problems. This guide makes the difference clear in plain language." },
+      { type: "callout", text: `Need either one right now? ${CTA}` },
+      { type: "h2", text: "The simple difference" },
+      { type: "p", text: "An invoice is a request for payment — you send it before you get paid. A receipt is proof of payment — you send it after the money has been received. In short: invoice asks, receipt confirms." },
+      { type: "h2", text: "What is an invoice?" },
+      { type: "p", text: "An invoice is a document a seller sends to a buyer that lists the goods or services provided and the amount owed. It is essentially a bill. It includes payment terms and a due date, and it creates a record that money is owed to you." },
+      { type: "ul", items: [
+        "Sent before payment",
+        "States the amount due and the due date",
+        "Has a unique invoice number",
+        "Used to chase and track unpaid money",
+      ]},
+      { type: "h2", text: "What is a receipt?" },
+      { type: "p", text: "A receipt is issued after the buyer pays. It confirms that a specific amount was received for a specific transaction. Customers keep receipts as proof of purchase for returns, warranties, expense claims, and tax records." },
+      { type: "ul", items: [
+        "Issued after payment is made",
+        "Confirms the amount actually paid",
+        "Acts as proof of purchase",
+        "Used for refunds, warranties, and expense claims",
+      ]},
+      { type: "h2", text: "When should you use which?" },
+      { type: "ol", items: [
+        "Finished a job and waiting to be paid? Send an <strong>invoice</strong>.",
+        "Just received payment? Issue a <strong>receipt</strong>.",
+        "Got paid instantly at point of sale (cash, card)? A <strong>receipt</strong> alone is usually enough.",
+        "Billing a client on terms (e.g. Net 30)? Send an <strong>invoice</strong> first, then a receipt once they pay.",
+      ]},
+      { type: "p", text: `Our free tool creates both — switch the document type between Invoice, Receipt, and Quotation, then ${CTA}` },
+      { type: "h2", text: "Can one document be both?" },
+      { type: "p", text: "Sometimes. A 'paid invoice' — an invoice stamped or marked PAID — can act as a receipt because it shows both what was owed and that it was settled. But for clean records, most businesses keep them separate: one invoice requesting payment, one receipt confirming it." },
+    ],
+    faq: [
+      { q: "Is a receipt the same as an invoice?", a: "No. An invoice is a request for payment sent before you are paid, while a receipt is proof of payment issued after the money is received. They serve opposite ends of the same transaction." },
+      { q: "Do I need both an invoice and a receipt?", a: "For credit-based sales (paid later) you typically send an invoice first, then a receipt once paid. For instant payments at point of sale, a receipt alone is usually enough." },
+      { q: "Does a receipt need a number?", a: "It's best practice to number receipts sequentially for your records and tax reporting, just like invoices, even though it isn't always legally required." },
+    ],
+  },
+
+  /* ══════════════════════════════════════════════
+     POST 25 — Payment reminder email templates (high intent)
+  ══════════════════════════════════════════════ */
+  "payment-reminder-email-templates": {
+    title: "How to Write a Payment Reminder Email (5 Free Templates)",
+    description: "Polite but effective payment reminder email templates for overdue invoices — before due date, on due date, and for late payments. Copy, paste, and get paid.",
+    date: "2026-06-08",
+    updated: "2026-06-08",
+    readMins: 7,
+    keywords: ["payment reminder email", "overdue invoice email", "how to ask for payment politely", "late payment email template", "invoice follow up email"],
+    excerpt: "Five copy-paste payment reminder email templates — from a friendly nudge before the due date to a firm final notice — that get invoices paid without burning the relationship.",
+    body: [
+      { type: "p", text: "Chasing late payments is the most uncomfortable part of running a business. The good news: a clear, polite, well-timed email gets most invoices paid without any friction. Below are five ready-to-use templates for every stage, plus the timing that works best." },
+      { type: "callout", text: `Reminders work best when your original invoice was clear and professional. ${CTA}` },
+      { type: "h2", text: "When to send each reminder" },
+      { type: "ol", items: [
+        "<strong>3 days before due date</strong> — a friendly heads-up.",
+        "<strong>On the due date</strong> — a simple 'payment is due today' note.",
+        "<strong>3–7 days overdue</strong> — a polite first reminder.",
+        "<strong>14 days overdue</strong> — a firmer second reminder.",
+        "<strong>30+ days overdue</strong> — a final notice before escalation.",
+      ]},
+      { type: "h2", text: "Template 1 — Friendly reminder (before due date)" },
+      { type: "p", text: "Subject: Invoice #INV-001 due on [date]<br><br>Hi [Name], just a quick reminder that invoice #INV-001 for [amount] is due on [date]. I've attached it again here for convenience. Thanks so much — let me know if you have any questions." },
+      { type: "h2", text: "Template 2 — Due today" },
+      { type: "p", text: "Subject: Invoice #INV-001 is due today<br><br>Hi [Name], invoice #INV-001 for [amount] is due today. If you've already sent payment, thank you and please ignore this. Otherwise, here are the payment details again: [details]." },
+      { type: "h2", text: "Template 3 — First overdue reminder" },
+      { type: "p", text: "Subject: Invoice #INV-001 — now overdue<br><br>Hi [Name], I wanted to follow up on invoice #INV-001 for [amount], which was due on [date] and is now a few days overdue. Could you let me know when I can expect payment? Happy to resend the invoice if needed." },
+      { type: "h2", text: "Template 4 — Firm second reminder" },
+      { type: "p", text: "Subject: Second reminder: Invoice #INV-001 overdue by 14 days<br><br>Hi [Name], invoice #INV-001 for [amount] is now 14 days overdue. I'd really appreciate it if you could process this as soon as possible. If there's an issue with the invoice or a delay I should know about, please let me know so we can sort it out." },
+      { type: "h2", text: "Template 5 — Final notice" },
+      { type: "p", text: "Subject: Final notice: Invoice #INV-001 (30 days overdue)<br><br>Hi [Name], despite previous reminders, invoice #INV-001 for [amount] remains unpaid 30 days after the due date. Please arrange payment within 7 days to avoid late fees / further action. I value our working relationship and would prefer to resolve this quickly." },
+      { type: "h2", text: "Tips that actually get you paid" },
+      { type: "ul", items: [
+        "Always attach the invoice again — don't make them search for it.",
+        "Reference the invoice number and exact amount in every email.",
+        "Stay polite and professional, even in the final notice.",
+        "Send during business hours, mid-week, for the best response.",
+        "Add a small late fee clause to your terms so reminders carry weight.",
+      ]},
+      { type: "p", text: `Clear invoices get paid faster. Create yours with payment terms and due dates built in — ${CTA}` },
+    ],
+    faq: [
+      { q: "How do I politely ask for payment?", a: "Keep it short and friendly: reference the invoice number and amount, restate the due date, attach the invoice again, and ask when you can expect payment. Assume good intent in the first reminder." },
+      { q: "How long should I wait before sending a payment reminder?", a: "Send a friendly reminder a few days before the due date, another on the due date, and a polite follow-up 3–7 days after it becomes overdue." },
+      { q: "Can I charge a late fee on overdue invoices?", a: "Yes, if you stated it in your terms before the work began. Many businesses charge 1–2% per month or a flat fee. Always mention the late-fee policy on the original invoice." },
+    ],
+  },
+
+  /* ══════════════════════════════════════════════
+     POST 26 — Net 30 / payment terms explained
+  ══════════════════════════════════════════════ */
+  "net-30-payment-terms-explained": {
+    title: "Net 30 Payment Terms Explained (Net 15, Net 60 & More)",
+    description: "What 'Net 30' means on an invoice, plus Net 15, Net 60, Due on Receipt, and 2/10 Net 30 explained — and how to choose payment terms that get you paid faster.",
+    date: "2026-06-08",
+    updated: "2026-06-08",
+    readMins: 6,
+    keywords: ["net 30 payment terms", "what does net 30 mean", "net 15 net 60", "invoice payment terms", "2/10 net 30"],
+    excerpt: "Net 30 means payment is due 30 days after the invoice date. Here's what every common payment term means and how to pick the one that gets you paid fastest.",
+    body: [
+      { type: "p", text: "Payment terms tell your client exactly when they need to pay. Get them right and your cash flow stays healthy; get them vague and you'll spend your time chasing money. This guide decodes every common term you'll see on an invoice." },
+      { type: "h2", text: "What does Net 30 mean?" },
+      { type: "p", text: "'Net 30' means the full payment is due within 30 days of the invoice date. The word 'net' refers to the total amount owed after any discounts. So an invoice dated 1 June with Net 30 terms is due by 1 July." },
+      { type: "callout", text: `Add clear payment terms to every invoice automatically — ${CTA}` },
+      { type: "h2", text: "Common payment terms explained" },
+      { type: "ul", items: [
+        "<strong>Due on Receipt</strong> — payment is expected immediately when the invoice is received.",
+        "<strong>Net 7 / Net 10</strong> — due within 7 or 10 days; common for freelancers and small jobs.",
+        "<strong>Net 15</strong> — due within 15 days; a good balance for services.",
+        "<strong>Net 30</strong> — due within 30 days; the standard for most B2B work.",
+        "<strong>Net 60 / Net 90</strong> — due within 60 or 90 days; common with large companies and slow to favour the buyer.",
+        "<strong>2/10 Net 30</strong> — a 2% discount if paid within 10 days, otherwise the full amount is due in 30.",
+      ]},
+      { type: "h2", text: "What does 2/10 Net 30 mean?" },
+      { type: "p", text: "This is an early-payment discount. '2/10' means the client can take 2% off if they pay within 10 days. 'Net 30' means that if they don't take the discount, the full amount is due in 30 days. It's a simple way to encourage faster payment." },
+      { type: "h2", text: "Which payment terms should you use?" },
+      { type: "ol", items: [
+        "Freelancers and solo workers: Net 7 to Net 15, or Due on Receipt for small jobs.",
+        "Service businesses: Net 15 or Net 30.",
+        "Selling to large corporations: they may demand Net 30 to Net 60 — negotiate a deposit if so.",
+        "Cash-flow tight? Offer a small early-payment discount like 2/10 Net 30.",
+      ]},
+      { type: "h2", text: "Tips for getting paid on time" },
+      { type: "ul", items: [
+        "Always show both the invoice date and the exact due date — don't make clients calculate it.",
+        "State the payment terms clearly in words, e.g. 'Payment due within 30 days (Net 30)'.",
+        "Shorter terms generally get paid faster — use the shortest the client will accept.",
+        "Include your payment details directly on the invoice to remove friction.",
+      ]},
+      { type: "p", text: `Our free generator lets you set a due date and add a terms note on every invoice — ${CTA}` },
+    ],
+    faq: [
+      { q: "What does Net 30 mean on an invoice?", a: "Net 30 means the full invoice amount is due within 30 days of the invoice date. For example, an invoice dated June 1 with Net 30 terms must be paid by July 1." },
+      { q: "Is Net 30 from the invoice date or delivery date?", a: "Almost always from the invoice date, unless your contract specifically says otherwise (such as 'Net 30 from delivery' or 'from end of month'). Always state which on the invoice." },
+      { q: "What are the best payment terms for a small business?", a: "Shorter terms get you paid faster. Net 7 to Net 15 works well for freelancers and small businesses, while Net 30 is the standard expectation for larger B2B clients." },
+    ],
+  },
+
+  /* ══════════════════════════════════════════════
+     POST 28 — UK VAT invoice (high CPC UK)
+  ══════════════════════════════════════════════ */
+  "uk-vat-invoice-requirements": {
+    title: "UK VAT Invoice Requirements: What to Include (2026)",
+    description: "What a valid UK VAT invoice must include under HMRC rules — VAT number, rates, and the difference between a full and simplified VAT invoice. Free template.",
+    date: "2026-06-08",
+    updated: "2026-06-08",
+    readMins: 6,
+    keywords: ["uk vat invoice requirements", "what to include on a vat invoice", "hmrc invoice rules", "vat invoice template uk", "do i need to charge vat"],
+    excerpt: "What HMRC requires on a valid UK VAT invoice — VAT number, rates, full vs simplified invoices, and when you must (and must not) charge VAT.",
+    body: [
+      { type: "p", text: "If you're VAT-registered in the UK, HMRC requires specific details on every invoice you issue. Getting them right means your clients can reclaim their VAT and you stay compliant. This guide covers exactly what to include." },
+      { type: "h2", text: "Do you need to charge VAT?" },
+      { type: "p", text: "You must register for VAT and charge it once your taxable turnover exceeds the VAT threshold (£90,000 as of 2024/25). Below that you can register voluntarily, but you don't have to. If you're not VAT-registered, you must not show or charge VAT on your invoices." },
+      { type: "callout", text: `Create a clean, professional UK invoice in seconds — ${CTA}` },
+      { type: "h2", text: "What a full VAT invoice must include" },
+      { type: "ul", items: [
+        "A unique, sequential invoice number",
+        "Your business name and address",
+        "Your VAT registration number",
+        "The invoice date (and 'time of supply' / tax point if different)",
+        "The customer's name and address",
+        "A description of the goods or services",
+        "The quantity, unit price (excluding VAT), and VAT rate for each item",
+        "The total amount excluding VAT",
+        "The total VAT amount, shown in sterling",
+        "The total amount including VAT",
+      ]},
+      { type: "h2", text: "UK VAT rates" },
+      { type: "ul", items: [
+        "Standard rate — 20% (most goods and services)",
+        "Reduced rate — 5% (e.g. domestic energy, children's car seats)",
+        "Zero rate — 0% (e.g. most food, children's clothes, books)",
+        "Exempt — no VAT (e.g. insurance, certain education and health services)",
+      ]},
+      { type: "h2", text: "Full vs simplified VAT invoice" },
+      { type: "p", text: "For sales up to £250 (including VAT), you can issue a simplified VAT invoice, which needs fewer details: your name, address, and VAT number; the time of supply; a description of the goods/services; the rate of VAT; and the total amount including VAT. For anything over £250, you must issue a full VAT invoice." },
+      { type: "h2", text: "How long to keep UK invoices" },
+      { type: "p", text: "HMRC requires you to keep VAT records and invoices for at least 6 years. If you use the VAT Cash Accounting Scheme or have specific arrangements, keep them organised and accessible in case of an inspection." },
+      { type: "p", text: `Read more in our guides for <a href="/freelancer-invoice">freelancers</a> and <a href="/small-business-invoice">small businesses</a>, or ${CTA}` },
+    ],
+    faq: [
+      { q: "What must a UK VAT invoice include?", a: "A unique invoice number, your business name and address, your VAT number, the date, the customer's details, a description of goods/services, the net amount, the VAT rate and amount in sterling, and the total including VAT." },
+      { q: "Can I charge VAT if I'm not registered?", a: "No. You must not charge or show VAT on invoices unless you are VAT-registered with HMRC. Doing so is illegal and can result in penalties." },
+      { q: "What is the UK VAT registration threshold?", a: "As of 2024/25, you must register for VAT once your taxable turnover exceeds £90,000 in any rolling 12-month period. You can also register voluntarily below this." },
+    ],
+  },
+
 };
 
 export const POST_SLUGS = Object.keys(POSTS);
