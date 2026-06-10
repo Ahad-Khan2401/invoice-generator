@@ -4,6 +4,7 @@ import { LANDING_SLUGS } from "@/lib/landing";
 import { LANDING_ES_SLUGS } from "@/lib/landing-es";
 import { LANDING_PT_SLUGS } from "@/lib/landing-pt";
 import { POST_SLUGS } from "@/lib/posts";
+import { TOOL_SLUGS } from "@/lib/tools";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = SITE.url;
@@ -23,7 +24,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/terms`,        lastModified: now, changeFrequency: "yearly",  priority: 0.3 },
     { url: `${base}/contact`,      lastModified: now, changeFrequency: "yearly",  priority: 0.4 },
     { url: `${base}/blog`,         lastModified: now, changeFrequency: "weekly",  priority: 0.7 },
+    { url: `${base}/tools`,        lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
+
+  // Free calculator tools
+  const tools: MetadataRoute.Sitemap = TOOL_SLUGS.map((slug) => ({
+    url: `${base}/tools/${slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
 
   // Blog posts
   const posts: MetadataRoute.Sitemap = POST_SLUGS.map((slug) => ({
@@ -60,5 +70,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     alternates: { languages: { "pt-BR": `${base}/pt/${slug}`, "x-default": base } },
   }));
 
-  return [...core, ...landing, ...landingEs, ...landingPt, ...posts];
+  return [...core, ...tools, ...landing, ...landingEs, ...landingPt, ...posts];
 }

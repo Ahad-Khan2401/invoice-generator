@@ -36,14 +36,34 @@ export function softwareSchema(url: string = SITE.url) {
 
 /* FAQPage — built from the SAME data as the visible FAQ section. */
 export function faqSchema() {
+  return faqSchemaFrom(FAQS);
+}
+
+/* FAQPage from a custom list of Q&As (for tools, calculators, etc.). */
+export function faqSchemaFrom(faqs: { q: string; a: string }[]) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: FAQS.map((f) => ({
+    mainEntity: faqs.map((f) => ({
       "@type": "Question",
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
+  };
+}
+
+/* WebApplication — for a free online tool / calculator page. */
+export function toolSchema(p: { name: string; description: string; url: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: p.name,
+    url: p.url,
+    applicationCategory: "FinanceApplication",
+    operatingSystem: "Web Browser (Windows, macOS, Android, iOS)",
+    description: p.description,
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
   };
 }
 
