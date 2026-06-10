@@ -1250,6 +1250,281 @@ export const POSTS: Record<string, Post> = {
     ],
   },
 
+  /* ══════════════════════════════════════════════
+     POST 28 — What is an invoice (high-volume definitional)
+  ══════════════════════════════════════════════ */
+  "what-is-an-invoice": {
+    title: "What Is an Invoice? Definition, Types & Examples (2026)",
+    description: "What is an invoice? A clear definition plus the types of invoices, what they're used for, what they must include, and how they differ from bills and receipts.",
+    date: "2026-06-09",
+    updated: "2026-06-09",
+    readMins: 6,
+    keywords: ["what is an invoice", "invoice definition", "invoice meaning", "types of invoices", "what does an invoice do"],
+    excerpt: "An invoice is a document that requests payment for goods or services. Here's a plain-English definition, the main types of invoices, and what every invoice must include.",
+    body: [
+      { type: "p", text: "An invoice is a document a seller sends to a buyer that itemises a transaction and requests payment for goods or services provided. In simple terms, it's a formal bill: it says what was delivered, how much is owed, and when payment is due. Invoices are the backbone of business record-keeping and the main way companies track money owed to them." },
+      { type: "callout", text: `Want to create one now? ${CTA}` },
+      { type: "h2", text: "What is an invoice used for?" },
+      { type: "p", text: "An invoice does several jobs at once. It requests payment, creates a legal record of a sale, helps both parties track what's owed, and provides the documentation needed for accounting and tax. Without invoices, businesses would have no reliable way to chase payments or prove their income." },
+      { type: "ul", items: [
+        "Requesting payment from a customer",
+        "Recording a sale for your accounts",
+        "Tracking which payments are outstanding",
+        "Supporting tax returns and audits",
+        "Providing proof of a transaction if a dispute arises",
+      ]},
+      { type: "h2", text: "What must an invoice include?" },
+      { type: "p", text: "While the exact requirements vary by country, almost every valid invoice contains the same core elements:" },
+      { type: "ol", items: [
+        "The word 'Invoice' and a unique invoice number",
+        "Your business name, address, and contact details",
+        "The customer's name and details",
+        "The invoice date and the payment due date",
+        "An itemised list of goods or services with quantities and prices",
+        "Any tax (VAT, GST, sales tax) shown separately",
+        "The total amount due and accepted payment methods",
+      ]},
+      { type: "h2", text: "Types of invoices" },
+      { type: "p", text: "Different situations call for different invoices. The most common types are:" },
+      { type: "ul", items: [
+        "<strong>Standard invoice</strong> — the everyday invoice requesting payment for a sale.",
+        "<strong>Proforma invoice</strong> — a preliminary estimate sent before a sale is finalised.",
+        "<strong>Commercial invoice</strong> — used in international trade for customs.",
+        "<strong>Recurring invoice</strong> — sent on a regular schedule for ongoing services.",
+        "<strong>Credit note</strong> — issued to reduce or refund a previous invoice.",
+        "<strong>Timesheet/hourly invoice</strong> — bills based on hours worked.",
+      ]},
+      { type: "h2", text: "Invoice vs bill vs receipt" },
+      { type: "p", text: "These three are often confused. An invoice requests payment before it's made. A 'bill' is essentially the same thing in casual language — what the customer calls the invoice they receive. A receipt is different: it's issued after payment to confirm the money was received. See our <a href=\"/blog/invoice-vs-receipt-difference\">invoice vs receipt guide</a> for the full breakdown." },
+    ],
+    faq: [
+      { q: "What is an invoice in simple terms?", a: "An invoice is a document that lists goods or services provided and requests payment for them. It's a formal bill that states what was delivered, how much is owed, and when payment is due." },
+      { q: "Is an invoice a receipt?", a: "No. An invoice requests payment before it's made, while a receipt confirms payment after it's been received. They are two different documents for opposite ends of a transaction." },
+      { q: "Is an invoice a legal document?", a: "An invoice becomes a legally binding record of a transaction once it's accepted by the buyer. It's an important document for accounting, tax, and resolving any payment disputes." },
+    ],
+  },
+
+  /* ══════════════════════════════════════════════
+     POST 29 — Purchase order vs invoice
+  ══════════════════════════════════════════════ */
+  "purchase-order-vs-invoice": {
+    title: "Purchase Order vs Invoice: What's the Difference?",
+    description: "Purchase order vs invoice explained — who creates each, when they're used, what they contain, and how they work together in the buying process. With examples.",
+    date: "2026-06-09",
+    updated: "2026-06-09",
+    readMins: 5,
+    keywords: ["purchase order vs invoice", "difference between purchase order and invoice", "po vs invoice", "what is a purchase order"],
+    excerpt: "A purchase order is created by the buyer to order goods; an invoice is created by the seller to request payment. Here's how they differ and work together.",
+    body: [
+      { type: "p", text: "Purchase orders (POs) and invoices are both essential documents in business transactions, but they sit at opposite ends of the process and are created by different parties. Understanding the difference keeps your buying and selling organised and your records clean." },
+      { type: "h2", text: "The key difference" },
+      { type: "p", text: "A purchase order is created by the buyer and sent to the seller to officially request goods or services. An invoice is created by the seller and sent to the buyer to request payment after those goods or services are delivered. In short: the PO starts the order, the invoice closes it." },
+      { type: "callout", text: `Need to send an invoice against a PO? ${CTA}` },
+      { type: "h2", text: "What's on a purchase order?" },
+      { type: "ul", items: [
+        "A unique PO number",
+        "The buyer's and seller's details",
+        "A description of the goods or services ordered",
+        "Quantities and agreed prices",
+        "Delivery date and terms",
+      ]},
+      { type: "h2", text: "What's on an invoice?" },
+      { type: "ul", items: [
+        "A unique invoice number (and the matching PO number)",
+        "The seller's and buyer's details",
+        "What was actually delivered, with quantities and prices",
+        "Tax and the total amount due",
+        "Payment due date and methods",
+      ]},
+      { type: "h2", text: "How they work together" },
+      { type: "ol", items: [
+        "The buyer issues a purchase order to confirm what they want to buy.",
+        "The seller accepts the PO and delivers the goods or services.",
+        "The seller sends an invoice that references the PO number.",
+        "The buyer matches the invoice to the PO and pays.",
+      ]},
+      { type: "p", text: "Referencing the PO number on your invoice is the single most important tip for getting paid by larger companies — their finance teams can't process an invoice they can't match to a PO. Always ask for the PO number before you invoice." },
+    ],
+    faq: [
+      { q: "What comes first, a purchase order or an invoice?", a: "The purchase order comes first. The buyer issues a PO to order goods or services; the seller then delivers and sends an invoice requesting payment, usually referencing the PO number." },
+      { q: "Who creates a purchase order?", a: "The buyer creates the purchase order and sends it to the seller. The seller creates the invoice and sends it back to the buyer." },
+      { q: "Do I need a purchase order to send an invoice?", a: "Not always. Many small transactions skip the PO entirely. But when selling to larger companies, they often require a PO number on your invoice before they'll process payment." },
+    ],
+  },
+
+  /* ══════════════════════════════════════════════
+     POST 30 — What is a credit note
+  ══════════════════════════════════════════════ */
+  "what-is-a-credit-note": {
+    title: "What Is a Credit Note? When and How to Issue One",
+    description: "A credit note explained — what it is, when to issue one, how it differs from an invoice or refund, and what to include. With a simple example.",
+    date: "2026-06-09",
+    updated: "2026-06-09",
+    readMins: 5,
+    keywords: ["what is a credit note", "credit note meaning", "credit note vs invoice", "how to issue a credit note", "credit memo"],
+    excerpt: "A credit note (or credit memo) reduces the amount a customer owes on a previous invoice. Here's when to issue one, how it works, and what to include.",
+    body: [
+      { type: "p", text: "A credit note — also called a credit memo — is a document a seller issues to a buyer that reduces the amount the buyer owes. It's effectively a negative invoice, used to correct an overcharge, account for returned goods, or apply a discount after an invoice has already been sent." },
+      { type: "h2", text: "When do you issue a credit note?" },
+      { type: "p", text: "You issue a credit note whenever you need to reduce a previously invoiced amount rather than cancel it entirely. Common situations include:" },
+      { type: "ul", items: [
+        "The customer returned some or all of the goods",
+        "You overcharged on the original invoice",
+        "Goods arrived damaged or faulty",
+        "You agreed a discount or goodwill credit after invoicing",
+        "There was a pricing or quantity error",
+      ]},
+      { type: "callout", text: `Need to create a corrected document? ${CTA}` },
+      { type: "h2", text: "Credit note vs invoice vs refund" },
+      { type: "p", text: "An invoice increases what a customer owes; a credit note decreases it. A credit note isn't necessarily a cash refund — it often reduces the balance owed or is applied against a future invoice. A refund is the actual return of money. Sometimes a credit note leads to a refund; sometimes it just offsets the next bill." },
+      { type: "h2", text: "What to include on a credit note" },
+      { type: "ol", items: [
+        "The words 'Credit Note' and a unique credit note number",
+        "The original invoice number it relates to",
+        "Your details and the customer's details",
+        "The date issued",
+        "A description of why the credit is being given",
+        "The amount being credited, with tax shown separately",
+      ]},
+      { type: "p", text: "Keep your credit note numbering separate from your invoice sequence, and always reference the original invoice. This keeps your accounts and tax records accurate and easy to audit." },
+    ],
+    faq: [
+      { q: "What is a credit note in simple terms?", a: "A credit note is a document that reduces the amount a customer owes on a previous invoice. It acts like a negative invoice and is used for returns, overcharges, or post-invoice discounts." },
+      { q: "Is a credit note the same as a refund?", a: "Not quite. A credit note reduces the amount owed and may be applied to a future invoice, while a refund is the actual return of money. A credit note can lead to a refund but isn't automatically one." },
+      { q: "Does a credit note need to reference the original invoice?", a: "Yes. A credit note should always reference the original invoice number it relates to, so both parties and the tax authorities can match the correction to the original sale." },
+    ],
+  },
+
+  /* ══════════════════════════════════════════════
+     POST 31 — Invoicing mistakes to avoid
+  ══════════════════════════════════════════════ */
+  "invoicing-mistakes-to-avoid": {
+    title: "10 Invoicing Mistakes That Delay Your Payments (and How to Fix Them)",
+    description: "The most common invoicing mistakes that cause late payments — vague terms, missing details, no invoice number — and exactly how to fix each one to get paid faster.",
+    date: "2026-06-09",
+    updated: "2026-06-09",
+    readMins: 6,
+    keywords: ["invoicing mistakes", "common invoice errors", "why invoices get paid late", "invoice best practices", "how to avoid late payments"],
+    excerpt: "Most late payments are caused by avoidable invoicing mistakes. Here are the 10 most common errors — vague terms, missing numbers, late sending — and how to fix each.",
+    body: [
+      { type: "p", text: "Late payments are the bane of every freelancer and small business — but a surprising number are caused by avoidable mistakes on the invoice itself. Fix these ten common errors and you'll get paid faster, with far less chasing." },
+      { type: "h2", text: "1. Sending the invoice late" },
+      { type: "p", text: "The longer you wait to invoice, the longer you wait to be paid. Send the invoice the same day you finish the work, while it's fresh in the client's mind." },
+      { type: "h2", text: "2. No clear due date" },
+      { type: "p", text: "‘Payment appreciated' isn't a due date. State an exact date — and the terms in words, e.g. 'Due within 14 days (by 30 June)'. Vague timing means your invoice drifts to the bottom of the pile." },
+      { type: "h2", text: "3. Missing or duplicate invoice numbers" },
+      { type: "p", text: "Every invoice needs a unique, sequential number. Without one, clients can't reference it and your own records get tangled. See our <a href=\"/blog/invoice-numbering-best-practices\">invoice numbering guide</a>." },
+      { type: "h2", text: "4. Vague line items" },
+      { type: "p", text: "'Services rendered — $2,000' invites questions and delays. Break the work into clear line items so the client can see exactly what they're paying for." },
+      { type: "h2", text: "5. Forgetting the PO number" },
+      { type: "p", text: "When billing larger companies, their finance team can't process an invoice without the matching purchase order number. Always ask for it before invoicing." },
+      { type: "callout", text: `Avoid all of these automatically — ${CTA}` },
+      { type: "h2", text: "6. No payment instructions" },
+      { type: "p", text: "If the client has to email you to ask how to pay, you've added days of delay. Put your bank details, PayPal, or payment link directly on the invoice." },
+      { type: "h2", text: "7. Maths errors" },
+      { type: "p", text: "A wrong total destroys trust and forces a re-issue. Use a tool that calculates subtotals, tax, and the grand total for you so the numbers are always right." },
+      { type: "h2", text: "8. Charging the wrong tax (or tax you shouldn't)" },
+      { type: "p", text: "Only charge VAT, GST, or sales tax if you're registered to. Showing tax you can't legally charge is a serious error; forgetting tax you owe is just as costly." },
+      { type: "h2", text: "9. Sending to the wrong person" },
+      { type: "p", text: "An invoice sent to your day-to-day contact instead of accounts payable can sit unseen for weeks. Confirm exactly who should receive invoices." },
+      { type: "h2", text: "10. Not following up" },
+      { type: "p", text: "Silence after the due date rarely gets you paid. A polite reminder a day or two after the deadline resolves most late payments — use our <a href=\"/blog/payment-reminder-email-templates\">reminder email templates</a>." },
+    ],
+    faq: [
+      { q: "Why do my invoices get paid late?", a: "The most common reasons are avoidable: sending the invoice late, no clear due date, vague line items, missing payment instructions, or no follow-up. Fixing these usually speeds up payment dramatically." },
+      { q: "What's the most important thing on an invoice for getting paid?", a: "A clear due date and easy payment instructions. If the client knows exactly when and how to pay, most of the friction disappears." },
+      { q: "How soon should I send an invoice?", a: "The same day you complete the work, if possible. The sooner the invoice arrives, the sooner the payment clock starts and the fresher the work is in the client's mind." },
+    ],
+  },
+
+  /* ══════════════════════════════════════════════
+     POST 32 — How to invoice as a sole trader (UK high CPC)
+  ══════════════════════════════════════════════ */
+  "how-to-invoice-as-a-sole-trader": {
+    title: "How to Invoice as a Sole Trader (UK Guide 2026)",
+    description: "How to invoice as a sole trader in the UK — what to put on your invoice, whether you need to charge VAT, record-keeping for Self Assessment, and a free template.",
+    date: "2026-06-09",
+    updated: "2026-06-09",
+    readMins: 6,
+    keywords: ["how to invoice as a sole trader", "sole trader invoice", "sole trader invoice template uk", "do sole traders charge vat", "self employed invoice uk"],
+    excerpt: "A practical guide to invoicing as a UK sole trader — what your invoice must include, whether you charge VAT, and how to keep records for Self Assessment.",
+    body: [
+      { type: "p", text: "As a sole trader, invoicing is how you get paid and how you prove your income to HMRC. The good news is the rules are simple — you don't need to be VAT-registered or use expensive software to invoice professionally. Here's everything a UK sole trader needs to know." },
+      { type: "h2", text: "What a sole trader invoice must include" },
+      { type: "p", text: "Even as a sole trader, your invoice should look professional and contain the essentials. There's no legal requirement to register a company — you can invoice under your own name or a trading name." },
+      { type: "ul", items: [
+        "Your name (and trading name, if you use one)",
+        "Your address and contact details",
+        "The word 'Invoice' and a unique invoice number",
+        "The client's name and address",
+        "The date and payment due date",
+        "A clear description of the work, with amounts",
+        "The total due and how to pay you",
+      ]},
+      { type: "callout", text: `Create a clean sole trader invoice in seconds — ${CTA}` },
+      { type: "h2", text: "Do sole traders charge VAT?" },
+      { type: "p", text: "Only if you're VAT-registered. You must register for VAT once your turnover exceeds £90,000 (2024/25 threshold); below that it's optional. Most sole traders under the threshold don't charge VAT — and if you're not registered, you must not show or charge VAT on your invoices." },
+      { type: "h2", text: "Record-keeping for Self Assessment" },
+      { type: "p", text: "As a sole trader you report your income through Self Assessment each year. Keep a copy of every invoice you send — HMRC requires you to retain business records for at least five years after the 31 January submission deadline for that tax year. Numbered, dated PDF invoices make totalling your income and completing your return straightforward." },
+      { type: "h2", text: "Getting paid on time" },
+      { type: "ol", items: [
+        "Agree your price and payment terms before starting work.",
+        "Send the invoice promptly when the job is done.",
+        "Use short terms like Net 7 or Net 14.",
+        "Include your bank details so the client can pay instantly.",
+        "Follow up politely if payment is late.",
+      ]},
+      { type: "p", text: "For more, see our <a href=\"/blog/uk-vat-invoice-requirements\">UK VAT invoice guide</a> and the <a href=\"/invoice-generator-uk\">free UK invoice generator</a>." },
+    ],
+    faq: [
+      { q: "Do I need to be registered to invoice as a sole trader?", a: "No. As a sole trader you can invoice under your own name or a trading name without registering a limited company. You just need to register as self-employed with HMRC for Self Assessment." },
+      { q: "Do sole traders need to charge VAT?", a: "Only if your turnover exceeds the VAT registration threshold (£90,000 in 2024/25) or you register voluntarily. If you're not VAT-registered, you must not charge or show VAT on your invoices." },
+      { q: "How long should a sole trader keep invoices?", a: "HMRC requires you to keep business records, including invoices, for at least five years after the 31 January Self Assessment deadline for the relevant tax year." },
+    ],
+  },
+
+  /* ══════════════════════════════════════════════
+     POST 33 — Recurring invoices
+  ══════════════════════════════════════════════ */
+  "what-is-a-recurring-invoice": {
+    title: "What Is a Recurring Invoice? A Guide for Subscriptions & Retainers",
+    description: "What a recurring invoice is, when to use one, and how to manage repeat billing for subscriptions and retainers — plus tips to keep recurring payments on time.",
+    date: "2026-06-09",
+    updated: "2026-06-09",
+    readMins: 5,
+    keywords: ["recurring invoice", "what is a recurring invoice", "recurring billing", "retainer invoice", "subscription invoice"],
+    excerpt: "A recurring invoice is sent automatically on a set schedule for ongoing services — like retainers or subscriptions. Here's when to use one and how to manage it.",
+    body: [
+      { type: "p", text: "A recurring invoice is an invoice sent to the same customer on a regular, repeating schedule — weekly, monthly, or yearly — for ongoing goods or services. It's the standard way to bill retainers, subscriptions, memberships, and any service with a steady, predictable fee." },
+      { type: "h2", text: "When to use a recurring invoice" },
+      { type: "p", text: "Recurring invoices make sense whenever you bill the same client the same (or similar) amount on a regular basis:" },
+      { type: "ul", items: [
+        "Monthly retainers for consulting, design, or marketing",
+        "Subscription products or memberships",
+        "Ongoing maintenance or support contracts",
+        "Rent or regular service fees",
+        "Any predictable, repeating charge",
+      ]},
+      { type: "callout", text: `Set up your repeat invoice template once — ${CTA}` },
+      { type: "h2", text: "Benefits of recurring billing" },
+      { type: "p", text: "Recurring invoices save you from recreating the same invoice every period, reduce the risk of forgetting to bill, and give both you and your client predictable cash flow. For the client, they're easy to budget for and approve." },
+      { type: "h2", text: "Tips for managing recurring invoices" },
+      { type: "ol", items: [
+        "Keep the invoice template consistent so the client recognises it instantly.",
+        "Use a clear period reference, e.g. 'Retainer — June 2026'.",
+        "Increment the invoice number each period for clean records.",
+        "Send on the same day each cycle so the client can expect it.",
+        "Confirm any price change in writing before the next invoice.",
+      ]},
+      { type: "p", text: "Even without automated software, you can run recurring billing efficiently by saving a template, duplicating it each period, and updating the date, period, and invoice number. A consistent, professional invoice keeps long-term clients paying on time." },
+    ],
+    faq: [
+      { q: "What is a recurring invoice?", a: "A recurring invoice is one sent to the same customer on a regular schedule — such as monthly or yearly — for ongoing services like retainers, subscriptions, or memberships." },
+      { q: "What's the difference between a recurring invoice and a subscription?", a: "A subscription is the billing arrangement; a recurring invoice is the document that requests each payment within it. Subscriptions are often billed via recurring invoices." },
+      { q: "How do I manage recurring invoices without software?", a: "Save a consistent invoice template, duplicate it each billing period, and update the date, the period reference, and the invoice number. Send it on the same day each cycle for predictability." },
+    ],
+  },
+
 };
 
 export const POST_SLUGS = Object.keys(POSTS);
