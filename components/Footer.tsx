@@ -5,16 +5,10 @@ import { Logo } from "@/components/Logo";
 const FOOTER_TEMPLATES = [
   { slug: "freelancer-invoice",        label: "Freelancer Invoice" },
   { slug: "contractor-invoice",        label: "Contractor Invoice" },
-  { slug: "consultant-invoice",        label: "Consultant Invoice" },
   { slug: "small-business-invoice",    label: "Small Business Invoice" },
-  { slug: "self-employed-invoice",     label: "Self Employed Invoice" },
   { slug: "invoice-generator-usa",     label: "Invoice Generator USA" },
   { slug: "invoice-generator-uk",      label: "Invoice Generator UK" },
-  { slug: "invoice-generator-canada",  label: "Invoice Generator Canada" },
-  { slug: "invoice-generator-india",   label: "Invoice Generator India" },
-  { slug: "free-invoice-generator",    label: "Free Invoice Generator" },
   { slug: "bill-generator",            label: "Bill Generator" },
-  { slug: "proforma-invoice",          label: "Proforma Invoice" },
 ];
 
 const FOOTER_TOOLS = [
@@ -47,7 +41,7 @@ export default function Footer() {
           <Tape />
         </div>
 
-        <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between md:gap-10 md:px-4">
+        <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between lg:gap-12 md:px-4">
           {/* Brand */}
           <div className="flex max-w-xs flex-col items-start gap-3">
             <Link href="/" aria-label="PDF Bill Builder home">
@@ -59,7 +53,7 @@ export default function Footer() {
           </div>
 
           {/* Link columns */}
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 md:gap-10">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4 lg:gap-x-12">
             {/* Product */}
             <div className="flex flex-col gap-3">
               <h4 className="text-[12px] font-bold uppercase tracking-wider text-slate-400">Product</h4>
@@ -93,7 +87,7 @@ export default function Footer() {
               <h4 className="text-[12px] font-bold uppercase tracking-wider text-slate-400">Templates</h4>
               <div className="flex flex-col gap-2.5 text-[14px]">
                 {FOOTER_TEMPLATES.map(({ slug, label }) => (
-                  <Link key={slug} className="whitespace-nowrap font-medium text-slate-500 transition-colors hover:text-indigo-600" href={`/${slug}`}>
+                  <Link key={slug} className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href={`/${slug}`}>
                     {label}
                   </Link>
                 ))}
@@ -110,11 +104,9 @@ export default function Footer() {
               <div className="flex flex-col gap-2.5 text-[14px]">
                 <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/privacy">Privacy Policy</Link>
                 <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/terms">Terms of Service</Link>
-                <Link className="inline-flex items-center gap-1.5 font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/contact">
-                  <Mail className="size-3.5" /> Contact Us
-                </Link>
-                <a className="font-medium text-slate-500 transition-colors hover:text-indigo-600 text-[12px]" href="mailto:support@pdfbillbuilder.com">
-                  support@pdfbillbuilder.com
+                <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/contact">Contact Us</Link>
+                <a className="inline-flex items-center gap-1.5 font-medium text-slate-500 transition-colors hover:text-indigo-600" href="mailto:support@pdfbillbuilder.com">
+                  <Mail className="size-3.5 shrink-0" /> Email support
                 </a>
               </div>
             </div>
