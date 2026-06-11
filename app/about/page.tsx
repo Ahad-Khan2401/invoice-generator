@@ -40,13 +40,45 @@ export default function About() {
             professional documents without paying for bloated software or making yet another account.
           </p>
           <p>
-            Most invoice tools are too complicated, too expensive, or they store your sensitive client
-            data on their servers. We&apos;re different — everything happens entirely in your browser, so
-            your information always stays yours.
+            The idea came from watching real freelancers invoice their clients. Most either wrestled
+            with a Word or Excel template that broke every time a line was added, or signed up for
+            accounting software costing $15–30 a month just to send two invoices. For someone billing
+            a $50 job, that maths never works. A simple invoice should take two minutes and cost nothing.
           </p>
           <p>
-            We support invoices, receipts, and quotations with multi-currency, tax, your own logo, and
-            instant PDF download. Everything you need to get paid faster, in one clean interface.
+            Most invoice tools are also quietly collecting your data — your client list, your rates,
+            your revenue — and storing it on their servers. We&apos;re different by design: the generator
+            runs entirely in your browser. Your numbers are never uploaded, never analysed, and never
+            sold. Unless you choose to sign in and save an invoice to your dashboard, nothing you type
+            ever leaves your device.
+          </p>
+          <p>
+            Today {SITE.name} creates invoices, receipts, and quotations with multi-currency support,
+            inclusive or exclusive tax, your own logo and brand colour, and instant PDF download — plus
+            free calculators for late fees, hourly rates, sales tax, discounts, and profit margins.
+            Everything you need to get paid faster, in one clean interface.
+          </p>
+        </div>
+      </Card>
+
+      {/* Founder */}
+      <Card className="mb-6">
+        <h2 className="mb-3 text-[19px] font-extrabold tracking-tight text-slate-900">Who&apos;s behind this?</h2>
+        <div className="space-y-4 text-[15px] leading-relaxed text-slate-500">
+          <p>
+            {SITE.name} is built and maintained by <strong className="font-bold text-slate-900">{SITE.author}</strong>,
+            an independent maker based in Karachi, Pakistan. Abdul works with freelancers and small
+            online businesses every day, and built this tool after seeing how many of them still send
+            unbranded, hard-to-read invoices — or pay for heavyweight software they barely use.
+          </p>
+          <p>
+            Every template, guide, and calculator on this site is written and reviewed by him, with one
+            test: <em>would a real freelancer actually use this to get paid?</em> Spot a mistake or have
+            a suggestion? Email{" "}
+            <a href="mailto:support@pdfbillbuilder.com" className="font-semibold text-indigo-600 hover:text-indigo-700">
+              support@pdfbillbuilder.com
+            </a>{" "}
+            — he reads every message.
           </p>
         </div>
       </Card>

@@ -1,23 +1,21 @@
 "use client";
 import { useEffect } from "react";
 import { X, CheckCircle2, Download, Printer, Save, Crown } from "lucide-react";
-import AdSlot from "@/components/AdSlot";
 
 /* ───────────────────────────────────────────────
    User-initiated "Preparing your file" modal.
 
    POLICY-SAFE by design:
    - Opens ONLY when the user clicks Download / Print (not a pop-up).
-   - The actual download/print runs automatically — it is NEVER gated
-     behind viewing or clicking the ad.
-   - Clearly labelled "Advertisement", fully closable (X / backdrop / Esc).
+   - The actual download/print runs automatically — never gated.
+   - Contains NO ads (AdSense policy: no ads in modals/overlays).
+   - Fully closable (X / backdrop / Esc).
    - .no-print keeps it out of the printed output.
 ─────────────────────────────────────────────── */
 export default function DownloadAdModal({
   open,
   status,            // "working" | "done"
   action,            // "download" | "print"
-  slot,
   accent,
   onClose,
   onRetry,
@@ -29,7 +27,6 @@ export default function DownloadAdModal({
   open: boolean;
   status: "working" | "done";
   action: "download" | "print";
-  slot: string;
   accent: string;
   onClose: () => void;
   onRetry: () => void;
@@ -102,14 +99,9 @@ export default function DownloadAdModal({
           </button>
         </div>
 
-        {/* Ad */}
-        <div style={{ padding: "16px 20px" }}>
-          <AdSlot slot={slot} />
-        </div>
-
         {/* ── Conversion CTA — only after the file is ready ── */}
         {status === "done" && !isPro && !isLoggedIn && onSignIn && (
-          <div style={{ padding: "0 20px 4px" }}>
+          <div style={{ padding: "16px 20px 4px" }}>
             <div style={{
               display: "flex", alignItems: "center", gap: 12,
               background: "linear-gradient(135deg,#eef2ff,#faf5ff)",
@@ -137,7 +129,7 @@ export default function DownloadAdModal({
         )}
 
         {status === "done" && !isPro && isLoggedIn && onUpgrade && (
-          <div style={{ padding: "0 20px 4px" }}>
+          <div style={{ padding: "16px 20px 4px" }}>
             <div style={{
               display: "flex", alignItems: "center", gap: 12,
               background: "linear-gradient(135deg,#fef3c7,#fde68a55)",
@@ -151,9 +143,9 @@ export default function DownloadAdModal({
                 <Crown size={18} />
               </span>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontSize: 13, fontWeight: 800, color: "#78350f" }}>Go ad-free with Pro</p>
+                <p style={{ fontSize: 13, fontWeight: 800, color: "#78350f" }}>Upgrade to Pro</p>
                 <p style={{ fontSize: 11.5, color: "#b45309", marginTop: 1, lineHeight: 1.35 }}>
-                  No ads, unlimited history &amp; premium templates — $9/year.
+                  Unlimited history, no watermark &amp; 12 premium colours — $9/year.
                 </p>
               </div>
               <button onClick={onUpgrade}
@@ -165,7 +157,7 @@ export default function DownloadAdModal({
         )}
 
         {/* Footer */}
-        <div style={{ padding: "0 20px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+        <div style={{ padding: "16px 20px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
           <button onClick={onRetry}
             style={{ fontSize: 12.5, fontWeight: 600, color: accent, background: "transparent", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 5 }}>
             <VerbIcon size={13} /> {action === "download" ? "Download again" : "Print again"}

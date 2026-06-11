@@ -18,11 +18,6 @@ export function softwareSchema(url: string = SITE.url) {
       price: "0",
       priceCurrency: "USD",
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      ratingCount: "1283",
-    },
     featureList: [
       "Free PDF invoice generator and bill maker",
       "Invoice, bill, receipt and quotation templates",
@@ -78,6 +73,7 @@ export function organizationSchema() {
     description:
       "Free online generator for professional invoices, receipts, and quotations — download as PDF, no signup.",
     email: "support@pdfbillbuilder.com",
+    founder: { "@type": "Person", name: SITE.author },
   };
 }
 
@@ -140,7 +136,7 @@ export function articleSchema(p: {
     url: p.url,
     mainEntityOfPage: { "@type": "WebPage", "@id": p.url },
     image: `${SITE.url}/og.png`,
-    author: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    author: { "@type": "Person", name: SITE.author, url: `${SITE.url}/about` },
     publisher: {
       "@type": "Organization",
       name: SITE.name,

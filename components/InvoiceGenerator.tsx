@@ -136,6 +136,16 @@ export default function InvoiceGenerator({
     return () => window.removeEventListener("pdfbb:openSignIn", handler);
   }, []);
 
+  // /?pro=upgrade (from /pricing or the dashboard) → open the Pro modal
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("pro") === "upgrade") {
+      window.history.replaceState({}, "", window.location.pathname);
+      setProModalOpen(true);
+    }
+  }, []);
+
   const previewRef = useRef<HTMLDivElement>(null);
   const wrapRef    = useRef<HTMLDivElement>(null);
 
@@ -1027,12 +1037,11 @@ export default function InvoiceGenerator({
         onSignIn={signIn}
       />
 
-      {/* Ad shown after Download / Print (user-initiated, non-gating) */}
+      {/* Progress + save/upgrade prompt after Download / Print (user-initiated, ad-free) */}
       <DownloadAdModal
         open={adModal.open}
         status={adModal.status}
         action={adModal.action}
-        slot={SITE.adSlots.downloadModal}
         accent={color}
         onClose={() => setAdModal(m => ({ ...m, open: false }))}
         onRetry={() => (adModal.action === "download" ? startDownload() : startPrint())}

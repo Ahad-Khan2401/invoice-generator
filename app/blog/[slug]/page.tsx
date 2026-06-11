@@ -7,7 +7,12 @@ import JsonLd from "@/components/JsonLd";
 import AdSlot from "@/components/AdSlot";
 import { articleSchema, breadcrumbSchema } from "@/lib/schema";
 import { POSTS, POST_SLUGS, POST_LIST } from "@/lib/posts";
+import { LANDING, LANDING_SLUGS } from "@/lib/landing";
 import { SITE } from "@/lib/config";
+
+/* Deterministic per-post pick of 2 landing templates, so every blog post
+   links to different templates and all 38 pages collect inbound links. */
+const hash = (s: string) => [...s].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
 
 export const dynamicParams = false;
 
@@ -44,6 +49,13 @@ export default async function BlogPost(
 
   const url = `${SITE.url}/blog/${slug}`;
   const related = POST_LIST.filter((p) => p.slug !== slug).slice(0, 2);
+  const h = hash(slug);
+  const templates = [
+    LANDING_SLUGS[h % LANDING_SLUGS.length],
+    LANDING_SLUGS[(h + 17) % LANDING_SLUGS.length],
+  ]
+    .filter((s, i, arr) => arr.indexOf(s) === i)
+    .map((s) => ({ slug: s, ...LANDING[s] }));
 
   const faqLd = {
     "@context": "https://schema.org",
@@ -66,8 +78,11 @@ export default async function BlogPost(
 
       <article>
         <header className="mb-8">
-          <div className="mb-3 flex items-center gap-2 text-[13px] font-medium text-slate-400">
-            <span>{fmt(post.date)}</span><span>·</span><span>{post.readMins} min read</span>
+          <div className="mb-3 flex flex-wrap items-center gap-2 text-[13px] font-medium text-slate-400">
+            <span>By <Link href="/about" className="font-semibold text-slate-600 hover:text-indigo-600">{SITE.author}</Link></span>
+            <span>·</span>
+            <span>{post.updated !== post.date ? `Updated ${fmt(post.updated)}` : fmt(post.date)}</span>
+            <span>·</span><span>{post.readMins} min read</span>
           </div>
           <h1 className="text-[28px] sm:text-[38px] font-extrabold leading-tight tracking-tight text-slate-900">
             {post.title}
@@ -119,6 +134,22 @@ export default async function BlogPost(
                   className="group rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
                   <h3 className="text-[15px] font-bold leading-snug text-slate-900 group-hover:text-indigo-600">{p.title}</h3>
                   <p className="mt-1.5 text-[13px] leading-relaxed text-slate-500">{p.excerpt}</p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Related free templates */}
+        {templates.length > 0 && (
+          <section className="mt-10">
+            <h2 className="mb-4 text-[18px] font-bold text-slate-900">Free templates to try</h2>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {templates.map((t) => (
+                <Link key={t.slug} href={`/${t.slug}`}
+                  className="group rounded-2xl border border-indigo-100 bg-indigo-50/40 p-5 transition-all hover:-translate-y-0.5 hover:shadow-md">
+                  <h3 className="text-[15px] font-bold leading-snug text-slate-900 group-hover:text-indigo-600">{t.h1}</h3>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-slate-500">{t.sub}</p>
                 </Link>
               ))}
             </div>

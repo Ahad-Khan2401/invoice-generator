@@ -4,8 +4,8 @@ import { SITE } from "@/lib/config";
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
-      // Everyone (incl. Googlebot, Bingbot) may crawl everything
-      { userAgent: "*", allow: "/" },
+      // Everyone may crawl the public site, but not user-specific or API routes
+      { userAgent: "*", allow: "/", disallow: ["/dashboard", "/api/"] },
       // Explicitly welcome AI search / answer engines so our content
       // can appear in AI Overviews, ChatGPT, Perplexity, Claude, etc.
       {

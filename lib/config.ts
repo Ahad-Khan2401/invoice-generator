@@ -6,6 +6,7 @@
 export const SITE = {
   name: "PDF Bill Builder",
   url: "https://www.pdfbillbuilder.com",
+  author: "Abdul Ahad",   // founder — shown as the author of guides + in schema
   // ✅ Your real AdSense publisher ID
   adsenseClient: "ca-pub-3004153584501560",
 
@@ -15,9 +16,6 @@ export const SITE = {
   googleSiteVerification: "",   // Search Console → HTML tag → content="..."
   bingSiteVerification:   "",   // Bing Webmaster → meta tag → content="..."
   gaId:                   "G-TLB5627NQ9",   // Google Analytics 4 (dedicated PDF Bill Builder property)
-
-  /* English markets this site targets (used for hreflang). */
-  hreflangLocales: ["en-US", "en-CA", "en-GB", "en-AU", "en-IN", "en-PK"],
 
   /* ───────────────────────────────────────────────
      AD UNIT SLOT IDs
@@ -32,7 +30,6 @@ export const SITE = {
     homeBottom:   "1097948499",
     about:        "6968692049",
     howItWorks:   "5411078115",
-    downloadModal:"7755160104",
   },
 
   /* ── Pro (One-time, via Lemon Squeezy) ──────────

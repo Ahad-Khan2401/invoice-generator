@@ -6,11 +6,6 @@ import JsonLd from "@/components/JsonLd";
 import { softwareSchema, faqSchema, howToSchema, breadcrumbSchema } from "@/lib/schema";
 import { SITE } from "@/lib/config";
 
-const hreflang = Object.fromEntries([
-  ...SITE.hreflangLocales.map((l) => [l, "/"]),
-  ["x-default", "/"],
-]);
-
 export const metadata: Metadata = {
   title: "Free Invoice & Bill Generator — Create & Download PDF Invoices Instantly",
   description:
@@ -20,7 +15,7 @@ export const metadata: Metadata = {
     "online bill maker", "create invoice online", "make a bill online",
     "pdf invoice", "receipt generator", "quotation generator",
   ],
-  alternates: { canonical: "/", languages: hreflang },
+  alternates: { canonical: "/" },
 };
 
 export default function Home() {
@@ -28,9 +23,6 @@ export default function Home() {
     <>
       {/* The interactive tool (hero + generator + feature grid) */}
       <InvoiceGenerator />
-
-      {/* Ad #1 — between the tool and the article (in-content, high viewability) */}
-      <AdSlot slot={SITE.adSlots.homeTop} />
 
       {/* SEO body + FAQ (indexable, server-rendered) — includes one in-article ad */}
       <SeoContent midAdSlot={SITE.adSlots.homeMid} />

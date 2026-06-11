@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/privacy" },
 };
 
-const UPDATED = "June 1, 2026";
+const UPDATED = "June 11, 2026";
 
 export default function Privacy() {
   return (
@@ -19,9 +19,10 @@ export default function Privacy() {
         <Section title="The short version">
           <p>
             {SITE.name} is built privacy-first. Your invoices, receipts, and quotations are created
-            <strong className="text-slate-700"> entirely inside your browser</strong>. We never upload,
-            transmit, or store the financial details you type into the tool. When you close the tab,
-            that data is gone unless your own browser chose to remember it on your device.
+            <strong className="text-slate-700"> entirely inside your browser</strong>. Unless you sign in
+            and choose to save an invoice to your dashboard, we never upload, transmit, or store the
+            financial details you type into the tool. When you close the tab, that data is gone unless
+            your own browser chose to remember it on your device.
           </p>
         </Section>
 
@@ -41,7 +42,20 @@ export default function Privacy() {
           </p>
         </Section>
 
-        <Section title="3. Cookies & advertising">
+        <Section title="3. Accounts & saved invoices (optional)">
+          <p>
+            If you choose to sign in with Google, we receive your name, email address, and profile picture
+            from Google to create your session. If you then save an invoice to your dashboard, that invoice&apos;s
+            details are stored in our database so you can re-open and edit it later — this only happens for
+            invoices you explicitly save while signed in. You can delete saved invoices from your dashboard at
+            any time, and you can request full account deletion by emailing{" "}
+            <a className="text-indigo-600 hover:underline" href="mailto:support@pdfbillbuilder.com">support@pdfbillbuilder.com</a>.
+            For Pro subscriptions, payment is processed by Lemon Squeezy (our merchant of record) — we never
+            see or store your card details.
+          </p>
+        </Section>
+
+        <Section title="4. Cookies & advertising">
           <p>
             This site is supported by advertising. We use <strong className="text-slate-700">Google AdSense</strong> to
             display ads. Third-party vendors, including Google, use cookies to serve ads based on your prior
@@ -58,35 +72,43 @@ export default function Privacy() {
               How Google uses information from sites that use its services
             </a>.
           </p>
-        </Section>
-
-        <Section title="4. Analytics">
-          <p>
-            We may use privacy-respecting, aggregate analytics to understand overall traffic. This never
-            includes the contents of your documents.
+          <p className="mt-3">
+            <strong className="text-slate-700">Your consent (EEA, UK &amp; Switzerland):</strong> if you visit from
+            the European Economic Area, the UK, or Switzerland, advertising and analytics cookies are
+            <strong className="text-slate-700"> off by default</strong> and only activate after you accept the consent
+            message shown on your first visit. You can change or withdraw your choice at any time via that
+            message or your browser settings.
           </p>
         </Section>
 
-        <Section title="5. Children's privacy">
+        <Section title="5. Analytics">
+          <p>
+            We use Google Analytics 4 to understand aggregate traffic — pages visited, approximate region,
+            and device type. This never includes the contents of your documents, and in regions that require
+            it, analytics only runs after you give consent (see section 4).
+          </p>
+        </Section>
+
+        <Section title="6. Children's privacy">
           <p>
             This service is intended for business use by adults and is not directed at children under 13.
             We do not knowingly collect personal information from children.
           </p>
         </Section>
 
-        <Section title="6. Your choices">
+        <Section title="7. Your choices">
           <p>
             You can disable cookies in your browser, opt out of personalised ads using the links above, and
-            clear locally stored data any time. Because we don&apos;t hold your data, there is nothing for us
-            to delete on our side.
+            clear locally stored data any time. If you never sign in, we hold no data about you at all; if
+            you do, you can delete saved invoices yourself or email us for full deletion.
           </p>
         </Section>
 
-        <Section title="7. Changes to this policy">
+        <Section title="8. Changes to this policy">
           <p>We may update this policy from time to time. The &quot;Last updated&quot; date above reflects the current version.</p>
         </Section>
 
-        <Section title="8. Contact">
+        <Section title="9. Contact">
           <p>
             Questions? Email{" "}
             <a className="text-indigo-600 hover:underline" href="mailto:support@pdfbillbuilder.com">support@pdfbillbuilder.com</a>.

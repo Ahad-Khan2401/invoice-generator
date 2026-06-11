@@ -3,15 +3,26 @@ import { Mail } from "lucide-react";
 import { Logo } from "@/components/Logo";
 
 const FOOTER_TEMPLATES = [
-  { slug: "freelancer-invoice",       label: "Freelancer Invoice" },
-  { slug: "contractor-invoice",       label: "Contractor Invoice" },
-  { slug: "consultant-invoice",       label: "Consultant Invoice" },
-  { slug: "small-business-invoice",   label: "Small Business Invoice" },
-  { slug: "self-employed-invoice",    label: "Self Employed Invoice" },
-  { slug: "invoice-generator-usa",    label: "Invoice Generator USA" },
-  { slug: "invoice-generator-uk",     label: "Invoice Generator UK" },
-  { slug: "bill-generator",           label: "Bill Generator" },
-  { slug: "proforma-invoice",         label: "Proforma Invoice" },
+  { slug: "freelancer-invoice",        label: "Freelancer Invoice" },
+  { slug: "contractor-invoice",        label: "Contractor Invoice" },
+  { slug: "consultant-invoice",        label: "Consultant Invoice" },
+  { slug: "small-business-invoice",    label: "Small Business Invoice" },
+  { slug: "self-employed-invoice",     label: "Self Employed Invoice" },
+  { slug: "invoice-generator-usa",     label: "Invoice Generator USA" },
+  { slug: "invoice-generator-uk",      label: "Invoice Generator UK" },
+  { slug: "invoice-generator-canada",  label: "Invoice Generator Canada" },
+  { slug: "invoice-generator-india",   label: "Invoice Generator India" },
+  { slug: "free-invoice-generator",    label: "Free Invoice Generator" },
+  { slug: "bill-generator",            label: "Bill Generator" },
+  { slug: "proforma-invoice",          label: "Proforma Invoice" },
+];
+
+const FOOTER_TOOLS = [
+  { slug: "late-fee-calculator",              label: "Late Fee Calculator" },
+  { slug: "freelance-hourly-rate-calculator", label: "Hourly Rate Calculator" },
+  { slug: "sales-tax-calculator",             label: "Sales Tax Calculator" },
+  { slug: "discount-calculator",              label: "Discount Calculator" },
+  { slug: "profit-margin-calculator",         label: "Profit Margin Calculator" },
 ];
 
 const Tape = ({ className }: { className?: string }) => (
@@ -48,15 +59,32 @@ export default function Footer() {
           </div>
 
           {/* Link columns */}
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:gap-14">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 md:gap-10">
             {/* Product */}
             <div className="flex flex-col gap-3">
               <h4 className="text-[12px] font-bold uppercase tracking-wider text-slate-400">Product</h4>
               <div className="flex flex-col gap-2.5 text-[14px]">
                 <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/">Generator</Link>
                 <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/how-it-works">How it works</Link>
+                <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/pricing">Pricing</Link>
                 <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/blog">Blog</Link>
                 <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/about">About</Link>
+              </div>
+            </div>
+
+            {/* Free tools */}
+            <div className="flex flex-col gap-3">
+              <h4 className="text-[12px] font-bold uppercase tracking-wider text-slate-400">Free Tools</h4>
+              <div className="flex flex-col gap-2.5 text-[14px]">
+                {FOOTER_TOOLS.map(({ slug, label }) => (
+                  <Link key={slug} className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href={`/tools/${slug}`}>
+                    {label}
+                  </Link>
+                ))}
+                <Link href="/tools" className="inline-flex items-center gap-1 text-[13px] font-semibold text-indigo-500 transition-colors hover:text-indigo-700">
+                  All tools
+                  <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                </Link>
               </div>
             </div>
 
@@ -69,7 +97,7 @@ export default function Footer() {
                     {label}
                   </Link>
                 ))}
-                <Link href="/#templates" className="inline-flex items-center gap-1 text-[13px] font-semibold text-indigo-500 transition-colors hover:text-indigo-700">
+                <Link href="/templates" className="inline-flex items-center gap-1 text-[13px] font-semibold text-indigo-500 transition-colors hover:text-indigo-700">
                   View all
                   <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                 </Link>

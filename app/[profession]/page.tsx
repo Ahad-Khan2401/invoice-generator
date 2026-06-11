@@ -24,15 +24,11 @@ export async function generateMetadata(
   const data = LANDING[profession];
   if (!data) return {};
   const url = `${SITE.url}/${profession}`;
-  const languages = Object.fromEntries([
-    ...SITE.hreflangLocales.map((l) => [l, `/${profession}`]),
-    ["x-default", `/${profession}`],
-  ]);
   return {
     title: data.title,
     description: data.desc,
     keywords: data.keywords,
-    alternates: { canonical: `/${profession}`, languages },
+    alternates: { canonical: `/${profession}` },
     openGraph: { title: data.title, description: data.desc, url, images: ["/og.png"] },
     twitter: { card: "summary_large_image", title: data.title, description: data.desc, images: ["/og.png"] },
   };
@@ -50,8 +46,6 @@ export default async function ProfessionPage(
   return (
     <>
       <InvoiceGenerator heading={data.h1} subheading={data.sub} defaultCurrency={data.currencySymbol} />
-
-      <AdSlot slot={SITE.adSlots.homeTop} />
 
       {/* Unique, page-specific content — differentiates every landing page */}
       <LandingContent slug={profession} />

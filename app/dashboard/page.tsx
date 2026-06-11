@@ -114,9 +114,16 @@ export default function Dashboard() {
       <div className="rounded-3xl border border-slate-100 bg-white shadow-sm overflow-hidden">
         <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
           <h2 className="font-bold text-slate-900">Invoice History</h2>
-          <span className="text-xs text-slate-400">
-            {isPro ? "Unlimited" : `Last ${invoices.length} of 5 max`}
-          </span>
+          {isPro ? (
+            <span className="text-xs text-slate-400">Unlimited</span>
+          ) : invoices.length >= 4 ? (
+            <span className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
+              {invoices.length} of 5 free saves — oldest gets replaced next.{" "}
+              <Link href="/?pro=upgrade" className="underline">Go unlimited</Link>
+            </span>
+          ) : (
+            <span className="text-xs text-slate-400">{`Last ${invoices.length} of 5 max`}</span>
+          )}
         </div>
 
         {/* Not configured yet */}
@@ -125,10 +132,10 @@ export default function Dashboard() {
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100">
               <Clock size={24} className="text-slate-400" />
             </div>
-            <p className="font-semibold text-slate-700 mb-1">Dashboard database coming soon</p>
+            <p className="font-semibold text-slate-700 mb-1">History is temporarily unavailable</p>
             <p className="text-sm text-slate-400 max-w-xs mx-auto">
-              Your invoice history will appear here once the database is connected.
-              Invoices you generate are already being saved.
+              We couldn&apos;t reach the invoice history service. Please refresh in a
+              moment — invoices you create now are not affected.
             </p>
           </div>
         )}
