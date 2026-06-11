@@ -145,7 +145,7 @@ export default function DownloadAdModal({
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p style={{ fontSize: 13, fontWeight: 800, color: "#78350f" }}>Upgrade to Pro</p>
                 <p style={{ fontSize: 11.5, color: "#b45309", marginTop: 1, lineHeight: 1.35 }}>
-                  Unlimited history, no watermark &amp; 12 premium colours — $9/year.
+                  Premium templates, unlimited history &amp; no watermark — $9/year.
                 </p>
               </div>
               <button onClick={onUpgrade}

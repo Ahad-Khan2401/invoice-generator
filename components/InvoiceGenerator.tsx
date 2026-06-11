@@ -36,6 +36,47 @@ const CURRENCIES = [
   {s:"₹",l:"INR"},{s:"₨",l:"PKR"},{s:"CA$",l:"CAD"},{s:"A$",l:"AUD"},
 ];
 
+/* ─── PDF template styles (Classic = free; Minimal & Bold = Pro) ── */
+type TemplateKey = "classic" | "minimal" | "bold";
+
+const TEMPLATE_META: { key: TemplateKey; name: string; desc: string; pro: boolean }[] = [
+  { key:"classic", name:"Classic", desc:"Colour accents",   pro:false },
+  { key:"minimal", name:"Minimal", desc:"Clean & elegant",  pro:true  },
+  { key:"bold",    name:"Bold",    desc:"Colour header",    pro:true  },
+];
+
+/* Style tokens per template — the preview keeps ONE structure; only
+   these values change, so the PDF (rendered from the same DOM) follows. */
+function tplTokens(t: TemplateKey, color: string) {
+  if (t === "minimal") return {
+    stripe:false, band:false,
+    hPrimary:"#0d1117", hSecondary:"#64748b", hTertiary:"#94a3b8", hValue:"#475569",
+    docTitle:"#0d1117", docTitleSize:20,
+    logoBg:"#0d1117", logoColor:"#fff", logoShadow:"none",
+    box:false,
+    theadBg:"transparent", thColor:"#64748b", thBorder:"1.5px solid #e2e8f0",
+    totalRule:"2px solid #0d1117", totalColor:"#0d1117",
+  };
+  if (t === "bold") return {
+    stripe:false, band:true,
+    hPrimary:"#ffffff", hSecondary:"rgba(255,255,255,0.85)", hTertiary:"rgba(255,255,255,0.65)", hValue:"rgba(255,255,255,0.95)",
+    docTitle:"rgba(255,255,255,0.38)", docTitleSize:26,
+    logoBg:"rgba(255,255,255,0.95)", logoColor:color, logoShadow:"none",
+    box:true,
+    theadBg:color, thColor:"#ffffff", thBorder:"none",
+    totalRule:`2px solid ${color}`, totalColor:color,
+  };
+  return { // classic — the original look
+    stripe:true, band:false,
+    hPrimary:"#0d1117", hSecondary:"#64748b", hTertiary:"#94a3b8", hValue:"#475569",
+    docTitle:"#e8edf5", docTitleSize:28,
+    logoBg:`linear-gradient(135deg,${color},${color}bb)`, logoColor:"#fff", logoShadow:`0 4px 12px ${color}35`,
+    box:true,
+    theadBg:`${color}0d`, thColor:color, thBorder:`2px solid ${color}22`,
+    totalRule:`2px solid ${color}22`, totalColor:color,
+  };
+}
+
 const DOC_TYPES = [
   { key:"invoice"   as DocType, label:"Invoice",   Icon:FileText,      color:"#4f46e5", desc:"Bill for services"     },
   { key:"receipt"   as DocType, label:"Receipt",   Icon:Receipt,       color:"#10b981", desc:"Proof of payment"      },
@@ -114,6 +155,7 @@ export default function InvoiceGenerator({
     CURRENCIES.find((c) => c.s === defaultCurrency) ?? CURRENCIES[0]
   );
   const [color,      setColor]      = useState(COLORS_FREE[0].hex);
+  const [template,   setTemplate]   = useState<TemplateKey>("classic");
   const [brandLogo,  setBrandLogo]  = useState<string|null>(null);
   const [wmLogo,     setWmLogo]     = useState<string|null>(null);
   const [busy,       setBusy]       = useState(false);
@@ -146,6 +188,43 @@ export default function InvoiceGenerator({
     }
   }, []);
 
+  // /?load=<id> (dashboard "re-edit") → restore the saved invoice into the form
+  useEffect(() => {
+    if (typeof window === "undefined" || !isLoaded || !user?.token) return;
+    const params = new URLSearchParams(window.location.search);
+    const loadId = params.get("load");
+    if (!loadId) return;
+    window.history.replaceState({}, "", window.location.pathname);
+
+    fetch(`/api/invoices?id=${encodeURIComponent(loadId)}`, {
+      headers: { Authorization: `Bearer ${user.token}` },
+    })
+      .then(r => (r.ok ? r.json() : null))
+      .then(res => {
+        const d = res?.invoice?.data;
+        if (!d) return;
+        if (d.from)  setFrom(d.from);
+        if (d.to)    setTo(d.to);
+        if (d.meta)  setMeta(m => ({ ...m, ...d.meta }));
+        if (Array.isArray(d.items) && d.items.length) setItems(d.items);
+        if (typeof d.tax === "number")      setTax(d.tax);
+        if (d.taxType)                      setTaxType(d.taxType);
+        if (typeof d.discount === "number") setDiscount(d.discount);
+        if (d.discType)                     setDiscType(d.discType);
+        if (d.docType)                      setDocType(d.docType);
+        if (d.status)                       setStatus(d.status);
+        if (d.cur?.l) setCur(CURRENCIES.find(c => c.l === d.cur.l) ?? d.cur);
+        if (d.color)  setColor(d.color);
+        // Pro-only templates fall back to Classic if the user is no longer Pro
+        if (d.template) {
+          const m = TEMPLATE_META.find(t => t.key === d.template);
+          if (m && (!m.pro || isPro)) setTemplate(d.template);
+        }
+      })
+      .catch(() => {}); // silent — worst case the form simply starts empty
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoaded, user?.token]);
+
   const previewRef = useRef<HTMLDivElement>(null);
   const wrapRef    = useRef<HTMLDivElement>(null);
 
@@ -159,6 +238,7 @@ export default function InvoiceGenerator({
   const total       = afterDisc + taxAmt;
   const docCfg      = DOC_TYPES.find(d=>d.key===docType)!;
   const showStatus  = docType !== "quotation";
+  const tpl         = tplTokens(template, color);
 
   /* ── Item helpers ── */
   const addItem    = () => setItems(p=>[...p,{id:nextId++,desc:"",qty:1,rate:0}]);
@@ -291,7 +371,7 @@ export default function InvoiceGenerator({
             client_name: to.name,
             total,
             currency: cur.l,
-            data: { from, to, meta, items, tax, taxType, discount, discType, docType, status, cur, color },
+            data: { from, to, meta, items, tax, taxType, discount, discType, docType, status, cur, color, template },
           }),
         }).catch(() => {}); // silent — dashboard is a convenience, not critical
       }
@@ -452,6 +532,39 @@ export default function InvoiceGenerator({
                         <dt.Icon size={16} style={{ color: active?dt.color:"#94a3b8",transition:"color .2s" }}/>
                         <span style={{ fontSize:12.5,fontWeight:700,color:active?dt.color:"#64748b" }}>{dt.label}</span>
                         <span style={{ fontSize:10,color:active?dt.color+"99":"#94a3b8",textAlign:"center",lineHeight:1.3 }}>{dt.desc}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* ── Template style (Classic free · Minimal/Bold Pro) ── */}
+              <div style={{ marginBottom:22 }}>
+                <p style={sectionTitle}><Accent c={color}/>Template Style</p>
+                <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10 }}>
+                  {TEMPLATE_META.map(t=>{
+                    const active = template===t.key;
+                    const locked = t.pro && !isPro;
+                    return (
+                      <button key={t.key}
+                        title={locked ? `${t.name} — Pro template` : t.name}
+                        onClick={()=> locked ? setProModalOpen(true) : setTemplate(t.key)}
+                        style={{
+                          padding:"11px 6px",borderRadius:12,border:"1.5px solid",
+                          borderColor: active ? color : "#e4e9f2",
+                          background:  active ? `${color}0f` : "white",
+                          cursor:"pointer",transition:"all .2s",position:"relative",
+                          display:"flex",flexDirection:"column",alignItems:"center",gap:4,
+                        }}>
+                        {locked && (
+                          <span style={{
+                            position:"absolute",top:6,right:6,fontSize:8,fontWeight:800,
+                            padding:"2px 5px",borderRadius:5,background:"#f5f3ff",
+                            color:"#7c3aed",border:"1px dashed #c4b5fd",letterSpacing:"0.05em",
+                          }}>✦ PRO</span>
+                        )}
+                        <span style={{ fontSize:12.5,fontWeight:700,color: active ? color : (locked ? "#94a3b8" : "#64748b") }}>{t.name}</span>
+                        <span style={{ fontSize:10,color: active ? `${color}99` : "#94a3b8",textAlign:"center",lineHeight:1.3 }}>{t.desc}</span>
                       </button>
                     );
                   })}
@@ -798,7 +911,7 @@ export default function InvoiceGenerator({
                   onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#ede9fe";}}
                   onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="#f5f3ff";}}>
                   {isLoggedIn
-                    ? `✦ Upgrade to Pro — Remove watermark & ads · ${SITE.stripe.priceLabel}`
+                    ? `✦ Upgrade to Pro — Premium templates & no watermark · ${SITE.stripe.priceLabel}`
                     : "✦ Sign In — Save invoices to dashboard (free)"}
                 </button>
               )}
@@ -829,8 +942,8 @@ export default function InvoiceGenerator({
               <div id="invoice-print-area">
                 <div ref={previewRef} style={{ fontFamily:"'Inter',system-ui,sans-serif",background:"white",position:"relative" }}>
 
-                  {/* Accent stripe */}
-                  <div style={{ height:5,background:`linear-gradient(90deg,${color},${color}bb)` }}/>
+                  {/* Accent stripe (Classic only) */}
+                  {tpl.stripe && <div style={{ height:5,background:`linear-gradient(90deg,${color},${color}bb)` }}/>}
 
                   {/* Watermark */}
                   {wmLogo && (
@@ -842,34 +955,35 @@ export default function InvoiceGenerator({
                   <div style={{ padding:"36px 44px",position:"relative",zIndex:1 }}>
 
                     {/* ── Invoice header ── */}
-                    <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:32 }}>
+                    <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:32,
+                      ...(tpl.band ? { background:`linear-gradient(135deg,${color},${color}dd)`, margin:"-36px -44px 28px", padding:"30px 44px 26px" } : {}) }}>
                       {/* From + brand logo */}
                       <div>
                         {brandLogo ? (
                           <img src={brandLogo} alt="logo" style={{ height:50,maxWidth:140,objectFit:"contain",marginBottom:12,display:"block" }}/>
                         ) : (
-                          <div style={{ width:44,height:44,borderRadius:12,background:`linear-gradient(135deg,${color},${color}bb)`,display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontWeight:800,fontSize:20,marginBottom:12,boxShadow:`0 4px 12px ${color}35` }}>
+                          <div style={{ width:44,height:44,borderRadius:12,background:tpl.logoBg,display:"flex",alignItems:"center",justifyContent:"center",color:tpl.logoColor,fontWeight:800,fontSize:20,marginBottom:12,boxShadow:tpl.logoShadow }}>
                             {(from.name||"I")[0].toUpperCase()}
                           </div>
                         )}
-                        <p style={{ fontSize:14,fontWeight:800,color:"#0d1117",letterSpacing:"-0.02em" }}>{from.name||"Your Business Name"}</p>
-                        <p style={{ fontSize:11.5,color:"#64748b",marginTop:3 }}>{from.email||"your@email.com"}</p>
-                        {from.phone   && <p style={{ fontSize:11,color:"#94a3b8",marginTop:2 }}>{from.phone}</p>}
-                        {from.address && <p style={{ fontSize:11,color:"#94a3b8",marginTop:2,whiteSpace:"pre-line" }}>{from.address}</p>}
+                        <p style={{ fontSize:14,fontWeight:800,color:tpl.hPrimary,letterSpacing:"-0.02em" }}>{from.name||"Your Business Name"}</p>
+                        <p style={{ fontSize:11.5,color:tpl.hSecondary,marginTop:3 }}>{from.email||"your@email.com"}</p>
+                        {from.phone   && <p style={{ fontSize:11,color:tpl.hTertiary,marginTop:2 }}>{from.phone}</p>}
+                        {from.address && <p style={{ fontSize:11,color:tpl.hTertiary,marginTop:2,whiteSpace:"pre-line" }}>{from.address}</p>}
                       </div>
                       {/* Meta */}
                       <div style={{ textAlign:"right" }}>
-                        <p style={{ fontSize:28,fontWeight:900,color:"#e8edf5",letterSpacing:"-0.03em",lineHeight:1 }}>
+                        <p style={{ fontSize:tpl.docTitleSize,fontWeight:900,color:tpl.docTitle,letterSpacing:"-0.03em",lineHeight:1 }}>
                           {docCfg.label.toUpperCase()}
                         </p>
-                        <p style={{ fontSize:14,fontWeight:800,color:"#0d1117",marginTop:8 }}>#{meta.no||"—"}</p>
-                        <p style={{ fontSize:11.5,color:"#94a3b8",marginTop:5 }}>
+                        <p style={{ fontSize:14,fontWeight:800,color:tpl.hPrimary,marginTop:8 }}>#{meta.no||"—"}</p>
+                        <p style={{ fontSize:11.5,color:tpl.hTertiary,marginTop:5 }}>
                           {docType==="receipt"?"Date:":"Issued:"}{" "}
-                          <span style={{ color:"#475569",fontWeight:600 }}>{meta.date||"—"}</span>
+                          <span style={{ color:tpl.hValue,fontWeight:600 }}>{meta.date||"—"}</span>
                         </p>
                         {meta.due && docType!=="receipt" && (
-                          <p style={{ fontSize:11.5,color:"#94a3b8",marginTop:3 }}>
-                            Due: <span style={{ color:"#475569",fontWeight:600 }}>{meta.due}</span>
+                          <p style={{ fontSize:11.5,color:tpl.hTertiary,marginTop:3 }}>
+                            Due: <span style={{ color:tpl.hValue,fontWeight:600 }}>{meta.due}</span>
                           </p>
                         )}
                         {showStatus && (
@@ -881,7 +995,7 @@ export default function InvoiceGenerator({
                     </div>
 
                     {/* ── Bill To ── */}
-                    <div style={{ marginBottom:24,padding:"14px 16px",borderRadius:12,background:"#f8fafc",border:"1px solid #f0f3fa" }}>
+                    <div style={{ marginBottom:24, ...(tpl.box ? { padding:"14px 16px",borderRadius:12,background:"#f8fafc",border:"1px solid #f0f3fa" } : {}) }}>
                       <p style={{ fontSize:9.5,fontWeight:800,textTransform:"uppercase",letterSpacing:"0.12em",color:"#94a3b8",marginBottom:7 }}>
                         {docType==="receipt"?"Received From":"Bill To"}
                       </p>
@@ -894,13 +1008,13 @@ export default function InvoiceGenerator({
                     {/* ── Items table with S.No ── */}
                     <table style={{ width:"100%",borderCollapse:"collapse",marginBottom:20 }}>
                       <thead>
-                        <tr style={{ background:`${color}0d` }}>
+                        <tr style={{ background:tpl.theadBg }}>
                           {["#","Description","Qty","Rate","Amount"].map((h,i)=>(
                             <th key={h} style={{
                               padding:"9px 8px",fontSize:9.5,fontWeight:800,textTransform:"uppercase",
-                              letterSpacing:"0.08em",color,
+                              letterSpacing:"0.08em",color:tpl.thColor,
                               textAlign:(i===0||i===1?"left":i===2?"center":"right") as "left"|"center"|"right",
-                              borderBottom:`2px solid ${color}22`,
+                              borderBottom:tpl.thBorder,
                               width: i===0?"30px":undefined,
                             }}>{h}</th>
                           ))}
@@ -930,9 +1044,9 @@ export default function InvoiceGenerator({
                             (Tax {tax}% included)
                           </div>
                         )}
-                        <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",paddingTop:10,borderTop:`2px solid ${color}22`,marginTop:4 }}>
+                        <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",paddingTop:10,borderTop:tpl.totalRule,marginTop:4 }}>
                           <span style={{ fontSize:14,fontWeight:800,color:"#0d1117" }}>Total</span>
-                          <span style={{ fontSize:22,fontWeight:900,color,fontVariantNumeric:"tabular-nums",letterSpacing:"-0.03em" }}>{cur.s}{f2(total)}</span>
+                          <span style={{ fontSize:22,fontWeight:900,color:tpl.totalColor,fontVariantNumeric:"tabular-nums",letterSpacing:"-0.03em" }}>{cur.s}{f2(total)}</span>
                         </div>
                         {/* Tax label */}
                         <div style={{ textAlign:"right",marginTop:5 }}>

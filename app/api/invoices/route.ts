@@ -34,6 +34,27 @@ export async function GET(req: NextRequest) {
   const db    = getDb()!;
   const limit = p.isPro ? 1000 : FREE_LIMIT;
 
+  // ?id=<uuid> → return that single invoice WITH its full form data
+  // (used by the generator's /?load=<id> re-edit flow from the dashboard)
+  const id = req.nextUrl.searchParams.get("id");
+  if (id) {
+    try {
+      const rows = await db`
+        SELECT id, invoice_no, doc_type, data
+          FROM invoices
+         WHERE id = ${id} AND email_hash = ${p.emailHash}
+         LIMIT 1
+      ` as { id: string; invoice_no: string; doc_type: string; data: unknown }[];
+      if (!rows.length) {
+        return NextResponse.json({ error: "Not found" }, { status: 404, headers: NO_CACHE });
+      }
+      return NextResponse.json({ invoice: rows[0] }, { headers: NO_CACHE });
+    } catch (e) {
+      console.error("[invoices/GET?id]", e);
+      return NextResponse.json({ error: "Failed to load invoice" }, { status: 500 });
+    }
+  }
+
   try {
     const rows = await db`
       SELECT id, invoice_no, doc_type, client_name, total, currency, created_at
