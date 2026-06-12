@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageShell, PageHero } from "@/components/ui";
 import JsonLd from "@/components/JsonLd";
+import TemplateStyleCards from "@/components/TemplateStyleCards";
 import { breadcrumbSchema } from "@/lib/schema";
 import { LANDING } from "@/lib/landing";
 import { SITE } from "@/lib/config";
@@ -54,6 +55,15 @@ export default function Templates() {
         title="Every free invoice template, in one place"
         subtitle="All templates use the same fast generator — they just start pre-configured for your profession, country, or document type. Pick one and download your PDF in minutes."
       />
+
+      {/* PDF style gallery — Classic free, Minimal/Bold Pro */}
+      <section className="mb-14">
+        <h2 className="text-[20px] font-extrabold tracking-tight text-slate-900">Three PDF styles, one generator</h2>
+        <p className="mb-5 mt-1 text-[14px] text-slate-500">
+          Every template below can be downloaded in any of these looks. Classic is free forever; Minimal and Bold come with Pro.
+        </p>
+        <TemplateStyleCards showCta />
+      </section>
 
       {GROUPS.map((g) => (
         <section key={g.title} className="mb-12">

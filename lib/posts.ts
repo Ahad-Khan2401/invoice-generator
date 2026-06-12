@@ -1438,55 +1438,6 @@ export const POSTS: Record<string, Post> = {
   },
 
   /* ══════════════════════════════════════════════
-     POST 28 — UK VAT invoice (high CPC UK)
-  ══════════════════════════════════════════════ */
-  "uk-vat-invoice-requirements": {
-    title: "UK VAT Invoice Requirements: What to Include (2026)",
-    description: "What a valid UK VAT invoice must include under HMRC rules — VAT number, rates, and the difference between a full and simplified VAT invoice. Free template.",
-    date: "2026-06-08",
-    updated: "2026-06-08",
-    readMins: 6,
-    keywords: ["uk vat invoice requirements", "what to include on a vat invoice", "hmrc invoice rules", "vat invoice template uk", "do i need to charge vat"],
-    excerpt: "What HMRC requires on a valid UK VAT invoice — VAT number, rates, full vs simplified invoices, and when you must (and must not) charge VAT.",
-    body: [
-      { type: "p", text: "If you're VAT-registered in the UK, HMRC requires specific details on every invoice you issue. Getting them right means your clients can reclaim their VAT and you stay compliant. This guide covers exactly what to include." },
-      { type: "h2", text: "Do you need to charge VAT?" },
-      { type: "p", text: "You must register for VAT and charge it once your taxable turnover exceeds the VAT threshold (£90,000 as of 2024/25). Below that you can register voluntarily, but you don't have to. If you're not VAT-registered, you must not show or charge VAT on your invoices." },
-      { type: "callout", text: `Create a clean, professional UK invoice in seconds — ${CTA}` },
-      { type: "h2", text: "What a full VAT invoice must include" },
-      { type: "ul", items: [
-        "A unique, sequential invoice number",
-        "Your business name and address",
-        "Your VAT registration number",
-        "The invoice date (and 'time of supply' / tax point if different)",
-        "The customer's name and address",
-        "A description of the goods or services",
-        "The quantity, unit price (excluding VAT), and VAT rate for each item",
-        "The total amount excluding VAT",
-        "The total VAT amount, shown in sterling",
-        "The total amount including VAT",
-      ]},
-      { type: "h2", text: "UK VAT rates" },
-      { type: "ul", items: [
-        "Standard rate — 20% (most goods and services)",
-        "Reduced rate — 5% (e.g. domestic energy, children's car seats)",
-        "Zero rate — 0% (e.g. most food, children's clothes, books)",
-        "Exempt — no VAT (e.g. insurance, certain education and health services)",
-      ]},
-      { type: "h2", text: "Full vs simplified VAT invoice" },
-      { type: "p", text: "For sales up to £250 (including VAT), you can issue a simplified VAT invoice, which needs fewer details: your name, address, and VAT number; the time of supply; a description of the goods/services; the rate of VAT; and the total amount including VAT. For anything over £250, you must issue a full VAT invoice." },
-      { type: "h2", text: "How long to keep UK invoices" },
-      { type: "p", text: "HMRC requires you to keep VAT records and invoices for at least 6 years. If you use the VAT Cash Accounting Scheme or have specific arrangements, keep them organised and accessible in case of an inspection." },
-      { type: "p", text: `Read more in our guides for <a href="/freelancer-invoice">freelancers</a> and <a href="/small-business-invoice">small businesses</a>, or ${CTA}` },
-    ],
-    faq: [
-      { q: "What must a UK VAT invoice include?", a: "A unique invoice number, your business name and address, your VAT number, the date, the customer's details, a description of goods/services, the net amount, the VAT rate and amount in sterling, and the total including VAT." },
-      { q: "Can I charge VAT if I'm not registered?", a: "No. You must not charge or show VAT on invoices unless you are VAT-registered with HMRC. Doing so is illegal and can result in penalties." },
-      { q: "What is the UK VAT registration threshold?", a: "As of 2024/25, you must register for VAT once your taxable turnover exceeds £90,000 in any rolling 12-month period. You can also register voluntarily below this." },
-    ],
-  },
-
-  /* ══════════════════════════════════════════════
      POST 28 — What is an invoice (high-volume definitional)
   ══════════════════════════════════════════════ */
   "what-is-an-invoice": {
@@ -1730,7 +1681,7 @@ export const POSTS: Record<string, Post> = {
         "Include your bank details so the client can pay instantly.",
         "Follow up politely if payment is late.",
       ]},
-      { type: "p", text: "For more, see our <a href=\"/blog/uk-vat-invoice-requirements\">UK VAT invoice guide</a> and the <a href=\"/invoice-generator-uk\">free UK invoice generator</a>." },
+      { type: "p", text: "For more, see our <a href=\"/blog/vat-invoice-requirements-uk\">UK VAT invoice guide</a> and the <a href=\"/invoice-generator-uk\">free UK invoice generator</a>." },
     ],
     faq: [
       { q: "Do I need to be registered to invoice as a sole trader?", a: "No. As a sole trader you can invoice under your own name or a trading name without registering a limited company. You just need to register as self-employed with HMRC for Self Assessment." },
@@ -1786,6 +1737,210 @@ export const POSTS: Record<string, Post> = {
       { q: "How do I manage recurring invoices without software?", a: "Save a consistent invoice template, duplicate it each billing period, and update the date, the period reference, and the invoice number. Send it on the same day each cycle for predictability." },
       { q: "Should each recurring invoice have a new invoice number?", a: "Yes. Every issued invoice needs its own unique, sequential number — even if everything else is identical to last month's. Reusing numbers creates duplicate records for you and your client's bookkeeper." },
       { q: "How do I raise the price on a recurring invoice?", a: "Tell the client in writing at least one billing period before the change, restate the new amount and start date, and then update the invoice. A price that appears unannounced on a recurring invoice is the fastest way to lose a long-term client's trust." },
+    ],
+  },
+
+  /* ══════════════════════════════════════════════
+     POST 34 — 1099 contractor invoice (high CPC USA)
+  ══════════════════════════════════════════════ */
+  "1099-contractor-invoice-guide": {
+    title: "1099 Contractor Invoice Guide: How to Bill as an Independent Contractor (2026)",
+    description: "How to invoice as a 1099 independent contractor in the US — what goes on the invoice, how 1099-NEC reporting works, a worked example, and tax-season tips.",
+    date: "2026-06-11",
+    updated: "2026-06-11",
+    readMins: 6,
+    keywords: ["1099 contractor invoice", "1099 invoice", "independent contractor invoice", "how to invoice as a 1099 contractor", "1099-nec invoice"],
+    excerpt: "Billing as a 1099 contractor is different from being on payroll: you invoice, they pay gross, and the tax is your job. Here's how to do it cleanly.",
+    body: [
+      { type: "p", text: "The first thing that surprises new 1099 contractors in the US is what does NOT happen: no payroll, no withholding, no pay stub. The client pays your invoice in full, gross, and every tax obligation lands on you. That makes your invoice more than a payment request — it is the primary record of your self-employment income, and the cleaner it is, the easier both tax season and client relationships become." },
+      { type: "h2", text: "What '1099' actually means for your invoice" },
+      { type: "p", text: "'1099' refers to the information return your client files with the IRS, most commonly Form 1099-NEC for nonemployee compensation of $600 or more in a year. The IRS explains the thresholds on its <a href=\"https://www.irs.gov/businesses/small-businesses-self-employed/am-i-required-to-file-a-form-1099-or-other-information-return\">information return requirements page</a>. Practically, this means your client's bookkeeper will total your invoices at year-end and report that figure. If your invoices are vague, unnumbered, or scattered across emails, that total becomes a negotiation. If they're clean and sequential, it's arithmetic." },
+      { type: "h2", text: "What goes on a 1099 contractor invoice" },
+      { type: "ul", items: [
+        "Your name (or business name) and address — matching what you put on your W-9",
+        "The client's company name and address",
+        "A unique, sequential invoice number",
+        "Invoice date and payment due date (Net 15 or Net 30 are typical)",
+        "A clear description of the work, with dates or milestones",
+        "Rate and quantity (hours × hourly rate, or a fixed project fee)",
+        "The total due — no tax withholding lines, since none applies",
+        "How to pay you: ACH details, or the payment link you use",
+      ]},
+      { type: "p", text: "Notice what's absent: Social Security numbers and EINs do not belong on invoices. Your client gets those once, securely, via your W-9 — never on a document that gets forwarded around an accounts-payable department." },
+      { type: "h2", text: "A worked example" },
+      { type: "p", text: "Maya does freelance UX work for a startup at $85/hour. In May she logs 32 hours. Her invoice INV-2026-014, dated June 1: 'UX design — May 2026, 32 hrs @ $85' = $2,720, Net 15, ACH details at the bottom. No tax lines. The startup pays $2,720 in full; Maya sets aside roughly 25–30% of it for federal income tax and self-employment tax, because nobody withheld anything for her. In January, the startup files a 1099-NEC reporting everything they paid her, and her own invoice records match it to the dollar." },
+      { type: "callout", text: "Create a clean contractor invoice in about two minutes with the <a href=\"/freelance-invoice-template-usa\">free US freelance invoice template</a> — rate, hours, Net terms and your logo, downloaded as a PDF." },
+      { type: "h2", text: "Tax habits that save you in April" },
+      { type: "ol", items: [
+        "Set aside 25–30% of every invoice as you're paid, in a separate account.",
+        "Pay quarterly estimated taxes — the IRS <a href=\"https://www.irs.gov/businesses/small-businesses-self-employed/self-employed-individuals-tax-center\">Self-Employed Tax Center</a> covers the schedule and forms.",
+        "Keep every invoice in one place, numbered sequentially, with paid dates.",
+        "Reconcile your records against the 1099-NEC your client sends in January — errors happen, and your invoices are the proof.",
+      ]},
+      { type: "h2", text: "Common 1099 invoicing mistakes" },
+      { type: "p", text: "Three show up constantly. Billing without a W-9 on file, which stalls your first payment while accounts payable chases paperwork. Mixing personal and business descriptions ('misc work') that make year-end categorisation painful. And skipping invoice numbers entirely, which turns any payment dispute into archaeology. All three are free to avoid." },
+    ],
+    faq: [
+      { q: "Do 1099 contractors need to send invoices?", a: "Almost always, yes. Unlike employees, contractors are paid against invoices, and your invoice trail is your income record for tax purposes. Some platforms generate payment statements for you, but direct clients expect a proper invoice." },
+      { q: "Should I put my SSN or EIN on a 1099 invoice?", a: "No. Tax identification numbers go on your W-9, which you give the client once through a secure channel. Invoices circulate widely inside companies and shouldn't carry sensitive identifiers." },
+      { q: "Do I add sales tax to a 1099 contractor invoice?", a: "Usually not for professional services, but it depends on your state and the type of work — a handful of states tax certain services. Check your state's rules; if you must collect, show it as a separate line." },
+      { q: "What happens if a client doesn't send a 1099-NEC?", a: "You still owe tax on the income. The 1099 is the client's reporting obligation, not a precondition for yours — report what your invoices show you actually earned." },
+    ],
+  },
+
+  /* ══════════════════════════════════════════════
+     POST 35 — Invoicing US clients from abroad (W-8BEN)
+  ══════════════════════════════════════════════ */
+  "how-to-invoice-us-clients-from-another-country": {
+    title: "How to Invoice US Clients From Another Country (W-8BEN Guide, 2026)",
+    description: "Invoicing a US company as a non-US freelancer: the W-8BEN form, what to put on your invoice, currency and payment options, and a worked example.",
+    date: "2026-06-11",
+    updated: "2026-06-11",
+    readMins: 6,
+    keywords: ["invoice us client from another country", "w-8ben freelancer", "international freelancer invoice", "invoice american company from overseas", "non-us freelancer taxes"],
+    excerpt: "US clients pay well, but the paperwork scares people off. In reality it's one form (W-8BEN), one good invoice, and a sensible way to receive dollars.",
+    body: [
+      { type: "p", text: "A freelancer in Karachi, Lagos, or Manila lands their first US client and immediately hits two worries: 'do I owe American taxes?' and 'how do I even get paid?'. The honest answer is more boring than the worry. For most non-US freelancers doing the work outside the US, one form settles the tax question, and the invoice itself looks almost identical to a domestic one." },
+      { type: "h2", text: "The W-8BEN, in plain language" },
+      { type: "p", text: "US companies must document why they are not withholding US tax from payments to foreign individuals. That documentation is <a href=\"https://www.irs.gov/forms-pubs/about-form-w-8-ben\">Form W-8BEN</a>: you certify you're a foreign person, the work is performed outside the US, and (where a tax treaty exists) which treaty applies. You fill it once, send it to the client before the first payment, and renew it every three years. It is not a tax return, you don't send it to the IRS, and for services performed entirely in your own country there is normally no US tax withheld at all. You pay tax at home, under your own country's rules." },
+      { type: "callout", text: "Client asked for 'an invoice in dollars'? <a href=\"/invoice-generator-usa\">The free US invoice generator</a> lets you bill in USD with US-style fields, from any country, in your browser." },
+      { type: "h2", text: "What to put on the invoice" },
+      { type: "ul", items: [
+        "Your full name and address in your own country (matching your W-8BEN)",
+        "The US client's company name and address",
+        "A unique invoice number and the invoice date",
+        "Description of the work and the period it covers",
+        "Amount in USD — US clients overwhelmingly prefer to be billed in dollars",
+        "Payment method and details (see below)",
+        "A note like 'Services performed outside the United States' — it helps their bookkeeper file you correctly",
+      ]},
+      { type: "p", text: "Skip US-specific elements that don't apply to you: no sales tax line, no W-9, no SSN. If your own country requires extras on invoices (an NTN in Pakistan, a GSTIN in India for export invoices), include those for your own compliance." },
+      { type: "h2", text: "Getting paid: the realistic options" },
+      { type: "p", text: "Wire transfers (SWIFT) work everywhere but cost $15–40 per payment and lose more in exchange-rate spread. Most international freelancers settle on a USD receiving account from services like Wise or Payoneer: the client pays a US bank account via ACH exactly as they'd pay a domestic vendor, and you convert to local currency when the rate suits you. Whatever you choose, print the exact payment instructions on the invoice itself, not buried in an email thread." },
+      { type: "h2", text: "A worked example" },
+      { type: "p", text: "Ahmed, a developer in Pakistan, contracts with a Texas company at $2,000/month. Before invoice one, he sends a completed W-8BEN. His monthly invoice: 'Software development — June 2026, fixed monthly fee, $2,000, Net 15', followed by his USD account details and the line 'Services performed outside the United States'. The client pays the full $2,000 with nothing withheld. Ahmed declares the income in Pakistan as export of services under local tax rules. Total US paperwork per year: zero, until the W-8BEN renewal." },
+      { type: "h2", text: "When it's NOT this simple" },
+      { type: "p", text: "If you physically work inside the US during the contract, if the client treats you like an employee, or if you operate through a company rather than as an individual (that's the W-8BEN-E, a different form), the picture changes and proper advice is worth paying for. For the standard case — foreign freelancer, working from home, billing a US company — the simple version above is the whole game." },
+    ],
+    faq: [
+      { q: "Do I pay US taxes as a foreign freelancer working for a US company?", a: "Generally no, if you're a non-US person performing the services outside the US and you've given the client a W-8BEN. You pay tax in your own country instead. Working inside the US, or through a US entity, changes this." },
+      { q: "What is the difference between W-8BEN and W-9?", a: "The W-9 is for US persons (citizens, residents, US businesses); the W-8BEN is for foreign individuals. A US client should ask you for exactly one of them — as a non-US freelancer, that's the W-8BEN." },
+      { q: "Should I invoice a US client in USD or my local currency?", a: "USD, almost always. It's what the client's accounts system expects, it avoids exchange-rate disputes, and services like Wise or Payoneer let you receive dollars and convert on your own schedule." },
+      { q: "Does my US client send me a 1099?", a: "Normally no. 1099 forms are for US persons; payments to foreign contractors documented with a W-8BEN are generally not 1099-reportable. Your own invoices are your income record." },
+    ],
+  },
+
+  /* ══════════════════════════════════════════════
+     POST 36 — Invoicing as an LLC (high CPC USA)
+  ══════════════════════════════════════════════ */
+  "how-to-invoice-as-an-llc": {
+    title: "How to Invoice as an LLC: Name, EIN & Payment Details Done Right (2026)",
+    description: "Invoicing under an LLC — which name goes on the invoice, whether to show your EIN, how to keep business and personal payments separate, plus an example.",
+    date: "2026-06-11",
+    updated: "2026-06-11",
+    readMins: 5,
+    keywords: ["how to invoice as an llc", "llc invoice", "invoice with llc name", "llc invoice requirements", "single member llc invoice"],
+    excerpt: "You formed the LLC for protection — but that protection partly depends on boring habits, and invoicing under the right name is one of them.",
+    body: [
+      { type: "p", text: "Forming an LLC takes an afternoon. Keeping its liability protection intact takes habits, and one of the most overlooked is invoicing correctly. Courts can disregard an LLC ('pierce the veil') when owners blur the line between themselves and the company, and invoices issued in your personal name, paid into your personal account, are exactly that kind of blur." },
+      { type: "h2", text: "Which name goes on the invoice" },
+      { type: "p", text: "The LLC's legal name, exactly as registered — 'Brightside Design LLC', not 'Sarah Jones'. If you operate under a DBA (doing business as), show the DBA prominently and keep the legal name visible too, e.g. 'Brightside (Brightside Design LLC)'. Your own name can appear as a contact person; it just shouldn't be the party issuing the invoice." },
+      { type: "h2", text: "The five LLC-specific details" },
+      { type: "ul", items: [
+        "Legal LLC name (plus DBA if you use one)",
+        "Business address — registered or principal office",
+        "Payment made out to the LLC: business bank account for ACH, or 'pay to: Brightside Design LLC' on checks",
+        "EIN only when the client requests it for their records — like an SSN, it belongs on your W-9, not on every invoice",
+        "Everything a normal invoice needs: unique number, date, due date, itemised work, total",
+      ]},
+      { type: "callout", text: "Set your LLC name, logo and brand colour once in the <a href=\"/small-business-invoice\">free small business invoice generator</a> — every invoice after that is consistent automatically." },
+      { type: "h2", text: "A worked example" },
+      { type: "p", text: "Brightside Design LLC bills a retail client for a website: invoice BD-1042, 'Website design and build — fixed fee $4,800', Net 30, payable by ACH to the Brightside business checking account. The client's accounts team files a single vendor: the LLC. They have its W-9 with the EIN on file from onboarding. Sarah's personal name appears once, as 'Contact: Sarah Jones'. If a dispute ever reaches a courtroom, the paper trail shows a company trading as a company — which is the entire point." },
+      { type: "h2", text: "Single-member LLC taxes, briefly" },
+      { type: "p", text: "A single-member LLC is usually a 'disregarded entity': profits flow to your personal return on Schedule C, and the IRS <a href=\"https://www.irs.gov/businesses/small-businesses-self-employed/self-employed-individuals-tax-center\">Self-Employed Tax Center</a> rules on estimated taxes apply to you the same as any freelancer. The LLC changes your legal position, not your invoice-to-tax pipeline: invoice from the LLC, receive into the business account, pay yourself from there, and keep the records separated." },
+      { type: "h2", text: "Mistakes that erode the LLC's value" },
+      { type: "p", text: "Invoicing from your personal name 'just this once'. Receiving client payments into a personal account because the business account wasn't set up yet. Using one invoice number sequence for two different LLCs. Each one seems harmless on the day; together they build the case that the company and the owner are interchangeable — precisely what you formed the LLC to avoid." },
+    ],
+    faq: [
+      { q: "Should I put my EIN on every LLC invoice?", a: "No. Provide the EIN on your W-9 during client onboarding. Invoices circulate widely and don't need tax identifiers; clients who want it for their records will ask." },
+      { q: "Can an LLC invoice be paid to my personal bank account?", a: "It shouldn't be. Routing LLC income through personal accounts mixes funds and weakens your liability protection. Open a business account and have all LLC invoices paid there." },
+      { q: "Do I invoice differently as a single-member vs multi-member LLC?", a: "The invoice itself looks the same — issued in the LLC's name with its details. The difference is tax filing behind the scenes (Schedule C for most single-member LLCs, a partnership return for multi-member ones)." },
+    ],
+  },
+
+  /* ══════════════════════════════════════════════
+     POST 37 — Bill vs invoice (high-volume, brand keyword)
+  ══════════════════════════════════════════════ */
+  "bill-vs-invoice-difference": {
+    title: "Bill vs Invoice: What's the Difference? (Same Document, Two Seats)",
+    description: "Bill and invoice usually describe the same document from two perspectives — the seller sends an invoice, the buyer receives a bill. Examples and edge cases.",
+    date: "2026-06-11",
+    updated: "2026-06-11",
+    readMins: 4,
+    keywords: ["bill vs invoice", "difference between bill and invoice", "is a bill an invoice", "invoice and bill difference"],
+    excerpt: "Here's the secret: it's usually the same piece of paper. Which word you use depends on which side of the transaction you're sitting on.",
+    body: [
+      { type: "p", text: "Is a bill different from an invoice? In most everyday business, no — they are the same document viewed from two seats at the table. The seller who creates and sends it calls it an invoice. The buyer who receives it and owes the money calls it a bill. One piece of paper, two perspectives." },
+      { type: "p", text: "That's why accounting software shows the same transaction under 'Invoices' for the seller and 'Bills' for the buyer, and why searching for a 'bill generator' and an 'invoice generator' lands you on the same kind of tool." },
+      { type: "h2", text: "Where the words do drift apart" },
+      { type: "ul", items: [
+        "Consumer contexts say 'bill': utility bill, phone bill, restaurant bill — usually due immediately or on a fixed cycle, with no negotiation",
+        "B2B contexts say 'invoice': itemised, numbered, with payment terms like Net 30, feeding into accounts payable",
+        "A restaurant bill expects payment before you leave; an invoice typically grants credit — pay within 15 or 30 days",
+        "Invoices carry formal fields (invoice number, tax breakdown, PO reference) that casual bills often skip",
+      ]},
+      { type: "h2", text: "A concrete example" },
+      { type: "p", text: "A cleaning company finishes a month of office cleaning and sends a document: number CLN-208, '4 weekly cleans @ $150', total $600, Net 15. The cleaning company's bookkeeper records invoice CLN-208 in accounts receivable. The office manager who receives it forwards 'the cleaning bill' to accounts payable. Same PDF, both correct." },
+      { type: "callout", text: "Whichever word your customers use, the <a href=\"/bill-generator\">free bill generator</a> makes the same clean, professional PDF — items, tax, logo, done in two minutes." },
+      { type: "h2", text: "What about receipts and statements?" },
+      { type: "p", text: "Two neighbours worth separating. A receipt is proof that payment already happened — it comes after the money moves, while bills and invoices come before. A statement is a summary of multiple invoices over a period, showing what remains outstanding; it references invoices but doesn't replace them. Our <a href=\"/blog/invoice-vs-receipt-difference\">invoice vs receipt guide</a> goes deeper on that boundary." },
+      { type: "h2", text: "Which word should YOU use?" },
+      { type: "p", text: "Mirror your audience. Billing other businesses? Call it an invoice — their finance team's workflow literally has that name on it. Charging consumers for a service? 'Your bill' sounds natural and familiar. The legal substance (an itemised request for payment) is identical, so the choice is purely about communicating clearly with the person paying you." },
+    ],
+    faq: [
+      { q: "Is a bill the same as an invoice?", a: "Usually yes — it's the same document described from different sides. The seller issues an invoice; the buyer receives it as a bill. Context shifts the word, not the substance." },
+      { q: "Can I use a bill as proof of payment?", a: "No — a bill or invoice shows what is owed, not what was paid. Proof of payment is a receipt, issued after the money changes hands." },
+      { q: "Why does accounting software separate Invoices and Bills?", a: "It's the two-seat view: 'Invoices' are documents you issue to customers (money in), 'Bills' are documents you receive from suppliers (money out). The same document is an invoice in one company's books and a bill in the other's." },
+    ],
+  },
+
+  /* ══════════════════════════════════════════════
+     POST 38 — UK limited company invoices (high CPC UK)
+  ══════════════════════════════════════════════ */
+  "limited-company-invoice-requirements-uk": {
+    title: "Limited Company Invoice Requirements UK: What the Law Says (2026)",
+    description: "What a UK limited company must legally show on invoices — registered name, company number, registered office — plus VAT rules and a compliant example.",
+    date: "2026-06-11",
+    updated: "2026-06-11",
+    readMins: 5,
+    keywords: ["limited company invoice requirements", "ltd company invoice uk", "company number on invoice", "limited company invoice template", "what must a limited company invoice include"],
+    excerpt: "Sole traders get flexibility; limited companies get statute. UK law names specific details every Ltd invoice must carry — here's the complete list.",
+    body: [
+      { type: "p", text: "How is invoicing different once you trade through a limited company instead of as a sole trader? Mostly, the difference is that the rules stop being habits and start being law. UK companies legislation names specific details that must appear on a limited company's invoices and business correspondence, and missing them is a compliance gap rather than a style choice. The official summary lives on <a href=\"https://www.gov.uk/invoicing-and-taking-payment-from-customers\">gov.uk's invoicing guidance</a>." },
+      { type: "h2", text: "What a UK limited company invoice must include" },
+      { type: "ul", items: [
+        "The company's full registered name, exactly as on the certificate of incorporation (including 'Ltd' or 'Limited')",
+        "Company registration number",
+        "Place of registration (England and Wales, Scotland, or Northern Ireland)",
+        "Registered office address — even if you trade from somewhere else",
+        "Everything any invoice needs: unique sequential number, date, customer details, description, amounts, payment terms",
+      ]},
+      { type: "p", text: "A subtlety that catches people: if you choose to name any director on the invoice, UK rules require naming all directors. Most companies simply name none and avoid the issue." },
+      { type: "h2", text: "VAT-registered? Add the VAT layer" },
+      { type: "p", text: "Once the company is VAT-registered, invoices must also carry your VAT number with VAT shown separately at the correct rate. The detailed field list is in our <a href=\"/blog/vat-invoice-requirements-uk\">UK VAT invoice guide</a>; below the registration threshold you must NOT show or charge VAT at all." },
+      { type: "h2", text: "A compliant example" },
+      { type: "p", text: "'Harborview Consulting Ltd · Company No. 12345678 · Registered in England and Wales · Registered office: 1 Quay Street, Bristol BS1 4XX' sits in the footer. The body is a normal invoice: HV-0231, dated 11 June 2026, 'Strategy workshop — 2 days @ £900', £1,800, Net 30, bank details for the company's business account. If Harborview were VAT-registered, the body would show £1,800 net, £360 VAT (20%), £2,160 total, plus the VAT number in the footer." },
+      { type: "callout", text: "Put your company details in once and they appear on every invoice: <a href=\"/invoice-generator-uk\">try the free UK invoice generator</a> — pounds, VAT field, your logo, clean PDF." },
+      { type: "h2", text: "Payments belong to the company" },
+      { type: "p", text: "Invoice in the company's name, get paid into the company's bank account, and pay yourself from there by salary or dividend. Client money routed to a director's personal account creates exactly the muddle limited liability is supposed to prevent, and it makes year-end accounts painful. The invoice is the first link in that chain — issue it from the company, always." },
+      { type: "h2", text: "Sole trader vs limited company invoicing, side by side" },
+      { type: "p", text: "A sole trader invoices under their own name with no company number (our <a href=\"/blog/how-to-invoice-as-a-sole-trader\">sole trader guide</a> covers it). A limited company must display its registered identity. Beyond that statutory footer, the craft is identical: clear descriptions, sequential numbers, explicit terms, and the discipline of sending the invoice the day the work completes." },
+    ],
+    faq: [
+      { q: "Does a UK limited company have to put its company number on invoices?", a: "Yes. The registered name, company number, place of registration, and registered office address must appear on invoices and other business correspondence under UK companies legislation." },
+      { q: "Can I show just one director's name on a company invoice?", a: "No — if you name any director on business stationery, you must name all of them. The simplest compliant choice is to name none." },
+      { q: "Does a limited company always charge VAT on invoices?", a: "Only if it's VAT-registered. Registration is mandatory above the turnover threshold and optional below it; an unregistered company must not show or charge VAT." },
+      { q: "Can a limited company invoice be paid to a director personally?", a: "It shouldn't be. The company is the contracting party, so payment belongs in the company's bank account; directors are paid from the company by salary or dividend afterwards." },
     ],
   },
 

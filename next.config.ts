@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
       // Old thin ES/PT landing pages were removed (low-value duplicate content).
       { source: "/es/:slug*", destination: "/", permanent: true },
       { source: "/pt/:slug*", destination: "/", permanent: true },
+      // Duplicate post merged into the stronger VAT guide (keyword cannibalization fix).
+      { source: "/blog/uk-vat-invoice-requirements", destination: "/blog/vat-invoice-requirements-uk", permanent: true },
     ];
   },
   async headers() {
