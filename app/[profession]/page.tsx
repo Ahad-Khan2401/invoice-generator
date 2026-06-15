@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import InvoiceGenerator from "@/components/InvoiceGenerator";
 import LandingContent from "@/components/LandingContent";
-import SeoContent from "@/components/SeoContent";
 import AdSlot from "@/components/AdSlot";
 import JsonLd from "@/components/JsonLd";
-import { softwareSchema, faqSchema, howToSchema, breadcrumbSchema } from "@/lib/schema";
+import { softwareSchema, faqSchemaFrom, breadcrumbSchema } from "@/lib/schema";
 import { LANDING, LANDING_SLUGS } from "@/lib/landing";
+import { LANDING_CONTENT } from "@/lib/landing-content";
 import { SITE } from "@/lib/config";
 
-/* Only the whitelisted slugs are built. Anything else → 404,
+/* Only the whitelisted slugs are built. Anything else -> 404,
    so this dynamic segment never swallows /about, /how-it-works, etc. */
 export const dynamicParams = false;
 
@@ -41,27 +41,28 @@ export default async function ProfessionPage(
   const data = LANDING[profession];
   if (!data) notFound();
 
+  const content = LANDING_CONTENT[profession];
   const url = `${SITE.url}/${profession}`;
 
   return (
     <>
       <InvoiceGenerator heading={data.h1} subheading={data.sub} defaultCurrency={data.currencySymbol} />
 
-      {/* Unique, page-specific content — differentiates every landing page */}
-      <LandingContent slug={profession} />
+      {/* Unique, self-contained content: intro + sections + in-article ad + page-specific FAQ. */}
+      <LandingContent slug={profession} midAdSlot={SITE.adSlots.homeMid} />
 
-      <SeoContent profession={data.profession} midAdSlot={SITE.adSlots.homeMid} />
-
+      {/* Ad after the article, before the footer */}
       <AdSlot slot={SITE.adSlots.homeBottom} />
 
-      {/* Structured data — search + AI engines */}
+      {/* Per-page structured data. FAQ schema is built from this page's own unique FAQs. */}
       <JsonLd data={softwareSchema(url)} />
-      <JsonLd data={howToSchema(url)} />
-      <JsonLd data={faqSchema()} />
       <JsonLd data={breadcrumbSchema([
         { name: "Home", url: SITE.url },
         { name: data.h1, url },
       ])} />
+      {content?.faqs && content.faqs.length > 0 && (
+        <JsonLd data={faqSchemaFrom(content.faqs)} />
+      )}
     </>
   );
 }
