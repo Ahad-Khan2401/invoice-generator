@@ -285,7 +285,7 @@ export default function ProModal({ open, onClose, onSignIn, isLoggedIn, isPro, j
                   ))}
                 </ul>
                 <a
-                  href={`${SITE.stripe.proLink}?checkout[redirect_url]=${encodeURIComponent("https://www.pdfbillbuilder.com/?pro=success")}`}
+                  href={`${SITE.stripe.proLink}?desc=0&media=0&discount=0&checkout[redirect_url]=${encodeURIComponent("https://www.pdfbillbuilder.com/?pro=success")}`}
                   style={{
                     display:"flex", alignItems:"center", justifyContent:"center", gap:8,
                     width:"100%", padding:"12px 20px", borderRadius:12,
@@ -323,7 +323,7 @@ export default function ProModal({ open, onClose, onSignIn, isLoggedIn, isPro, j
                 ))}
               </ul>
               <a
-                href={`${SITE.stripe.proLink}?checkout[redirect_url]=${encodeURIComponent("https://www.pdfbillbuilder.com/?pro=success")}`}
+                href={`${SITE.stripe.proLink}?desc=0&media=0&discount=0&checkout[redirect_url]=${encodeURIComponent("https://www.pdfbillbuilder.com/?pro=success")}`}
                 style={{
                   display:"flex", alignItems:"center", justifyContent:"center", gap:8,
                   width:"100%", padding:"14px 20px", borderRadius:14,
