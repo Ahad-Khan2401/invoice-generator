@@ -84,6 +84,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsenseClient}`}
           />
         )}
+        {/* Lemon Squeezy overlay checkout (on-site popup) */}
+        <Script
+          id="lemonsqueezy"
+          src="https://assets.lemonsqueezy.com/lemon.js"
+          strategy="afterInteractive"
+        />
         </GoogleProvider>
       </body>
     </html>
