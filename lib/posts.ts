@@ -1944,6 +1944,227 @@ export const POSTS: Record<string, Post> = {
     ],
   },
 
+  /* ══════════════════════════════════════════════
+     POST 39 — Estimate vs quote (high CPC US/UK/CA/AU trades)
+  ══════════════════════════════════════════════ */
+  "estimate-vs-quote-difference": {
+    title: "Estimate vs Quote: What's the Difference (and When to Use Each)?",
+    description:
+      "Estimate vs quote explained: a quote is a fixed price you can be held to, an estimate is a best guess. When to use each, and how to word both so you get paid.",
+    date: "2026-06-18",
+    updated: "2026-06-18",
+    readMins: 6,
+    keywords: ["estimate vs quote", "difference between estimate and quote", "is a quote legally binding", "quote vs estimate", "when to use an estimate"],
+    excerpt:
+      "A quote ties you to a price; an estimate leaves room to move. Confusing the two is how trades end up doing £2,000 of work for a £1,200 figure they can't change.",
+    body: [
+      { type: "p", text: "A customer asks what a job will cost. You write a number on a form and send it. Whether that number is a quote or an estimate decides something most trades never think about until it goes wrong: whether you can charge what the job actually costs, or whether you're locked into the figure you guessed at on the doorstep. The two words get used interchangeably in conversation, but in business — and in law — they are not the same thing." },
+      { type: "callout", text: "Need to send one today? The free generator builds a clean <a href=\"/blog/how-to-write-a-quotation\">quotation</a> or estimate from the same form — <a href=\"/\">open it here</a> and follow along." },
+      { type: "h2", text: "The core difference in one line" },
+      { type: "p", text: "A quote is a fixed price you commit to. An estimate is your best, honest guess that can change. Once a customer accepts a quote you've effectively agreed a price for the work, and you can't simply bill more later because your costs rose. An estimate sets an expectation, not a ceiling — but the final bill still has to be reasonable, and a figure that balloons far past the estimate is one the customer can dispute." },
+      { type: "p", text: "In the UK this distinction has teeth. Citizens Advice spells it out: a quote is a promise to do the work at an agreed price, and a trader can't charge more than they quoted unless the customer agreed to extra work or the quote contained an obvious mistake — rising costs alone don't count. An estimate, by contrast, is the trader's best guess, and if the final bill comes in much higher the customer can challenge it and pay only what's reasonable. The official consumer guidance is on Citizens Advice's page on <a href=\"https://www.citizensadvice.org.uk/consumer/getting-home-improvements-done/before-you-get-building-work-done/\">getting building work done</a>." },
+      { type: "p", text: "The same logic holds in the US, Canada and Australia even where it isn't written into a single statute: a quote the customer accepts becomes the agreed price of the contract, while an estimate is understood to be approximate. The safest rule everywhere is to label the document clearly, so there's no argument later about which one you sent." },
+      { type: "h2", text: "When to send a quote" },
+      { type: "p", text: "Send a quote when you can see the whole job and price it with confidence." },
+      { type: "ul", items: [
+        "The scope is clear and unlikely to change — replacing a known set of sockets, fitting a supplied appliance, a fixed package of design work.",
+        "You've seen the site or the full brief, so there are no hidden unknowns waiting to inflate the cost.",
+        "The customer wants certainty and is comparing fixed prices — a clear quote often wins the job over a vague “it depends”.",
+        "Material prices are stable, or you can lock them in quickly before they move.",
+      ] },
+      { type: "h2", text: "When to send an estimate" },
+      { type: "p", text: "Send an estimate when honest unknowns make a fixed price a gamble you'd lose." },
+      { type: "ul", items: [
+        "You can't fully inspect the job yet — what's behind the wall, under the floor, or inside the system is unknown.",
+        "The work depends on choices the customer hasn't made yet, such as final fittings, finishes, or quantities.",
+        "It's time-and-materials work where the hours genuinely depend on what you find.",
+        "You're giving a ballpark early in a conversation so the customer can decide whether to take it further.",
+      ] },
+      { type: "h2", text: "How to word each so it protects you" },
+      { type: "p", text: "The label is only half the job; the wording is the other half. On a quote, state exactly what's included and — just as important — what isn't, so any extra work is clearly outside the agreed price, and add a validity period such as “valid for 30 days” because your costs and availability change. On an estimate, say plainly that it's an estimate and not a fixed price, and explain what could move the number: “Estimate based on the visible work; if additional work is needed, we'll agree any extra cost with you before proceeding.” That one sentence is the difference between a reasonable variation and an angry dispute." },
+      { type: "callout", text: "Either way, send a clean PDF, not a text message. The <a href=\"/electrician-invoice\">trade-ready generator</a> puts your logo, line items and totals on a document that looks like you mean it." },
+      { type: "h2", text: "From quote or estimate to invoice" },
+      { type: "p", text: "Both documents are the front end of the same job; the invoice is the back end. When the work is done, the invoice should mirror the quote line for line, so the customer can see they're being charged exactly what they agreed. If you sent an estimate and the final figure moved, itemise why — the original lines plus a clearly labelled variation — so the increase is transparent rather than a surprise. Keeping the same descriptions across quote, estimate and invoice also makes your own bookkeeping far easier at year end. Our guides on <a href=\"/blog/how-to-write-a-quotation\">writing a quotation</a> and on the <a href=\"/blog/invoice-vs-receipt-vs-quotation\">invoice, receipt and quotation</a> trio cover the next steps." },
+      { type: "p", text: "Get this one habit right and a whole category of payment arguments disappears: decide, before you send the number, whether you're making a promise or a prediction — then label it, word it, and bill it accordingly." },
+    ],
+    faq: [
+      { q: "Is a quote legally binding?", a: "Once a customer accepts it, a quote generally becomes the agreed price for the work, and you can't charge more simply because your costs went up. You can charge more only if the customer agrees to additional work outside the original scope, or the quote contained an obvious error. Treat every quote as a price you're prepared to be held to." },
+      { q: "Can I charge more than my estimate?", a: "Sometimes, but the final price still has to be reasonable, and a bill far above the estimate can be disputed. The safe approach is to tell the customer as soon as you realise the cost will rise, explain why, and get their agreement before doing the extra work — in writing if you can." },
+      { q: "Should a quote or estimate include tax?", a: "Show it clearly either way. If you're registered for VAT, GST or sales tax, state whether the figure includes or excludes tax and show the tax separately, so the customer isn't surprised by a larger total on the final invoice." },
+      { q: "What's the difference between an estimate and a quotation?", a: "A quotation (or quote) is a fixed-price offer; an estimate is an approximate figure that can change. “Quotation” is simply the more formal word for a quote — they mean the same thing." },
+    ],
+  },
+
+  /* ══════════════════════════════════════════════
+     POST 40 — Charging late payment fees legally (high CPC UK/US)
+  ══════════════════════════════════════════════ */
+  "how-to-charge-late-payment-fees": {
+    title: "How to Charge Late Payment Fees on Invoices (Legally)",
+    description:
+      "Charge late fees on overdue invoices the legal way: UK statutory interest of 8% plus base rate, US state rules, what to put in your terms, and a worked example.",
+    date: "2026-06-18",
+    updated: "2026-06-18",
+    readMins: 7,
+    keywords: ["how to charge late payment fees", "late fees on invoices", "invoice late fee", "statutory interest late payment", "charging interest on overdue invoices"],
+    excerpt:
+      "You're usually allowed to charge for being paid late — but only if you do it right. Here's what UK and US rules actually permit, and how to word it so it sticks.",
+    body: [
+      { type: "p", text: "Chasing an overdue invoice can feel like the customer holds all the cards. Often they don't. In many places you have a legal right to add interest and a fee when a business pays you late — and even where there's no automatic right, you can build one into your terms. The catch is that late fees only work when they're set up correctly. Charged the wrong way, they're unenforceable and they make you look unprofessional. Here's how to do it properly." },
+      { type: "callout", text: "Want the number first? The free <a href=\"/tools/late-fee-calculator\">late payment fee calculator</a> works out the interest owed on an overdue invoice by amount, rate and days late." },
+      { type: "h2", text: "UK: you have a statutory right (even without a contract)" },
+      { type: "p", text: "If you're a UK business invoicing another business, the Late Payment of Commercial Debts (Interest) Act gives you the right to charge interest on overdue invoices even if you never wrote anything about it into the contract. According to gov.uk, the statutory interest rate is 8% plus the Bank of England base rate. With the base rate at 3.75% in mid-2026, that's a total of 11.75% a year — and because the base rate changes, check the current figure when you calculate." },
+      { type: "p", text: "On top of the interest you can claim a fixed sum for the cost of chasing the debt, and the amount steps up with the size of the invoice:" },
+      { type: "ul", items: [
+        "£40 for a debt up to £999.99",
+        "£70 for a debt of £1,000 to £9,999.99",
+        "£100 for a debt of £10,000 or more",
+      ] },
+      { type: "p", text: "That compensation applies per overdue invoice, not per customer, and if your reasonable costs of recovering the money are higher than the fixed sum, gov.uk says you can claim the difference. Interest starts running the day after payment was due. The official rules — and a calculator — are on the gov.uk page for <a href=\"https://www.gov.uk/late-commercial-payments-interest-debt-recovery\">late commercial payments</a>." },
+      { type: "h2", text: "US: it's down to your contract and your state" },
+      { type: "p", text: "There's no federal late-fee statute in the US. Whether you can charge a late fee, and how much, comes down to two things: what your written agreement says, and what your state's law allows. The practical rules most small businesses follow:" },
+      { type: "ul", items: [
+        "<strong>Put it in writing first.</strong> Courts generally won't enforce a late fee that wasn't in the contract or stated on the invoice beforehand, so add a clear late-payment clause to your terms.",
+        "<strong>Keep the rate reasonable.</strong> A monthly charge of 1–1.5% (roughly 12–18% a year) is widely treated as reasonable; some states cap it lower, so check your own state's usury rules.",
+        "<strong>Make it compensatory, not punitive.</strong> A fee designed to cover the real cost and time of late payment holds up far better than one that looks like a penalty.",
+      ] },
+      { type: "p", text: "Canada and Australia work on similar principles: charge interest where your contract provides for it, keep the rate defensible, and disclose it up front. The universal rule across every country is the same — the customer should know the late fee exists before the invoice is overdue, not learn about it for the first time on the reminder." },
+      { type: "h2", text: "How to set it up on your invoices" },
+      { type: "ol", items: [
+        "Add a payment-terms line to every invoice and to your contract, e.g. “Payment due within 14 days. Overdue accounts may be charged interest plus a late fee.”",
+        "State the due date as a real calendar date, not just “Net 14”, so there's no argument about when the clock started.",
+        "Wait until the invoice is genuinely overdue — the day after the due date — before applying anything.",
+        "Send a polite reminder first. Most late payments are oversights, and a friendly nudge usually beats leading with a fee.",
+        "If it stays unpaid, issue an updated invoice or statement showing the original amount, the interest, and any fixed fee or compensation, each on its own line.",
+      ] },
+      { type: "callout", text: "Set your terms once and reuse them on every invoice — <a href=\"/\">build yours free with PDF Bill Builder</a>, then track due dates so you know the exact day a fee becomes chargeable." },
+      { type: "h2", text: "A worked example" },
+      { type: "p", text: "Say a UK design studio is owed £4,000 and the client pays 30 days late. Statutory interest at 11.75% a year works out to roughly £4,000 × 11.75% × 30 ÷ 365 ≈ £38.63. Because the debt is between £1,000 and £9,999.99, the studio can also add £70 in fixed compensation. So the overdue invoice can legitimately carry about £108.63 on top of the £4,000 — a real incentive for the client to pay on time next round, and entirely within the rules." },
+      { type: "h2", text: "The fee isn't really the point" },
+      { type: "p", text: "The goal of a late fee isn't the few pounds or dollars it adds; it's the behaviour it changes. Clients who know your invoices carry interest tend to move them up the pile. Used well, the policy is a quiet deterrent you rarely have to enforce. For the steps that stop invoices going overdue in the first place, see our guides on <a href=\"/blog/how-to-get-paid-faster\">getting paid faster</a> and <a href=\"/blog/payment-reminder-email-templates\">payment reminder emails</a>, and on setting expectations with <a href=\"/blog/net-30-payment-terms-explained\">Net 30 terms</a>." },
+    ],
+    faq: [
+      { q: "Can I legally charge a late fee on an invoice?", a: "Usually yes, but how depends on where you are. UK businesses have a statutory right to charge interest and compensation on overdue business-to-business invoices even without a contract clause. In the US you generally need the late fee written into your contract or stated on the invoice in advance, and the rate must comply with your state's law." },
+      { q: "How much interest can I charge on a late invoice in the UK?", a: "For business-to-business debts, statutory interest is 8% plus the Bank of England base rate — about 11.75% a year while the base rate is 3.75%. You can also claim fixed compensation of £40, £70 or £100 depending on the invoice size, plus reasonable recovery costs above that. Always check the current base rate when you calculate." },
+      { q: "What's a reasonable late fee in the US?", a: "A monthly fee of around 1–1.5% (roughly 12–18% a year) is commonly treated as reasonable, but some states cap it lower under usury laws, so check your state. The fee must be disclosed in advance and should reflect the real cost of late payment rather than act as a penalty." },
+      { q: "When can I start charging a late fee?", a: "From the day after the invoice's due date. It's best practice to send a friendly reminder first, then apply interest or a fee only if the invoice remains unpaid — and to show each charge as a separate line on an updated invoice." },
+    ],
+  },
+
+  /* ══════════════════════════════════════════════
+     POST 41 — Invoice requirements by country (link-worthy comparison asset)
+  ══════════════════════════════════════════════ */
+  "invoice-requirements-by-country": {
+    title: "Invoice Requirements by Country: US, UK, Canada & Australia Compared (2026)",
+    description:
+      "Invoice requirements compared across the US, UK, Canada and Australia: mandatory fields, tax-registration thresholds, and the tax number each country puts on an invoice.",
+    date: "2026-06-22",
+    updated: "2026-06-22",
+    readMins: 7,
+    keywords: ["invoice requirements by country", "international invoice requirements", "invoice requirements us uk canada australia", "tax registration thresholds", "what to include on an invoice by country"],
+    excerpt:
+      "The fields are nearly universal; the tax rules are not. A side-by-side look at what the US, UK, Canada and Australia each demand on an invoice — and the income threshold that forces you to register for tax.",
+    body: [
+      { type: "p", text: "Sell to clients in more than one country and the same question keeps coming back: does my invoice need to look different for each of them? The reassuring answer is that the core of an invoice is nearly identical everywhere — the differences sit almost entirely in the tax rules. This guide puts the US, UK, Canada and Australia side by side so you can see, in one place, what every invoice must contain, the income level that forces you to register for tax, and the tax number each country expects to see on the page." },
+      { type: "callout", text: "Billing internationally today? The generator has country-ready layouts — <a href=\"/invoice-generator-usa\">US</a>, <a href=\"/invoice-generator-uk\">UK</a>, <a href=\"/invoice-generator-canada\">Canada</a> and <a href=\"/invoice-generator-australia\">Australia</a> — that put the right fields in the right place. <a href=\"/\">Open it here.</a>" },
+      { type: "h2", text: "The fields every country agrees on" },
+      { type: "p", text: "Before the differences, the common ground. Whatever your client's country, tax authorities expect the same basic anatomy on an invoice, and getting these right covers most of the requirement everywhere:" },
+      { type: "ul", items: [
+        "A clear label — the word “Invoice” (or “Tax Invoice” in Australia) — and a unique, sequential invoice number.",
+        "Your business name, address and contact details.",
+        "The client's name and address.",
+        "The issue date, and ideally a payment due date.",
+        "An itemised description of the goods or services, with quantities and unit prices.",
+        "The amount before tax, any tax shown separately, and the total amount due.",
+      ] },
+      { type: "p", text: "Miss one of these and you create work for the person paying you, in any jurisdiction. The country-specific rules below are layered on top of this shared base — they don't replace it." },
+      { type: "h2", text: "Tax-registration thresholds at a glance" },
+      { type: "p", text: "The single biggest difference between countries is the income level at which you must register to charge sales tax, VAT or GST. Below the threshold you generally don't charge the tax; above it you must register, charge it, and hand it over. Here is where each country draws the line:" },
+      { type: "ul", items: [
+        "<strong>United States:</strong> there is no national sales tax and no single threshold. Each state sets its own rules, and many use an economic-nexus threshold — commonly US$100,000 in sales or 200 transactions into that state — before an out-of-state seller must register.",
+        "<strong>United Kingdom:</strong> you must register for VAT once your taxable turnover passes £90,000 in any rolling 12-month period, the figure HMRC has held since April 2024.",
+        "<strong>Canada:</strong> you stop being a “small supplier” and must register for GST/HST once your taxable revenue exceeds C$30,000 in a single calendar quarter or across four consecutive quarters.",
+        "<strong>Australia:</strong> you must register for GST once your annual GST turnover reaches A$75,000 (A$150,000 for non-profit organisations).",
+      ] },
+      { type: "p", text: "Thresholds change with budgets and policy, so confirm the current figure on the official page before you rely on it: <a href=\"https://www.gov.uk/vat-registration\">gov.uk</a> for the UK, the <a href=\"https://www.ato.gov.au/businesses-and-organisations/gst-excise-and-indirect-taxes/gst/registering-for-gst\">ATO</a> for Australia, the <a href=\"https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/when-register-charge.html\">CRA</a> for Canada, and the <a href=\"https://www.irs.gov/businesses/small-businesses-self-employed\">IRS</a> for US federal matters (sales tax itself is administered by each state)." },
+      { type: "h2", text: "What tax number goes on the invoice" },
+      { type: "p", text: "Once you're registered, your invoice usually has to display a tax identifier. The name of that number is different in each country:" },
+      { type: "ul", items: [
+        "<strong>United States:</strong> businesses use an Employer Identification Number (EIN) from the IRS; sole proprietors often use their Social Security Number instead. There is no US “VAT number”.",
+        "<strong>United Kingdom:</strong> a VAT registration number, shown only once you're VAT-registered. Your UTR is for HMRC records, not for invoices.",
+        "<strong>Canada:</strong> your GST/HST account number, which forms part of your CRA Business Number (BN).",
+        "<strong>Australia:</strong> your Australian Business Number (ABN), which belongs on every invoice — more on why below.",
+      ] },
+      { type: "h3", text: "United States" },
+      { type: "p", text: "The US is the outlier: no federal sales tax and no VAT. Sales tax is set by states and even local districts, so whether you charge it depends on what you sell and where your customer is. Since the 2018 Supreme Court decision in South Dakota v. Wayfair, states can require even out-of-state sellers to collect tax once they pass an economic-nexus threshold. For most freelancers billing services the practical answer is often “no sales tax”, but it varies by state, so check your state's Department of Revenue. See our guides for <a href=\"/blog/1099-contractor-invoice-guide\">1099 contractors</a> and <a href=\"/blog/how-to-invoice-us-clients-from-another-country\">invoicing US clients from abroad</a>, or start from the <a href=\"/invoice-generator-usa\">US invoice generator</a>." },
+      { type: "h3", text: "United Kingdom" },
+      { type: "p", text: "UK invoices follow HMRC rules. Below the £90,000 VAT threshold you issue a simple invoice with no VAT. Once registered, you must issue a full VAT invoice showing your VAT number, the rate applied to each item, the VAT amount, and the totals with and without VAT. The full breakdown is in our <a href=\"/blog/uk-invoice-requirements\">UK invoice requirements</a> guide." },
+      { type: "h3", text: "Canada" },
+      { type: "p", text: "Canada layers a federal GST with provincial taxes: 5% GST in some provinces, a harmonised 13–15% HST in others, and a separate QST in Quebec. Below C$30,000 you're a small supplier and don't have to charge GST/HST at all; above it you register, charge the rate for your client's province, and show your GST/HST number. Full detail in <a href=\"/blog/invoice-requirements-canada\">invoice requirements in Canada</a>." },
+      { type: "h3", text: "Australia" },
+      { type: "p", text: "Australia has the strictest identifier rule. If you carry on an enterprise you should quote your ABN on every invoice, because without it the paying business is generally required to withhold 47% of the payment under the ATO's no-ABN withholding rule. GST of 10% applies once you pass the A$75,000 threshold, and a compliant document must be headed “Tax Invoice”. The specifics are in our <a href=\"/blog/australia-tax-invoice-guide\">Australian tax invoice guide</a>." },
+      { type: "callout", text: CTA },
+      { type: "h2", text: "Billing across borders" },
+      { type: "p", text: "One rule is consistent across all four countries: exports of goods and services to overseas clients are usually zero-rated or GST/VAT-free, meaning you don't add your local sales tax to a foreign customer's invoice. The mechanics differ — and digital services sold to overseas consumers can be an exception — so confirm your situation with the relevant authority. If you're a freelancer in one country billing clients in another, the key is to show your own tax details correctly and state the currency clearly on the invoice." },
+      { type: "p", text: "The takeaway: build one solid invoice that nails the universal fields, then adjust a single layer — the tax registration and the tax number — for each country you bill. Do that and the same document works whether your client is in New York, London, Toronto or Sydney." },
+    ],
+    faq: [
+      { q: "Do I need a different invoice for each country?", a: "Not fundamentally. The core fields — your details, the client's details, a unique number, dates, itemised lines, and a clear total — are the same everywhere. What changes is the tax layer: the registration threshold, whether you charge VAT, GST or sales tax, and the tax number you display. Get the universal base right and adjust only that layer per country." },
+      { q: "What are the tax-registration thresholds for the US, UK, Canada and Australia?", a: "The UK requires VAT registration above £90,000 of taxable turnover; Canada above C$30,000 (the small-supplier limit); Australia above A$75,000 of GST turnover. The US has no national threshold — sales tax is per state, with economic-nexus rules commonly around US$100,000 or 200 transactions into a state. Always confirm the current figure on the official tax-authority website." },
+      { q: "Which tax number do I put on an invoice in each country?", a: "US: an EIN (or an SSN for many sole proprietors) — there is no US VAT number. UK: your VAT registration number, once registered. Canada: your GST/HST number, part of your Business Number. Australia: your ABN, which should appear on every invoice." },
+      { q: "Do I charge sales tax or VAT when invoicing a client overseas?", a: "Usually not. Exports of goods and services to clients outside your country are generally zero-rated or tax-free in the UK, Canada and Australia, and US sales tax applies based on a customer's US location, not foreign ones. Digital services sold to overseas consumers can be an exception, so check the rules for your specific case." },
+    ],
+  },
+
+  /* ══════════════════════════════════════════════
+     POST 42 — Sales tax on invoices (US, high CPC)
+  ══════════════════════════════════════════════ */
+  "do-i-charge-sales-tax-on-my-invoice": {
+    title: "Do You Charge Sales Tax on an Invoice? A US Guide (2026)",
+    description:
+      "Do freelancers and small businesses charge sales tax on invoices in the US? When sales tax applies, how nexus and the Wayfair rule work, and how to show tax on an invoice.",
+    date: "2026-06-22",
+    updated: "2026-06-22",
+    readMins: 7,
+    keywords: ["do i charge sales tax on an invoice", "sales tax on invoices", "do freelancers charge sales tax", "us sales tax invoice", "sales tax nexus"],
+    excerpt:
+      "It's the question every new US seller hits at the tax line: do I add sales tax to this invoice? The honest answer is “it depends” — on what you sell, where your customer is, and whether you have nexus there.",
+    body: [
+      { type: "p", text: "You've finished the work, you're filling in the invoice, and you reach the tax line. Do you add sales tax or not? For anyone selling in the United States, this is one of the most confusing questions in invoicing, because there is no single national answer. Whether you charge sales tax depends on what you're selling, which state your customer is in, and whether you have a tax obligation — “nexus” — in that state. Here's how to work it out without guessing." },
+      { type: "callout", text: "Need to add or remove tax from a figure quickly? The free <a href=\"/tools/sales-tax-calculator\">sales tax calculator</a> does the maths for any rate in seconds." },
+      { type: "h2", text: "The US has no national sales tax" },
+      { type: "p", text: "Unlike most of the world, the United States has no federal sales tax and no VAT. Federal taxes — income tax and self-employment tax — go to the IRS and have nothing to do with the tax on your invoice. Sales tax is run entirely by the states, and 45 states plus the District of Columbia charge one, each with its own rates and rules. That's why no blanket answer exists: “US sales tax” is really dozens of separate systems. The <a href=\"https://www.irs.gov/businesses/small-businesses-self-employed\">IRS Small Business and Self-Employed center</a> covers your federal obligations; sales tax sits with each state's Department of Revenue." },
+      { type: "h2", text: "Do you even need to charge it?" },
+      { type: "p", text: "Three questions decide whether sales tax belongs on a given invoice:" },
+      { type: "ul", items: [
+        "<strong>Is what you sell taxable?</strong> Physical goods are taxable in almost every state. Professional and freelance services often aren't — but some states tax specific services, and digital products or software can go either way.",
+        "<strong>Where is the customer?</strong> Sales tax generally follows the “ship-to” location — your customer's address — not yours. The rate is the one that applies where they receive the goods or service.",
+        "<strong>Do you have nexus in that state?</strong> You only have to collect a state's sales tax if you have a connection (“nexus”) there. No nexus, no obligation to collect — though the customer may still owe use tax directly.",
+      ] },
+      { type: "h2", text: "Goods vs services" },
+      { type: "p", text: "The single most useful rule of thumb: tangible goods are usually taxable, and many services are not — but “many” is not “all”. A growing number of states tax certain services such as repairs, data processing, or digital subscriptions, and the lines move every year. If you sell a service, don't assume it's exempt; look it up on your state's Department of Revenue site or ask a tax professional, because getting it wrong means either undercharging — and owing the tax yourself — or overcharging your client." },
+      { type: "h2", text: "Nexus and the Wayfair rule" },
+      { type: "p", text: "“Nexus” is the connection that obliges you to collect a state's sales tax, and it comes in two forms. Physical nexus is the old rule: an office, employees, or inventory in a state. Economic nexus is the newer one. After the 2018 Supreme Court decision in South Dakota v. Wayfair, states can require even out-of-state sellers to register once their sales into the state cross a threshold — South Dakota's own limit, which the case upheld, was US$100,000 in sales or 200 transactions in a year. Most states adopted similar figures, so a high-volume online seller can owe sales tax in states they've never set foot in." },
+      { type: "h2", text: "The states with no sales tax" },
+      { type: "p", text: "Five states have no statewide sales tax, remembered by the acronym NOMAD: New Hampshire, Oregon, Montana, Alaska and Delaware. There's a catch — Alaska has no state sales tax but lets local municipalities charge their own, so a sale there still isn't always tax-free. And being based in a NOMAD state doesn't exempt you from collecting another state's tax if you have nexus there." },
+      { type: "callout", text: "Set up as an LLC? The business structure doesn't change the sales-tax rules, but see <a href=\"/blog/how-to-invoice-as-an-llc\">how to invoice as an LLC</a> for the details that do differ." },
+      { type: "h2", text: "How to show sales tax on an invoice" },
+      { type: "ol", items: [
+        "<strong>Register first.</strong> Before you collect a cent of sales tax, get a sales-tax permit from the state. Collecting without registering is itself a problem.",
+        "<strong>Use the right rate.</strong> Apply the combined state-plus-local rate for the customer's location, not yours. Rates vary even between neighbouring towns.",
+        "<strong>Show tax on its own line.</strong> List the subtotal, then sales tax as a separate line with the rate stated, then the grand total — never bury tax inside the prices.",
+        "<strong>Keep records and remit on time.</strong> The tax you collect isn't income; you're holding it for the state and must file and pay it by the due date.",
+      ] },
+      { type: "p", text: "If you're a freelancer selling services, there's a fair chance you don't charge sales tax at all — but “probably not” is not a filing position. Confirm how your state treats what you sell, register if you need to, and when in doubt check with your state's Department of Revenue or a tax professional. Once you know your rule, the invoice itself is easy: the <a href=\"/invoice-generator-usa\">US invoice generator</a> adds a clear tax line and totals it for you." },
+      { type: "callout", text: CTA },
+    ],
+    faq: [
+      { q: "Do freelancers have to charge sales tax in the US?", a: "Often not, because many states don't tax professional or freelance services — but it depends entirely on your state and what you sell. Some states tax specific services, and anyone selling physical or digital products is more likely to owe sales tax. Check your state's Department of Revenue rather than assuming you're exempt." },
+      { q: "Is there a federal sales tax in the United States?", a: "No. The US has no federal sales tax and no VAT. Sales tax is set and collected by individual states — 45 states plus Washington, D.C. — each with its own rates and rules. Federal taxes such as income and self-employment tax are separate and go to the IRS." },
+      { q: "What is sales tax nexus?", a: "Nexus is the connection that requires you to collect a state's sales tax. Physical nexus means a presence such as an office, staff, or stock in the state. Economic nexus, established after South Dakota v. Wayfair in 2018, means crossing a sales threshold in the state — commonly around US$100,000 or 200 transactions a year — even with no physical presence." },
+      { q: "Which US states have no sales tax?", a: "Five states have no statewide sales tax: New Hampshire, Oregon, Montana, Alaska and Delaware (the “NOMAD” states). Alaska is a partial exception because its local municipalities can levy their own sales tax, so some Alaskan sales are still taxed." },
+    ],
+  },
+
 };
 
 export const POST_SLUGS = Object.keys(POSTS);
