@@ -824,7 +824,7 @@ export const POSTS: Record<string, Post> = {
       { type: "h2", text: "3. Shorten the terms and show a real date" },
       { type: "p", text: "If you default to Net 30 out of politeness, stop; Net 14 is accepted without comment in most freelance and small-business relationships. And always print the actual due date. “Due 25 June 2026” gets scheduled; “Net 14” gets interpreted, later. Our <a href=\"/blog/invoice-payment-terms-explained\">payment terms guide</a> covers which terms suit which clients." },
       { type: "h2", text: "4. Take deposits on anything that would hurt" },
-      { type: "p", text: "For any project big enough that non-payment would damage your month, take 30–50% upfront. On a $4,000 build, a $1,600 deposit means the worst case is chasing $2,400 on work that's partly paid for, not chasing $4,000 with no leverage. Deposits also pre-screen clients: anyone who balks at a standard deposit is telling you how they'll behave at final payment." },
+      { type: "p", text: "For any project big enough that non-payment would damage your month, take 30–50% upfront. On a $4,000 build, a $1,600 deposit means the worst case is chasing $2,400 on work that's partly paid for, not chasing $4,000 with no leverage. Deposits also pre-screen clients: anyone who balks at a standard deposit is telling you how they'll behave at final payment. Our <a href=\"/blog/how-to-invoice-for-a-deposit\">deposit invoice guide</a> covers how to structure and word the document, plus UK VAT rules on advance payments." },
       { type: "h2", text: "5. Remove every step between “approved” and “paid”" },
       { type: "ul", items: [
         "Put full payment details on the invoice itself: account name, number, sort or routing code, or your PayPal/UPI handle.",
@@ -2104,7 +2104,7 @@ export const POSTS: Record<string, Post> = {
       { type: "p", text: "Australia has the strictest identifier rule. If you carry on an enterprise you should quote your ABN on every invoice, because without it the paying business is generally required to withhold 47% of the payment under the ATO's no-ABN withholding rule. GST of 10% applies once you pass the A$75,000 threshold, and a compliant document must be headed “Tax Invoice”. The specifics are in our <a href=\"/blog/australia-tax-invoice-guide\">Australian tax invoice guide</a>." },
       { type: "callout", text: CTA },
       { type: "h2", text: "Billing across borders" },
-      { type: "p", text: "One rule is consistent across all four countries: exports of goods and services to overseas clients are usually zero-rated or GST/VAT-free, meaning you don't add your local sales tax to a foreign customer's invoice. The mechanics differ — and digital services sold to overseas consumers can be an exception — so confirm your situation with the relevant authority. If you're a freelancer in one country billing clients in another, the key is to show your own tax details correctly and state the currency clearly on the invoice." },
+      { type: "p", text: "One rule is consistent across all four countries: exports of goods and services to overseas clients are usually zero-rated or GST/VAT-free, meaning you don't add your local sales tax to a foreign customer's invoice. The mechanics differ — and digital services sold to overseas consumers can be an exception — so confirm your situation with the relevant authority. If you're a freelancer in one country billing clients in another, the key is to show your own tax details correctly and state the currency clearly on the invoice. If you're shipping physical goods internationally, you'll also need a <a href=\"/blog/commercial-invoice-for-international-shipping\">commercial invoice</a> — a separate customs document that travels with the shipment and is distinct from a regular sales invoice." },
       { type: "p", text: "The takeaway: build one solid invoice that nails the universal fields, then adjust a single layer — the tax registration and the tax number — for each country you bill. Do that and the same document works whether your client is in New York, London, Toronto or Sydney." },
     ],
     faq: [
@@ -2161,18 +2161,4 @@ export const POSTS: Record<string, Post> = {
       { q: "Do freelancers have to charge sales tax in the US?", a: "Often not, because many states don't tax professional or freelance services — but it depends entirely on your state and what you sell. Some states tax specific services, and anyone selling physical or digital products is more likely to owe sales tax. Check your state's Department of Revenue rather than assuming you're exempt." },
       { q: "Is there a federal sales tax in the United States?", a: "No. The US has no federal sales tax and no VAT. Sales tax is set and collected by individual states — 45 states plus Washington, D.C. — each with its own rates and rules. Federal taxes such as income and self-employment tax are separate and go to the IRS." },
       { q: "What is sales tax nexus?", a: "Nexus is the connection that requires you to collect a state's sales tax. Physical nexus means a presence such as an office, staff, or stock in the state. Economic nexus, established after South Dakota v. Wayfair in 2018, means crossing a sales threshold in the state — commonly around US$100,000 or 200 transactions a year — even with no physical presence." },
-      { q: "Which US states have no sales tax?", a: "Five states have no statewide sales tax: New Hampshire, Oregon, Montana, Alaska and Delaware (the “NOMAD” states). Alaska is a partial exception because its local municipalities can levy their own sales tax, so some Alaskan sales are still taxed." },
-    ],
-  },
-
-};
-
-export const POST_SLUGS = Object.keys(POSTS);
-
-export const POST_LIST = POST_SLUGS.map((slug) => ({
-  slug,
-  title: POSTS[slug].title,
-  excerpt: POSTS[slug].excerpt,
-  date: POSTS[slug].date,
-  readMins: POSTS[slug].readMins,
-}));
+      { q: “Which US states have no sales tax?”, a: “Five states have no statewide sales tax: New Hampshire, Oregon, Montan
