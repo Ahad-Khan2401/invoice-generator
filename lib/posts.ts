@@ -143,7 +143,7 @@ export const POSTS: Record<string, Post> = {
     faq: [
       { q: "How do freelancers invoice clients?", a: "Agree the rate and payment terms before starting, then send a PDF invoice on delivery: your details, the client's, a unique number, itemised lines with rates, any tax, and a calendar due date. Email it to the client's accounts address with the invoice number in the subject line." },
       { q: "Should a freelancer charge tax on an invoice?", a: "Only if you're registered for sales tax, VAT, or GST where you operate. If you are, show it as a separate line with the rate visible; if you're not, leave tax lines off entirely rather than charging something you can't collect." },
-      { q: "How big a deposit should a freelancer ask for?", a: "For new clients, 30–50% before work starts is normal and rarely questioned. On long projects, switch to milestone billing (for example 40/30/30) so no single unpaid chunk can sink your month." },
+      { q: "How big a deposit should a freelancer ask for?", a: "For new clients, 30–50% before work starts is normal and rarely questioned. On long projects, switch to <a href=\"/blog/milestone-invoice-project-billing\">milestone billing</a> (for example 40/30/30) so no single unpaid chunk can sink your month." },
       { q: "What do I do when a client just doesn't pay?", a: "Escalate on a schedule: a friendly nudge the day after the due date, a firm reminder a week later, then pause any ongoing work and apply the late fee your terms allow. For amounts worth the effort, a formal demand letter followed by small claims court recovers more often than people expect." },
     ],
   },
@@ -962,7 +962,7 @@ export const POSTS: Record<string, Post> = {
       { type: "callout", text: CTA },
       { type: "h2", text: "Progress invoicing vs final invoicing" },
       { type: "h3", text: "Progress invoicing (milestone billing)" },
-      { type: "p", text: "On longer projects, it's standard to invoice at key milestones — for example, 30% at foundation completion, 40% at lock-up, and 30% at handover. Each progress invoice should clearly state the milestone, the total contract value, how much has been invoiced to date, and the amount currently due." },
+      { type: "p", text: "On longer projects, it's standard to invoice at key milestones — for example, 30% at foundation completion, 40% at lock-up, and 30% at handover. Each progress invoice should clearly state the milestone, the total contract value, how much has been invoiced to date, and the amount currently due. See the full guide to <a href=\"/blog/milestone-invoice-project-billing\">milestone invoicing for projects</a> for how to structure and word these invoices." },
       { type: "h3", text: "Final invoice" },
       { type: "p", text: "The final invoice covers all remaining work and any variations. It should deduct previous payments and show the exact balance owed." },
       { type: "h2", text: "Construction invoice requirements by country" },
@@ -2161,4 +2161,142 @@ export const POSTS: Record<string, Post> = {
       { q: "Do freelancers have to charge sales tax in the US?", a: "Often not, because many states don't tax professional or freelance services — but it depends entirely on your state and what you sell. Some states tax specific services, and anyone selling physical or digital products is more likely to owe sales tax. Check your state's Department of Revenue rather than assuming you're exempt." },
       { q: "Is there a federal sales tax in the United States?", a: "No. The US has no federal sales tax and no VAT. Sales tax is set and collected by individual states — 45 states plus Washington, D.C. — each with its own rates and rules. Federal taxes such as income and self-employment tax are separate and go to the IRS." },
       { q: "What is sales tax nexus?", a: "Nexus is the connection that requires you to collect a state's sales tax. Physical nexus means a presence such as an office, staff, or stock in the state. Economic nexus, established after South Dakota v. Wayfair in 2018, means crossing a sales threshold in the state — commonly around US$100,000 or 200 transactions a year — even with no physical presence." },
-      { q: “Which US states have no sales tax?”, a: “Five states have no statewide sales tax: New Hampshire, Oregon, Montan
+      { q: “Which US states have no sales tax?”, a: “Five states have no statewide sales tax: New Hampshire, Oregon, Montana, Alaska and Delaware (the \”NOMAD\” states). Alaska is a partial exception because its local municipalities can levy their own sales tax, so some Alaskan sales are still taxed.” },
+    ],
+  },
+
+  /* ══════════════════════════════════════════════
+     POST 42 — Deposit / advance payment invoice (high-intent, low-competition)
+  ══════════════════════════════════════════════ */
+  “how-to-invoice-for-a-deposit”: {
+    title: “How to Send a Deposit Invoice and Get Paid Upfront (2026)”,
+    description:
+      “A deposit invoice collects part of the fee before work starts. How to write one, how much to ask for, and the UK VAT rules — verified against HMRC guidance.”,
+    date: “2026-06-23”,
+    updated: “2026-06-23”,
+    readMins: 6,
+    keywords: [
+      “deposit invoice”,
+      “advance payment invoice”,
+      “how to invoice for a deposit”,
+      “upfront payment freelancer”,
+      “deposit invoice template”,
+    ],
+    excerpt:
+      “Most freelancers lose money not on the work itself but on the money they float. A deposit invoice collects part of the fee before you start — here's exactly how to write one.”,
+    body: [
+      { type: “p”, text: “Most freelancers and tradespeople lose money not on the work itself but on the money they float. You spend days on a project before seeing a penny, then chase the full invoice for weeks afterwards. A deposit invoice — a request for part of the fee before you begin — solves both problems at once. This guide covers what a deposit invoice is, how much to ask for, how to structure it correctly, and the tax rules that apply.” },
+      { type: “callout”, text: “Ready to send one now? <a href=\”/\”>PDF Bill Builder</a> generates a clean deposit invoice as a PDF in under two minutes — no account needed.” },
+      { type: “h2”, text: “What is a deposit invoice?” },
+      { type: “p”, text: “A deposit invoice is an invoice for a portion of the total project fee, issued before work starts. The client pays it upfront; you begin the work; you send a second invoice for the balance on completion. It is a real, legally valid invoice — not a quote or a proforma — and it creates an obligation to pay just like any other invoice. Some businesses call it an advance payment invoice or an upfront payment invoice; the terms mean the same thing.” },
+      { type: “p”, text: “A deposit serves two purposes. First, it puts cash in your hands from day one, so you're not financing the client's project with your own money. Second, it filters out uncommitted clients: someone who won't pay 30% upfront is unlikely to pay 100% on delivery.” },
+      { type: “h2”, text: “How much should you ask for?” },
+      { type: “p”, text: “There is no universal legal minimum or maximum for most freelance and service work — the amount is what you and the client agree. In practice, the most common ranges are:” },
+      { type: “ul”, items: [
+        “<strong>25–33% deposit</strong> — typical for design, consulting, writing, or other creative services. Enough to cover initial costs without asking the client to pay the majority before they've seen anything.”,
+        “<strong>50% deposit</strong> — standard for larger projects, custom builds, or clients you haven't worked with before. This is the most common structure in construction, software development, and event production.”,
+        “<strong>100% upfront</strong> — used for very small, quick-turnaround jobs (a single logo file, a short translation) where the time between invoice and delivery is hours, not weeks.”,
+      ] },
+      { type: “p”, text: “One exception worth knowing: in California, contractors doing residential home improvement work are legally prohibited from collecting a deposit of more than 10% of the contract price or $1,000 — whichever is less — before starting the job. This applies to licensed contractors under the Contractors State License Board (CSLB) rules. Other US states and other countries have their own rules, so if you're in a regulated trade it's worth checking local legislation.” },
+      { type: “h2”, text: “How to structure a deposit invoice” },
+      { type: “p”, text: “A deposit invoice should be clearly labelled so both parties know exactly what it covers. Include:” },
+      { type: “ol”, items: [
+        “<strong>A distinct invoice number.</strong> Number your deposit invoices in the same sequence as your other invoices (e.g. INV-047) or use a sub-numbering system (INV-047a for the deposit, INV-047b for the balance). Either works; pick one and stick to it.”,
+        “<strong>Clear description.</strong> Write something like “Deposit — 50% of total project fee for [Project Name]” as the line-item description. Avoid just writing “Deposit” with no context.”,
+        “<strong>The full project value.</strong> Show the total agreed fee and the deposit amount separately, so the client can see what the balance will be. Example: Total project: $4,000 · Deposit (50%): $2,000 · Balance due on completion: $2,000.”,
+        “<strong>A due date.</strong> Specify when the deposit must be paid before you start — “Payment due before work commences” or a specific date. Make it concrete.”,
+        “<strong>Your payment details.</strong> Bank account, PayPal, or Wise — whatever the client will use to pay. Put it on every invoice, including the deposit.”,
+      ] },
+      { type: “h2”, text: “UK VAT rules on deposits” },
+      { type: “p”, text: “If you're VAT-registered in the UK, deposits have specific tax point rules you must follow. HMRC's guidance (<a href=\”https://www.gov.uk/guidance/vat-instalments-deposits-credit-sales\”>VAT: instalments, deposits, credit sales</a>) is clear on this:” },
+      { type: “ul”, items: [
+        “The tax point for a deposit is whichever comes first: the date you issue a VAT invoice for it, or the date you receive the payment. You account for VAT in the return for that period — not when the project finishes.”,
+        “When the client pays the balance, a second tax point is created at that stage. You account for VAT on the balance in the return covering that later date.”,
+        “If the client cancels and you keep a <strong>forfeit deposit</strong> (i.e. they lose it), VAT is still due on the money you retain. You cannot reclaim the VAT just because the work was never done.”,
+        “A <strong>returnable deposit</strong> (security for hired goods, fully refunded when goods are returned safely) is different — no VAT is due unless you keep it.”,
+      ] },
+      { type: “p”, text: “For non-VAT-registered freelancers — those below the UK VAT threshold, which is currently £90,000 in taxable turnover — none of the above applies. Your deposit invoices carry no VAT, and the rules above don't affect you.” },
+      { type: “h2”, text: “What to do when the deposit is paid” },
+      { type: “p”, text: “Mark the deposit as paid in your records immediately. When the project is complete and you send the final invoice, reference the deposit explicitly: list the total project fee, then deduct the deposit already received, so the balance due is unambiguous. Keep both invoices — the deposit and the final — because together they tell the complete story of the transaction for your accounts and, if needed, for tax purposes.” },
+      { type: “p”, text: “Deposits also change how you handle disputes. If the client tries to back out mid-project, your contract determines whether the deposit is returnable. If your contract says it's non-refundable after work begins, you're entitled to keep it — and the forfeit-deposit VAT rule above means you still owe HMRC the VAT component if you're registered. Write the refund policy into your contract before you take any money, not after a dispute starts.” },
+      { type: “callout”, text: “The <a href=\”/blog/invoice-payment-terms-explained\”>invoice payment terms guide</a> covers Net 7, Net 30, and milestone-based billing — useful once you've nailed the deposit structure. And if payments still arrive late, our <a href=\”/blog/how-to-charge-late-payment-fees\”>late payment fees guide</a> explains your legal options.” },
+    ],
+    faq: [
+      { q: “Is a deposit invoice a real invoice?”, a: “Yes. A deposit invoice is a legally valid invoice for a partial amount, and it creates the same payment obligation as any other invoice. It is not a quote or a proforma — it is a demand for payment, and the client is expected to pay it on the due date you specify.” },
+      { q: “Do I pay tax on a deposit before I've done the work?”, a: “In the UK, if you're VAT-registered, yes — the VAT tax point is triggered when you issue the VAT invoice or receive the payment, whichever comes first. You account for it in the VAT return for that period, regardless of when the work is completed. For income tax, the treatment depends on your accounting method: cash-basis taxpayers typically count it as income when received; accruals-basis taxpayers may differ. Check with your accountant if you're unsure.” },
+      { q: “What percentage should a deposit be?”, a: “There is no fixed rule for most freelance work. 25–50% is the most common range; 50% is standard for larger or longer projects. For California residential contractors the legal maximum is 10% of the contract or $1,000, whichever is less. Outside regulated trades, agree a deposit that covers your upfront costs and time if the client walks away.” },
+      { q: “What happens if the client cancels after paying the deposit?”, a: “It depends on your contract. If you have a clause saying the deposit is non-refundable once work begins, you can keep it. If not, you may need to negotiate. In the UK, if you keep a forfeit deposit as a VAT-registered business, HMRC says VAT is still due on the amount retained — you cannot reclaim it.” },
+      { q: “How do I number a deposit invoice?”, a: “Use your normal invoice numbering sequence. You can label it INV-047 with the description clearly stating it's a deposit, or use sub-numbers like INV-047a (deposit) and INV-047b (balance). The key is consistency and clarity so your accountant and the client can match the two invoices together.” },
+    ],
+  },
+
+  /* ══════════════════════════════════════════════
+     POST 43 — Commercial invoice for international shipping (low-competition, high-intent)
+  ══════════════════════════════════════════════ */
+  “commercial-invoice-for-international-shipping”: {
+    title: “What Is a Commercial Invoice for International Shipping? (2026 Guide)”,
+    description:
+      “A commercial invoice is the customs document required for every international shipment. What to include, the fields US CBP requires under 19 CFR § 141.86, and common mistakes to avoid.”,
+    date: “2026-06-23”,
+    updated: “2026-06-23”,
+    readMins: 7,
+    keywords: [
+      “commercial invoice international shipping”,
+      “what is a commercial invoice”,
+      “commercial invoice vs invoice”,
+      “customs invoice requirements”,
+      “commercial invoice template”,
+    ],
+    excerpt:
+      “Every box that crosses a border needs a commercial invoice. It's not the same as a regular sales invoice — here's what customs agents actually require, field by field.”,
+    body: [
+      { type: “p”, text: “Every shipment that crosses an international border needs a commercial invoice. Not a regular invoice — a specific document that customs agencies use to identify the goods, calculate import duties, and decide whether the shipment clears or sits on a dock waiting for paperwork. Get it right and your parcel moves. Get it wrong and the delays, fines, and return shipping costs add up fast.” },
+      { type: “callout”, text: “Sending goods internationally for the first time? <a href=\”/\”>PDF Bill Builder</a> generates a clean invoice PDF you can adapt — start there, then add the customs-specific fields listed below.” },
+      { type: “h2”, text: “Commercial invoice vs regular invoice: what's different?” },
+      { type: “p”, text: “A commercial invoice and a regular sales invoice both document a transaction between a seller and a buyer. The difference is in the detail. A commercial invoice is specifically designed for cross-border shipments and must include information that customs authorities need but a domestic invoice never carries: the country of origin of the goods, the Harmonized System (HS) code that classifies the product, the Incoterms agreed by both parties, and an itemised breakdown of every freight, insurance, and handling charge.” },
+      { type: “p”, text: “A regular B2B invoice is a payment request between two businesses in the same country. It doesn't need HS codes, country of origin, or Incoterms because no customs agency is reading it. When you start shipping internationally, a domestic invoice is never enough — you will always need a proper commercial invoice as well.” },
+      { type: “h2”, text: “When do you need a commercial invoice?” },
+      { type: “p”, text: “Any time you ship physical goods across a border for commercial purposes — a sale, an exchange, a repair return — you need a commercial invoice. This applies whether you're a small business sending a single package via courier, or a manufacturer moving pallets by sea freight. Some exemptions exist for very low-value gifts between private individuals, but for any business shipment the safe rule is: if it crosses a border, it needs a commercial invoice.” },
+      { type: “h2”, text: “What to include: the fields US customs requires” },
+      { type: “p”, text: “US Customs and Border Protection (CBP) sets out the required contents of an invoice for imported merchandise in <a href=\”https://www.law.cornell.edu/cfr/text/19/141.86\”>19 CFR § 141.86</a>. The mandatory fields are:” },
+      { type: “ul”, items: [
+        “<strong>Port of entry</strong> — the US port where the goods are destined (e.g. Port of Los Angeles, JFK).”,
+        “<strong>Seller and buyer details</strong> — the full name and address of the exporter and the importer, including who sold the goods, when the sale was agreed, and where the goods are shipped from.”,
+        “<strong>Detailed description of the merchandise</strong> — the specific name of each item, grade or quality, and any marks, numbers, or symbols under which it is sold in the country of export. Vague descriptions like “clothing” or “machine parts” are not enough; customs agents need to know exactly what is in the shipment.”,
+        “<strong>Quantities</strong> — in the weights and measures of the exporting country or the United States.”,
+        “<strong>Purchase price per item</strong> — in the currency of the purchase, stated clearly. If the goods are not being sold (for example, a warranty replacement), state the market value the seller would receive in the ordinary course of trade.”,
+        “<strong>Currency type</strong> — state whether the currency is the standard national currency (e.g. USD, EUR, GBP).”,
+        “<strong>All charges, itemised by name and amount</strong> — freight, insurance, commissions, container costs, and inland freight must each appear as separate line items. Bundling these into a single “shipping” line is not compliant.”,
+        “<strong>All rebates or drawbacks</strong> — any government export incentive or duty drawback allowed on the goods must be disclosed separately.”,
+        “<strong>Country of origin</strong> — where the goods were manufactured or substantially transformed. This is not necessarily the country the shipment is coming from.”,
+        “<strong>Assists</strong> — any tools, dies, moulds, or engineering work supplied free or at reduced cost by the importer that were used to produce the goods must be disclosed, even if they are not included in the invoice price.”,
+      ] },
+      { type: “p”, text: “The invoice must be in English, or have an accurate English translation attached. Each package in the shipment must be identifiable from the invoice.” },
+      { type: “h2”, text: “HTS codes: the product classification number” },
+      { type: “p”, text: “The Harmonized Tariff Schedule (HTS) code is the 10-digit number that classifies your product for US customs purposes. It determines the import duty rate your shipment attracts. Every commercial invoice for a US import should include the HTS code for each item — customs processing is faster, and importers avoid the delays caused by an officer having to look up and assign the code manually.” },
+      { type: “p”, text: “The official tool for finding US HTS codes is <a href=\”https://hts.usitc.gov/\”>hts.usitc.gov</a>, run by the United States International Trade Commission. The first six digits follow the international Harmonized System, which most countries share; the final four digits are US-specific. If you're exporting to another country, they will have an equivalent national tariff schedule — the HS six-digit prefix is the same worldwide, making it a useful starting point.” },
+      { type: “h2”, text: “Incoterms: who pays for what” },
+      { type: “p”, text: “Incoterms (International Commercial Terms) define who bears the cost and risk at each stage of the journey. The most common for small business international shipments are EXW (Ex Works — buyer collects from your premises and pays everything), FOB (Free On Board — seller delivers to the port, buyer takes over from there), and DAP (Delivered At Place — seller pays delivery to the agreed destination, buyer handles import duties). The Incoterm must appear on the commercial invoice because customs uses it to determine the correct customs value of the goods.” },
+      { type: “h2”, text: “The most common commercial invoice mistakes” },
+      { type: “ul”, items: [
+        “<strong>Undervaluing goods to reduce duties.</strong> This is customs fraud. US CBP can seize goods, impose fines equal to the full value of the merchandise, and initiate legal proceedings. Always declare the true transaction value.”,
+        “<strong>Missing or wrong country of origin.</strong> Country of origin affects whether preferential trade-agreement duty rates apply and whether any import restrictions apply. It must be accurate.”,
+        “<strong>Vague descriptions.</strong> “Assorted goods” or “samples” will trigger inspection. Write what each item actually is.”,
+        “<strong>Single-line shipping charge.</strong> Itemise every cost separately — freight, insurance, handling — so customs can calculate the correct dutiable value.”,
+        “<strong>Wrong currency.</strong> State the currency in which the transaction was agreed, not just the converted USD amount.”,
+      ] },
+      { type: “h2”, text: “Commercial invoice vs proforma invoice” },
+      { type: “p”, text: “A proforma invoice looks like a commercial invoice but is not a final payment request — it's a preliminary document sent before the goods ship, often to help the buyer get an import licence or arrange payment. A commercial invoice is issued after the transaction is agreed and travels with the shipment. Customs generally requires the commercial invoice, not the proforma, at the point of entry. Some shipments carry both: the proforma to satisfy advance paperwork, the commercial invoice to clear the goods on arrival. Our guide to <a href=\”/blog/what-is-a-proforma-invoice\”>proforma invoices</a> covers when to use each.” },
+      { type: “p”, text: “If you're invoicing international clients regularly, also see our post on <a href=\”/blog/how-to-invoice-us-clients-from-another-country\”>how to invoice US clients from abroad</a> and the <a href=\”/blog/invoice-requirements-by-country\”>invoice requirements by country comparison</a> — the rules for what goes on a business invoice differ by destination.” },
+      { type: “callout”, text: CTA },
+    ],
+    faq: [
+      { q: “Is a commercial invoice the same as a regular invoice?”, a: “No. A regular sales invoice is a payment request between businesses in the same country. A commercial invoice is a customs document for international shipments — it includes additional fields such as country of origin, HS/HTS codes, Incoterms, and an itemised breakdown of all freight and insurance charges. Customs agents use it to calculate duties and clear the shipment.” },
+      { q: “What is the difference between a commercial invoice and a proforma invoice?”, a: “A proforma invoice is a preliminary document issued before the shipment, often used to arrange payment or import licences. A commercial invoice is the final document that travels with the goods and is required by customs at the port of entry. Customs generally accepts the commercial invoice, not the proforma, as the official entry document.” },
+      { q: “Do I need a commercial invoice for every international shipment?”, a: “For any commercial shipment of physical goods across a border, yes. Low-value personal gifts between private individuals may be exempt under certain thresholds, but any business-to-business or business-to-consumer shipment crossing a border needs a commercial invoice. When in doubt, include one.” },
+      { q: “What happens if my commercial invoice is wrong?”, a: “Errors can cause customs to hold the shipment pending correction, charge the importer the cost of customs examination, or impose fines — particularly for undervaluation, which is treated as customs fraud. In serious cases, goods can be seized. It is always faster and cheaper to get the invoice right before the shipment leaves than to correct it at the port of entry.” },
+      { q: “Where do I find the HTS code for my product?”, a: “The official tool for US HTS codes is hts.usitc.gov, run by the United States International Trade Commission. Search by product description and work through the schedule to find the most accurate 10-digit code. If you're exporting to other countries, use the international HS code (the first six digits are the same worldwide) as a starting point, then find the destination country's national tariff schedule for the remaining digits.” },
+    ],
+  },
+
+  /* ═════�
