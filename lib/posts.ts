@@ -2165,6 +2165,418 @@ export const POSTS: Record<string, Post> = {
     ],
   },
 
+
+  /* ==============================================
+     POST 42 - Deposit invoice (high-intent, low-competition)
+  ============================================== */
+  "how-to-invoice-for-a-deposit": {
+    title: "How to Send a Deposit Invoice and Get Paid Upfront (2026)",
+    description:
+      "A deposit invoice collects part of the fee before work starts. How to write one, how much to ask for, and the UK VAT rules -- verified against HMRC guidance.",
+    date: "2026-06-23",
+    updated: "2026-06-27",
+    readMins: 6,
+    keywords: [
+      "deposit invoice",
+      "advance payment invoice",
+      "how to invoice for a deposit",
+      "upfront payment freelancer",
+      "deposit invoice template",
+    ],
+    excerpt:
+      "Most freelancers lose money not on the work itself but on the money they float. A deposit invoice collects part of the fee before you start -- here is exactly how to write one.",
+    body: [
+      { type: "p", text: "Most freelancers and tradespeople lose money not on the work itself but on the money they float. You spend days on a project before seeing a penny, then chase the full invoice for weeks afterwards. A deposit invoice -- a request for part of the fee before you begin -- solves both problems at once. This guide covers what a deposit invoice is, how much to ask for, how to structure it correctly, and the tax rules that apply." },
+      { type: "callout", text: "Ready to send one now? <a href=\"/\">PDF Bill Builder</a> generates a clean deposit invoice as a PDF in under two minutes -- no account needed." },
+      { type: "h2", text: "What is a deposit invoice?" },
+      { type: "p", text: "A deposit invoice is an invoice for a portion of the total project fee, issued before work starts. The client pays it upfront; you begin the work; you send a second invoice for the balance on completion. It is a real, legally valid invoice -- not a quote or a proforma -- and it creates an obligation to pay just like any other invoice. Some businesses call it an advance payment invoice or an upfront payment invoice; the terms mean the same thing." },
+      { type: "p", text: "A deposit serves two purposes. First, it puts cash in your hands from day one, so you are not financing the client's project with your own money. Second, it filters out uncommitted clients: someone who will not pay 30% upfront is unlikely to pay 100% on delivery." },
+      { type: "h2", text: "How much should you ask for?" },
+      { type: "p", text: "There is no universal legal minimum or maximum for most freelance and service work -- the amount is what you and the client agree. In practice, the most common ranges are:" },
+      { type: "ul", items: [
+        "<strong>25-33% deposit</strong> -- typical for design, consulting, writing, or other creative services. Enough to cover initial costs without asking the client to pay the majority before they have seen anything.",
+        "<strong>50% deposit</strong> -- standard for larger projects, custom builds, or clients you have not worked with before. This is the most common structure in construction, software development, and event production.",
+        "<strong>100% upfront</strong> -- used for very small, quick-turnaround jobs (a single logo file, a short translation) where the time between invoice and delivery is hours, not weeks.",
+      ] },
+      { type: "p", text: "One exception worth knowing: in California, contractors doing residential home improvement work are legally prohibited from collecting a deposit of more than 10% of the contract price or $1,000 -- whichever is less -- before starting the job. This applies to licensed contractors under the Contractors State License Board (CSLB) rules. Other US states and other countries have their own rules, so if you are in a regulated trade it is worth checking local legislation." },
+      { type: "h2", text: "How to structure a deposit invoice" },
+      { type: "p", text: "A deposit invoice should be clearly labelled so both parties know exactly what it covers. Include:" },
+      { type: "ol", items: [
+        "<strong>A distinct invoice number.</strong> Number your deposit invoices in the same sequence as your other invoices (e.g. INV-047) or use a sub-numbering system (INV-047a for the deposit, INV-047b for the balance). Either works; pick one and stick to it.",
+        "<strong>Clear description.</strong> Write something like \"Deposit -- 50% of total project fee for [Project Name]\" as the line-item description. Avoid just writing \"Deposit\" with no context.",
+        "<strong>The full project value.</strong> Show the total agreed fee and the deposit amount separately, so the client can see what the balance will be. Example: Total project: $4,000 -- Deposit (50%): $2,000 -- Balance due on completion: $2,000.",
+        "<strong>A due date.</strong> Specify when the deposit must be paid before you start -- \"Payment due before work commences\" or a specific date. Make it concrete.",
+        "<strong>Your payment details.</strong> Bank account, PayPal, or Wise -- whatever the client will use to pay. Put it on every invoice, including the deposit.",
+      ] },
+      { type: "h2", text: "UK VAT rules on deposits" },
+      { type: "p", text: "If you are VAT-registered in the UK, deposits have specific tax point rules you must follow. HMRC's guidance on <a href=\"https://www.gov.uk/guidance/vat-instalments-deposits-credit-sales\">VAT: instalments, deposits, and credit sales</a> is clear:" },
+      { type: "ul", items: [
+        "The tax point for a deposit is whichever comes first: the date you issue a VAT invoice for it, or the date you receive the payment. You account for VAT in the return for that period -- not when the project finishes.",
+        "When the client pays the balance, a second tax point is created at that stage. You account for VAT on the balance in the return covering that later date.",
+        "If the client cancels and you keep a <strong>forfeit deposit</strong> (i.e. they lose it), VAT is still due on the money you retain. You cannot reclaim the VAT just because the work was never done.",
+        "A <strong>returnable deposit</strong> (security for hired goods, fully refunded when goods are returned safely) is different -- no VAT is due unless you keep it.",
+      ] },
+      { type: "p", text: "For non-VAT-registered freelancers -- those below the UK VAT threshold of GBP 90,000 in taxable turnover -- none of the above applies. Your deposit invoices carry no VAT." },
+      { type: "h2", text: "What to do when the deposit is paid" },
+      { type: "p", text: "Mark the deposit as paid in your records immediately. When the project is complete and you send the final invoice, reference the deposit explicitly: list the total project fee, then deduct the deposit already received, so the balance due is unambiguous. Keep both invoices -- the deposit and the final -- because together they tell the complete story of the transaction for your accounts and, if needed, for tax purposes." },
+      { type: "p", text: "If the client tries to back out mid-project, your contract determines whether the deposit is returnable. If your contract says it is non-refundable after work begins, you are entitled to keep it -- and the forfeit-deposit VAT rule above means you still owe HMRC the VAT component if you are registered. Write the refund policy into your contract before you take any money, not after a dispute starts." },
+      { type: "callout", text: "The <a href=\"/blog/invoice-payment-terms-explained\">invoice payment terms guide</a> covers Net 7, Net 30, and milestone-based billing. If payments still arrive late, the <a href=\"/blog/how-to-charge-late-payment-fees\">late payment fees guide</a> explains your legal options." },
+    ],
+    faq: [
+      { q: "Is a deposit invoice a real invoice?", a: "Yes. A deposit invoice is a legally valid invoice for a partial amount, and it creates the same payment obligation as any other invoice. It is not a quote or a proforma -- it is a demand for payment, and the client is expected to pay it on the due date you specify." },
+      { q: "Do I pay tax on a deposit before I have done the work?", a: "In the UK, if you are VAT-registered, yes -- the VAT tax point is triggered when you issue the VAT invoice or receive the payment, whichever comes first. You account for it in the VAT return for that period, regardless of when the work is completed. For income tax, cash-basis taxpayers typically count it as income when received; accruals-basis taxpayers may differ. Check with your accountant if unsure." },
+      { q: "What percentage should a deposit be?", a: "There is no fixed rule for most freelance work. 25-50% is the most common range; 50% is standard for larger or longer projects. For California residential contractors the legal maximum is 10% of the contract or $1,000, whichever is less. Outside regulated trades, agree a deposit that covers your upfront costs and time if the client walks away." },
+      { q: "What happens if the client cancels after paying the deposit?", a: "It depends on your contract. If you have a clause saying the deposit is non-refundable once work begins, you can keep it. In the UK, if you keep a forfeit deposit as a VAT-registered business, HMRC says VAT is still due on the amount retained -- you cannot reclaim it." },
+      { q: "How do I number a deposit invoice?", a: "Use your normal invoice numbering sequence. You can label it INV-047 with the description clearly stating it is a deposit, or use sub-numbers like INV-047a (deposit) and INV-047b (balance). The key is consistency and clarity so your accountant and the client can match the two invoices together." },
+    ],
+  },
+
+  /* ==============================================
+     POST 43 - Commercial invoice for international shipping
+  ============================================== */
+  "commercial-invoice-for-international-shipping": {
+    title: "What Is a Commercial Invoice for International Shipping? (2026 Guide)",
+    description:
+      "A commercial invoice is the customs document required for every international shipment. What to include, the fields US CBP requires under 19 CFR section 141.86, and common mistakes to avoid.",
+    date: "2026-06-23",
+    updated: "2026-06-27",
+    readMins: 7,
+    keywords: [
+      "commercial invoice international shipping",
+      "what is a commercial invoice",
+      "commercial invoice vs invoice",
+      "customs invoice requirements",
+      "commercial invoice template",
+    ],
+    excerpt:
+      "Every box that crosses a border needs a commercial invoice. It is not the same as a regular sales invoice -- here is what customs agents actually require, field by field.",
+    body: [
+      { type: "p", text: "Every shipment that crosses an international border needs a commercial invoice. Not a regular invoice -- a specific document that customs agencies use to identify the goods, calculate import duties, and decide whether the shipment clears or sits on a dock waiting for paperwork. Get it right and your parcel moves. Get it wrong and the delays, fines, and return shipping costs add up fast." },
+      { type: "callout", text: "Sending goods internationally for the first time? <a href=\"/\">PDF Bill Builder</a> generates a clean invoice PDF you can adapt -- start there, then add the customs-specific fields listed below." },
+      { type: "h2", text: "Commercial invoice vs regular invoice: what is different?" },
+      { type: "p", text: "A commercial invoice and a regular sales invoice both document a transaction between a seller and a buyer. The difference is in the detail. A commercial invoice is specifically designed for cross-border shipments and must include information that customs authorities need but a domestic invoice never carries: the country of origin of the goods, the Harmonized System (HS) code that classifies the product, the Incoterms agreed by both parties, and an itemised breakdown of every freight, insurance, and handling charge." },
+      { type: "p", text: "A regular B2B invoice is a payment request between two businesses in the same country. It does not need HS codes, country of origin, or Incoterms because no customs agency is reading it. When you start shipping internationally, a domestic invoice is never enough -- you will always need a proper commercial invoice as well." },
+      { type: "h2", text: "When do you need a commercial invoice?" },
+      { type: "p", text: "Any time you ship physical goods across a border for commercial purposes -- a sale, an exchange, a repair return -- you need a commercial invoice. This applies whether you are a small business sending a single package via courier, or a manufacturer moving pallets by sea freight. Some exemptions exist for very low-value gifts between private individuals, but for any business shipment the safe rule is: if it crosses a border, it needs a commercial invoice." },
+      { type: "h2", text: "What to include: the fields US customs requires" },
+      { type: "p", text: "US Customs and Border Protection (CBP) sets out the required contents of an invoice for imported merchandise in <a href=\"https://www.law.cornell.edu/cfr/text/19/141.86\">19 CFR section 141.86</a>. The mandatory fields are:" },
+      { type: "ul", items: [
+        "<strong>Port of entry</strong> -- the US port where the goods are destined (e.g. Port of Los Angeles, JFK).",
+        "<strong>Seller and buyer details</strong> -- the full name and address of the exporter and the importer, including who sold the goods, when the sale was agreed, and where the goods are shipped from.",
+        "<strong>Detailed description of the merchandise</strong> -- the specific name of each item, grade or quality, and any marks, numbers, or symbols under which it is sold in the country of export. Vague descriptions like \"clothing\" or \"machine parts\" are not sufficient; customs agents need to know exactly what is in the shipment.",
+        "<strong>Quantities</strong> -- in the weights and measures of the exporting country or the United States.",
+        "<strong>Purchase price per item</strong> -- in the currency of the purchase, stated clearly. If the goods are not being sold (for example, a warranty replacement), state the market value the seller would receive in the ordinary course of trade.",
+        "<strong>Currency type</strong> -- state whether the currency is the standard national currency (e.g. USD, EUR, GBP).",
+        "<strong>All charges, itemised by name and amount</strong> -- freight, insurance, commissions, container costs, and inland freight must each appear as separate line items. Bundling these into a single \"shipping\" line is not compliant.",
+        "<strong>All rebates or drawbacks</strong> -- any government export incentive or duty drawback allowed on the goods must be disclosed separately.",
+        "<strong>Country of origin</strong> -- where the goods were manufactured or substantially transformed. This is not necessarily the country the shipment is coming from.",
+        "<strong>Assists</strong> -- any tools, dies, moulds, or engineering work supplied free or at reduced cost by the importer that were used to produce the goods must be disclosed, even if they are not included in the invoice price.",
+      ] },
+      { type: "p", text: "The invoice must be in English, or have an accurate English translation attached. Each package in the shipment must be identifiable from the invoice." },
+      { type: "h2", text: "HTS codes: the product classification number" },
+      { type: "p", text: "The Harmonized Tariff Schedule (HTS) code is the 10-digit number that classifies your product for US customs purposes. It determines the import duty rate your shipment attracts. Every commercial invoice for a US import should include the HTS code for each item -- customs processing is faster, and importers avoid the delays caused by an officer having to look up and assign the code manually." },
+      { type: "p", text: "The official tool for finding US HTS codes is <a href=\"https://hts.usitc.gov/\">hts.usitc.gov</a>, run by the United States International Trade Commission. The first six digits follow the international Harmonized System, which most countries share; the final four digits are US-specific. If you are exporting to another country, they will have an equivalent national tariff schedule -- the HS six-digit prefix is the same worldwide, making it a useful starting point." },
+      { type: "h2", text: "Incoterms: who pays for what" },
+      { type: "p", text: "Incoterms (International Commercial Terms) define who bears the cost and risk at each stage of the journey. The most common for small business international shipments are EXW (Ex Works -- buyer collects from your premises and pays everything), FOB (Free On Board -- seller delivers to the port, buyer takes over from there), and DAP (Delivered At Place -- seller pays delivery to the agreed destination, buyer handles import duties). The Incoterm must appear on the commercial invoice because customs uses it to determine the correct customs value of the goods." },
+      { type: "h2", text: "The most common commercial invoice mistakes" },
+      { type: "ul", items: [
+        "<strong>Undervaluing goods to reduce duties.</strong> This is customs fraud. US CBP can seize goods, impose fines equal to the full value of the merchandise, and initiate legal proceedings. Always declare the true transaction value.",
+        "<strong>Missing or wrong country of origin.</strong> Country of origin affects whether preferential trade-agreement duty rates apply and whether any import restrictions apply. It must be accurate.",
+        "<strong>Vague descriptions.</strong> \"Assorted goods\" or \"samples\" will trigger inspection. Write what each item actually is.",
+        "<strong>Single-line shipping charge.</strong> Itemise every cost separately -- freight, insurance, handling -- so customs can calculate the correct dutiable value.",
+        "<strong>Wrong currency.</strong> State the currency in which the transaction was agreed, not just the converted USD amount.",
+      ] },
+      { type: "h2", text: "Commercial invoice vs proforma invoice" },
+      { type: "p", text: "A proforma invoice looks like a commercial invoice but is not a final payment request -- it is a preliminary document sent before the goods ship, often to help the buyer get an import licence or arrange payment. A commercial invoice is issued after the transaction is agreed and travels with the shipment. Customs generally requires the commercial invoice, not the proforma, at the point of entry. Our guide to <a href=\"/blog/what-is-a-proforma-invoice\">proforma invoices</a> covers when to use each." },
+      { type: "p", text: "If you invoice international clients regularly, also see the post on <a href=\"/blog/how-to-invoice-us-clients-from-another-country\">how to invoice US clients from abroad</a> and the <a href=\"/blog/invoice-requirements-by-country\">invoice requirements by country comparison</a> -- the rules for what goes on a business invoice differ by destination." },
+      { type: "callout", text: CTA },
+    ],
+    faq: [
+      { q: "Is a commercial invoice the same as a regular invoice?", a: "No. A regular sales invoice is a payment request between businesses in the same country. A commercial invoice is a customs document for international shipments -- it includes additional fields such as country of origin, HS/HTS codes, Incoterms, and an itemised breakdown of all freight and insurance charges. Customs agents use it to calculate duties and clear the shipment." },
+      { q: "What is the difference between a commercial invoice and a proforma invoice?", a: "A proforma invoice is a preliminary document issued before the shipment, often used to arrange payment or import licences. A commercial invoice is the final document that travels with the goods and is required by customs at the port of entry. Customs generally accepts the commercial invoice, not the proforma, as the official entry document." },
+      { q: "Do I need a commercial invoice for every international shipment?", a: "For any commercial shipment of physical goods across a border, yes. Low-value personal gifts between private individuals may be exempt under certain thresholds, but any business-to-business or business-to-consumer shipment crossing a border needs a commercial invoice. When in doubt, include one." },
+      { q: "What happens if my commercial invoice is wrong?", a: "Errors can cause customs to hold the shipment pending correction, charge the importer the cost of customs examination, or impose fines -- particularly for undervaluation, which is treated as customs fraud. In serious cases, goods can be seized. It is always faster and cheaper to get the invoice right before the shipment leaves than to correct it at the port of entry." },
+      { q: "Where do I find the HTS code for my product?", a: "The official tool for US HTS codes is hts.usitc.gov, run by the United States International Trade Commission. Search by product description and work through the schedule to find the most accurate 10-digit code. If you are exporting to other countries, use the international HS code (the first six digits are the same worldwide) as a starting point, then find the destination country's national tariff schedule for the remaining digits." },
+    ],
+  },
+
+  /* ==============================================
+     POST 44 - How to add expenses to an invoice (disbursements vs recharges UK)
+  ============================================== */
+  "how-to-add-expenses-to-invoice": {
+    title: "How to Add Expenses to an Invoice: Disbursements vs Recharges Explained",
+    description:
+      "When you pay costs on a client's behalf, how you invoice them matters for VAT. The difference between disbursements and recharges under HMRC rules, plus how non-UK freelancers handle expenses.",
+    date: "2026-06-24",
+    updated: "2026-06-27",
+    readMins: 6,
+    keywords: [
+      "add expenses to invoice",
+      "disbursements vs recharges",
+      "expenses on invoice UK",
+      "how to invoice expenses",
+      "VAT disbursements freelancer",
+    ],
+    excerpt:
+      "Paid for travel, materials, or software on a client's behalf? How you add those costs to your invoice determines whether you charge VAT on them -- the HMRC rules are stricter than most freelancers realise.",
+    body: [
+      { type: "p", text: "Most freelancers and consultants eventually pay something on a client's behalf -- train tickets to a client site, domain registration, stock photography, a specialist courier. The question is how to put those costs on the invoice correctly. Get it wrong and you may overcharge VAT (and irritate a client who cannot reclaim it) or undercharge VAT (and owe HMRC money you never collected). In the UK, HMRC makes a sharp distinction between two categories: disbursements and recharges." },
+      { type: "callout", text: "Want to add itemised expense lines to a professional PDF invoice? <a href=\"/\">PDF Bill Builder</a> lets you add as many line items as you need -- free, no signup." },
+      { type: "h2", text: "The core distinction: disbursements vs recharges" },
+      { type: "p", text: "A <strong>disbursement</strong> is a cost you pay on behalf of your client as their agent. The key legal reality is that the client is the actual buyer -- you just handled the payment. Because the client is the true recipient of the supply, no VAT is due when you pass the cost on. You are not supplying anything extra; you are returning money that was always the client's." },
+      { type: "p", text: "A <strong>recharge</strong> is a cost that your business incurred while delivering your service. You bought something to help you do your job -- your own travel, your own tools, your own internet connection. When you pass that cost to the client, you are charging for part of your service, and VAT applies to the whole amount, even if you did not pay any VAT on the original purchase." },
+      { type: "p", text: "HMRC sets out the distinction on its <a href=\"https://www.gov.uk/guidance/vat-costs-or-disbursements-passed-to-customers\">VAT: costs or disbursements passed to customers</a> page. The guidance makes clear that your own travelling expenses and postage costs are recharges -- not disbursements -- because you incurred them in supplying your service to the client." },
+      { type: "h2", text: "When does a cost count as a disbursement?" },
+      { type: "p", text: "HMRC uses a checklist of conditions. To treat a cost as a disbursement (and therefore not charge VAT on it when invoicing), all of the following should be true:" },
+      { type: "ul", items: [
+        "You paid for the goods or services as the customer's agent, not for your own use.",
+        "The customer authorised you to make the payment on their behalf.",
+        "The customer received the goods or services (not you).",
+        "The cost is clearly shown separately on your invoice -- not folded into your fee.",
+        "You pass on the exact cost you paid, with no mark-up.",
+        "The original VAT invoice was addressed to the customer (not to you).",
+      ] },
+      { type: "p", text: "A classic example: a website designer in Edinburgh is hired by a client in London. As part of the project the designer books the client's own hosting package, with the invoice from the hosting company made out to the client. The designer pays upfront and recharges the exact amount. That is a disbursement -- no VAT on the recharge. But the designer's own train ticket to a planning meeting in London is a recharge: the designer needed to travel to do the job, so it is part of the supply of design services and VAT applies." },
+      { type: "h2", text: "How to show expenses on a UK VAT invoice" },
+      { type: "p", text: "For a recharge (your own expenses passed to the client), add it as a separate line on the invoice with VAT applied at the standard rate. For example:" },
+      { type: "ul", items: [
+        "Line 1: Copywriting services -- 3,000 words @ GBP 0.10/word -- GBP 300.00",
+        "Line 2: Travel (London return, standard class) -- GBP 78.50",
+        "VAT @ 20% on total GBP 378.50 -- GBP 75.70",
+        "Total: GBP 454.20",
+      ] },
+      { type: "p", text: "For a disbursement (the client's own cost that you paid on their behalf), show it as a separate line at the net amount with a note that it is a disbursement and that no VAT is charged. Attach the original receipt or invoice from the supplier so the client can see exactly what was paid." },
+      { type: "h2", text: "For non-VAT-registered UK freelancers" },
+      { type: "p", text: "If you are below the UK VAT registration threshold (GBP 90,000 in taxable turnover), you do not charge VAT on anything -- services or expenses. The disbursement vs recharge distinction still affects how you show the costs on the invoice (separate line, exact amount, with receipt) but there is no VAT calculation to worry about. Good record-keeping matters for your own income tax, though: recharges are income, and the costs you incur to generate that income may be deductible." },
+      { type: "h2", text: "Expenses on invoices outside the UK" },
+      { type: "p", text: "In the United States, there is no national VAT or GST, so the disbursement vs recharge distinction does not apply in the same way. The practical rule for US freelancers is: add any client-approved expenses as separate itemised lines on the invoice, with receipts attached, at the exact cost you paid. Whether those expenses count as income for you (if you mark them up) versus a pure pass-through (if you do not) affects your taxes but not the invoice itself." },
+      { type: "p", text: "In Australia, the GST rules for passing on costs to clients are similar in spirit to HMRC's: if you are acting as agent for the client and passing on an exact cost, you may be able to treat it as a disbursement. If you incurred the cost yourself in making the supply, it is part of your taxable supply and GST applies. When in doubt, check the <a href=\"https://www.ato.gov.au/\">ATO's GST guidance</a> or ask your BAS agent." },
+      { type: "callout", text: "If you bill for project milestones rather than time, see the guide to <a href=\"/blog/milestone-invoice-project-billing\">milestone invoicing</a>. For adding late payment clauses to your invoices, see <a href=\"/blog/how-to-charge-late-payment-fees\">how to charge late payment fees</a>." },
+    ],
+    faq: [
+      { q: "Do I charge VAT on expenses I pass on to clients?", a: "In the UK, it depends whether the cost is a recharge or a disbursement. Recharges -- costs you incurred in delivering your service, like your own travel -- are part of your taxable supply and carry VAT. Disbursements -- costs you paid as the client's agent for something the client owns -- can be passed on without VAT, provided HMRC's conditions are met. If you are not VAT-registered, the distinction does not affect VAT but still matters for how you present costs on the invoice." },
+      { q: "Is my travel to a client site a disbursement?", a: "No. Under HMRC rules, your own travelling expenses are a recharge, not a disbursement, because you incurred them in supplying your service. Add travel as a separate line on your invoice with VAT at 20% (if you are VAT-registered). Keep the receipt for your own records." },
+      { q: "What is the difference between a disbursement and a recharge?", a: "A disbursement is a cost you paid on the client's behalf as their agent -- the client is the legal buyer, and you are just returning money. A recharge is a cost your business incurred while delivering your service. Disbursements can be passed on without VAT; recharges carry VAT because they are part of your supply." },
+      { q: "Do I need a receipt to invoice an expense?", a: "Yes, for both types. For disbursements, the original VAT invoice should ideally be addressed to the client. For recharges, keep the receipt for your records and attach it or reference it when invoicing the client. Good documentation protects you if HMRC or the client ever queries the amount." },
+      { q: "Can I mark up expenses I pass on to clients?", a: "If you add a mark-up to an expense, it is no longer a disbursement -- it becomes part of your taxable supply. VAT applies to the full amount including the mark-up. Some freelancers do mark up expenses to cover their time in sourcing or paying for them; just make sure the VAT treatment reflects that it is no longer a simple pass-through." },
+    ],
+  },
+
+  /* ==============================================
+     POST 45 - Milestone invoicing (project billing guide)
+  ============================================== */
+  "milestone-invoice-project-billing": {
+    title: "Milestone Invoices: How to Bill Clients at Every Stage of a Project",
+    description:
+      "Milestone billing ties each payment to a completed stage of work. How to structure milestone invoices for freelance, construction, and consulting projects -- with line-item examples.",
+    date: "2026-06-24",
+    updated: "2026-06-27",
+    readMins: 6,
+    keywords: [
+      "milestone invoice",
+      "milestone billing",
+      "project billing stages",
+      "how to invoice for milestones",
+      "progress billing freelance",
+    ],
+    excerpt:
+      "Waiting until the end of a long project to invoice is a cash-flow disaster. Milestone billing collects payment at every stage -- here is how to set it up so clients approve it on day one.",
+    body: [
+      { type: "p", text: "On any project that runs longer than a few weeks, billing everything at the end is a gamble. You carry all the costs, you absorb all the risk, and if the client disappears or disputes the work, you have nothing. Milestone billing -- splitting the total fee into payments tied to specific stages of completion -- is the professional standard for a reason: it protects your cash flow without asking the client to pay for work they have not seen yet." },
+      { type: "callout", text: "You can create clean milestone invoices in PDF Bill Builder -- add a clear description of the milestone and the payment stage, download as a PDF, and send. <a href=\"/\">Try it free here.</a>" },
+      { type: "h2", text: "What is milestone billing?" },
+      { type: "p", text: "Milestone billing is a payment structure where the total project fee is divided into two or more payments, each due when a defined stage of the work is complete. Unlike hourly billing (which invoices for time regardless of what was delivered) or single-invoice billing (which waits until everything is done), milestone billing ties money to measurable progress." },
+      { type: "p", text: "A typical 3-milestone structure for a GBP 6,000 web project might look like this: 30% deposit (GBP 1,800) before work starts, 40% (GBP 2,400) on delivery of the design mockups, and 30% (GBP 1,800) on site launch. Each payment matches a concrete deliverable that the client can see and approve." },
+      { type: "h2", text: "How to choose your milestones" },
+      { type: "p", text: "Good milestones are measurable and tied to something the client can verify. Bad milestones are vague or based on time alone. The test: could a third party look at the deliverable and confirm it is done? If yes, it is a workable milestone. If the answer is \"well, it depends on how you define done,\" you need to be more specific." },
+      { type: "ul", items: [
+        "<strong>Freelance and creative work:</strong> Initial concepts delivered and approved; first draft or prototype; final deliverables handed over.",
+        "<strong>Construction and trades:</strong> Foundation or groundwork complete; structure to lock-up stage; final snag list cleared.",
+        "<strong>Consulting and research:</strong> Research phase and first report delivered; recommendations presentation; implementation review.",
+        "<strong>Software development:</strong> Wireframes and technical spec approved; working prototype or MVP; final QA and deployment.",
+      ] },
+      { type: "p", text: "A 60-day project can work well with 3 milestones. A 6-month project might need 5 or 6. As a rule, each milestone should represent roughly equal value (not just equal effort) so neither party is ever significantly overexposed." },
+      { type: "h2", text: "How to write a milestone invoice" },
+      { type: "p", text: "Each milestone invoice should make it absolutely clear which stage of the project it covers. Include:" },
+      { type: "ol", items: [
+        "<strong>The project reference.</strong> Quote the project name or reference number on every invoice so there is no confusion about which engagement it belongs to.",
+        "<strong>The milestone name and description.</strong> \"Milestone 2 of 3: Design mockups for homepage and 5 inner pages, delivered 20 June 2026.\" Be specific enough that the client can confirm the work was done.",
+        "<strong>The amount due for this milestone.</strong> State the milestone payment clearly. If you want to, also show the total contract value, the amount invoiced to date, and the amount remaining -- this helps the client plan their budget.",
+        "<strong>Payment terms.</strong> Specify the due date. Net 7 or Net 14 is standard for milestones; Net 30 is common with larger clients. State the terms on every invoice.",
+        "<strong>A reference to the original agreement.</strong> Note the contract or proposal date so there is a paper trail connecting the invoice to the terms both parties agreed.",
+      ] },
+      { type: "h2", text: "Getting sign-off before you invoice" },
+      { type: "p", text: "Before you send a milestone invoice, get written confirmation from the client that the milestone is complete. An email reply saying \"looks great, approved\" is sufficient. This matters for two reasons. First, it removes any later dispute about whether the work was accepted. Second, if the client argues that the deliverable was not completed, you have their written approval on record." },
+      { type: "p", text: "For larger projects, include a deemed-approval clause in your contract: something like \"if no written feedback is received within 5 business days of delivery, the milestone is considered approved and the invoice becomes due.\" This prevents a client from sitting on a milestone indefinitely to delay payment." },
+      { type: "h2", text: "Milestone billing across industries" },
+      { type: "p", text: "In <strong>construction and trades</strong>, progress billing is standard. Contractors typically link payments to verifiable stages: slab poured, walls up, roof on, fit-out complete. Many residential contracts in Australia require progress payment schedules that are set out in the building contract before work starts." },
+      { type: "p", text: "In <strong>freelance and creative work</strong>, milestones protect both sides. The client is not asked to pay everything upfront, and the freelancer is not left holding unpaid work. A 40/30/30 split -- deposit, mid-project, delivery -- is the most common structure." },
+      { type: "p", text: "In <strong>consulting</strong>, milestone billing is often tied to phases: a discovery and scoping phase, an analysis and recommendations phase, and an implementation or follow-on phase. Each phase produces a tangible output (a report, a presentation, a set of recommendations) that the client can evaluate." },
+      { type: "callout", text: "For the deposit invoice (the first milestone payment, issued before work starts), see the dedicated guide to <a href=\"/blog/how-to-invoice-for-a-deposit\">sending a deposit invoice</a>. For payment terms on each milestone invoice, see <a href=\"/blog/invoice-payment-terms-explained\">invoice payment terms explained</a>." },
+    ],
+    faq: [
+      { q: "How many milestones should a project have?", a: "For most freelance or consulting projects lasting 4-12 weeks, 3 milestones is standard: an upfront deposit, a mid-project payment tied to a key deliverable, and a final payment on completion. For longer projects (3+ months) or construction work, 4-6 milestones is more appropriate. Each milestone should represent real completed work, not just elapsed time." },
+      { q: "What is the difference between milestone billing and hourly billing?", a: "Hourly billing charges for time regardless of output -- you invoice for hours worked each week or month. Milestone billing charges for completed stages of work regardless of how long they took. Milestones give the client predictability (they know the total cost) and give you a guaranteed payment each time a stage is done." },
+      { q: "Can I change milestone amounts once a project has started?", a: "Only by mutual written agreement. If the project scope changes significantly, a change order signed by both parties can adjust the milestones and amounts. Never unilaterally change a milestone payment mid-project -- it undermines trust and may be unenforceable." },
+      { q: "What happens if a client disputes a milestone?", a: "If you have written sign-off from the client (email, message, or signed form), the milestone is approved and payment is due. If the client raises a genuine quality issue, discuss it in writing and agree in writing when it is resolved. A deemed-approval clause in your contract -- where silence for 5 business days counts as acceptance -- prevents open-ended delays." },
+      { q: "Should I invoice for expenses at each milestone?", a: "If you have accumulated client-approved expenses during a milestone phase, yes -- add them as a separate itemised line on the milestone invoice with receipts attached. See the guide to <a href=\"/blog/how-to-add-expenses-to-invoice\">adding expenses to an invoice</a> for the UK VAT rules on disbursements and recharges." },
+    ],
+  },
+
+  /* ==============================================
+     POST 46 - How to write a consulting invoice (new - 2026-06-27)
+  ============================================== */
+  "how-to-write-a-consulting-invoice": {
+    title: "How to Write a Consulting Invoice (With Line-Item Examples)",
+    description:
+      "A consulting invoice needs to show more than just a total. What to include, how to bill for hourly, fixed-fee, and retainer work, and how to handle expenses -- with worked examples.",
+    date: "2026-06-27",
+    updated: "2026-06-27",
+    readMins: 7,
+    keywords: [
+      "consulting invoice",
+      "how to write a consulting invoice",
+      "consultant invoice template",
+      "consulting invoice example",
+      "billing for consulting services",
+    ],
+    excerpt:
+      "Consulting invoices look simple until a client disputes a line item or asks for a breakdown you did not keep. Here is how to write one that leaves no room for argument -- with examples for hourly, fixed-fee, and retainer billing.",
+    body: [
+      { type: "p", text: "A consulting invoice is a professional service invoice -- but it has a few quirks that distinguish it from invoices for physical goods. There is rarely a product code or quantity in the traditional sense; the \"goods\" are your expertise and time. That means the description on each line item does most of the work. A vague entry like \"consulting services -- $3,000\" creates arguments. A specific one like \"Strategy workshop (4 hours) + written recommendations report -- $3,000\" closes them before they start." },
+      { type: "callout", text: "You can build a clean consulting invoice PDF in minutes with <a href=\"/\">PDF Bill Builder</a> -- free, no signup, download as PDF instantly." },
+      { type: "h2", text: "What to include on a consulting invoice" },
+      { type: "p", text: "Every consulting invoice should have the following:" },
+      { type: "ul", items: [
+        "<strong>Your name or business name, address, and contact details.</strong> If you have a business registration number, VAT number (UK), GST number (Canada/Australia), or ABN (Australia), include it.",
+        "<strong>Client name and address.</strong> Use the legal entity name if you are invoicing a company, not just a contact name.",
+        "<strong>Invoice number.</strong> A unique sequential number -- INV-001, INV-002, or a year-sequence like 2026-045. This is essential for your records and for the client's accounts.",
+        "<strong>Invoice date and payment due date.</strong> The invoice date sets the clock for payment terms. The due date is when you expect the money. State both explicitly.",
+        "<strong>Itemised services.</strong> One line per engagement, deliverable, or time block. Be specific.",
+        "<strong>Subtotal, any taxes, and the total amount due.</strong> Show these as separate lines.",
+        "<strong>Payment instructions.</strong> Bank transfer details, PayPal, Wise, or whatever you accept. Make it as easy as possible to pay.",
+      ] },
+      { type: "h2", text: "How to bill by the hour: time-based line items" },
+      { type: "p", text: "For hourly consulting, each line item should show the date or period, the work done, the number of hours, your rate, and the line total. Example:" },
+      { type: "ul", items: [
+        "Marketing strategy session, 14 June 2026 (2 hrs @ $200/hr) -- $400.00",
+        "Competitor analysis and written report, 15-18 June 2026 (6 hrs @ $200/hr) -- $1,200.00",
+        "Follow-up call and revised recommendations, 22 June 2026 (1 hr @ $200/hr) -- $200.00",
+      ] },
+      { type: "p", text: "If you track time in a separate tool (Toggl, Harvest, etc.), you can attach a time log as supporting detail -- clients appreciate the transparency, especially on larger projects. For invoicing, the line items above are what matters; the time log is supplementary." },
+      { type: "h2", text: "How to bill for fixed-fee work: deliverable-based line items" },
+      { type: "p", text: "For fixed-price engagements, each line item describes a deliverable rather than time. The description should match what was agreed in the contract or proposal so the client can confirm it was done. Example for a fixed-fee brand strategy project:" },
+      { type: "ul", items: [
+        "Brand audit (review of existing materials, competitor landscape, positioning gaps) -- $1,500.00",
+        "Brand positioning workshop (3-hour in-person session, facilitation and slides) -- $2,000.00",
+        "Written brand strategy document (objectives, positioning statement, messaging framework) -- $1,500.00",
+      ] },
+      { type: "p", text: "Never lump fixed-fee work into a single vague line like \"brand strategy project -- $5,000.\" Even if the total is correct, an itemised invoice signals professionalism and prevents the client from feeling they are paying a round number with no justification." },
+      { type: "h2", text: "How to invoice on a retainer" },
+      { type: "p", text: "A retainer invoice is one of the simplest to write: it goes out on the same day each month for a fixed amount. One line item is usually enough:" },
+      { type: "ul", items: [
+        "Monthly advisory retainer, July 2026 (10 hours of availability + up to 2 strategy calls) -- $2,000.00",
+      ] },
+      { type: "p", text: "The detail in brackets matters: it sets the scope for that month and gives the client a reminder of what the retainer covers. If you routinely go over or under the included hours, track this and note any carryover or overage on the invoice so the client is never surprised." },
+      { type: "h2", text: "How to handle expense reimbursements" },
+      { type: "p", text: "Travel, accommodation, specialist software, printing, and other out-of-pocket costs are best shown as separate line items at the exact cost you paid. Attach receipts where the client requires it. Example:" },
+      { type: "ul", items: [
+        "Services subtotal -- $3,600.00",
+        "Travel expenses (London return, standard class, 15 June 2026) -- $87.50",
+        "Hotel (1 night, London, 15 June 2026) -- $145.00",
+        "Total expenses -- $232.50",
+        "Invoice total -- $3,832.50",
+      ] },
+      { type: "p", text: "If you are VAT-registered in the UK, your own travel and accommodation are a recharge -- VAT applies to the total invoice including expenses. See the detailed guide to <a href=\"/blog/how-to-add-expenses-to-invoice\">disbursements vs recharges</a> for the UK VAT rules." },
+      { type: "h2", text: "Payment terms and what to do when payment is late" },
+      { type: "p", text: "Net 14 (14 days from invoice date) is common for small consulting engagements; Net 30 is standard with larger corporate clients. State the terms on the invoice: \"Payment due 14 days from invoice date\" is clearer than just writing \"Net 14.\" For new clients, a 50% deposit before the engagement starts eliminates the risk of non-payment on delivery. For ongoing retainers, consider asking for payment in advance (at the start of each month rather than at the end)." },
+      { type: "p", text: "If an invoice goes past due, a polite chaser on day 1 overdue resolves most cases. If not, the <a href=\"/blog/how-to-charge-late-payment-fees\">late payment fees guide</a> explains your legal rights in the UK (statutory 8% interest above the Bank of England base rate) and US (state contract law). In the UK, businesses can also claim fixed compensation for late payment: GBP 40 for invoices under GBP 1,000, GBP 70 for GBP 1,000-9,999, and GBP 100 for GBP 10,000 or more." },
+      { type: "callout", text: CTA },
+    ],
+    faq: [
+      { q: "What is a consulting invoice?", a: "A consulting invoice is a professional services invoice sent by a consultant to a client, requesting payment for advice, expertise, or deliverables provided. Unlike product invoices, consulting invoices typically itemise time blocks or deliverables rather than physical goods. They should include your business details, the client's details, a unique invoice number, itemised services, payment terms, and instructions for how to pay." },
+      { q: "How do I invoice consulting work by the hour?", a: "For hourly consulting, list each work session or period as a separate line item showing: the date, a brief description of the work, the number of hours, your hourly rate, and the line total. Keep a time log separately and attach it if the client requires supporting detail. The invoice itself should summarise the work clearly enough that the client can confirm what was done." },
+      { q: "Do I need to charge VAT on a consulting invoice?", a: "In the UK, once your taxable turnover exceeds GBP 90,000 in a 12-month period, you must register for VAT and charge 20% on your consulting services. Below that threshold, no VAT is due. In the US there is no VAT; most professional services are not subject to sales tax, though some states tax specific services. In Canada, once you exceed C$30,000 in taxable supplies you must register for GST/HST. Always confirm the rules in your jurisdiction." },
+      { q: "How should I structure a fixed-fee consulting invoice?", a: "For fixed-fee work, list each deliverable as a separate line item with a description that matches the agreed scope. The description should be specific enough that the client can verify the work was done -- \"Written brand positioning strategy (12-page document)\" is better than \"Strategy work.\" Include the amount for each deliverable and a total at the bottom." },
+      { q: "What payment terms are standard for consulting invoices?", a: "Net 14 (14 days from invoice date) is common for small or independent consultants. Net 30 is standard with larger organisations. For new clients or large projects, a 50% deposit invoice before work starts is a good practice -- it commits the client, funds your initial costs, and is standard in most consulting industries." },
+    ],
+  },
+
+  /* ==============================================
+     POST 47 - Canada GST/HST small supplier rules (new - 2026-06-27)
+  ============================================== */
+  "canada-gst-hst-small-supplier-rules": {
+    title: "Canada GST/HST: When Small Suppliers Must Register and What to Put on an Invoice (2026)",
+    description:
+      "Canadian businesses do not need to collect GST/HST until they exceed C$30,000 in taxable supplies. How the threshold works, which provinces use HST, and the exact fields a Canadian tax invoice needs.",
+    date: "2026-06-27",
+    updated: "2026-06-27",
+    readMins: 7,
+    keywords: [
+      "Canada GST HST small supplier",
+      "Canada sales tax threshold",
+      "when to register for GST Canada",
+      "Canadian invoice GST requirements",
+      "C$30000 GST threshold",
+    ],
+    excerpt:
+      "New Canadian freelancers often ask the same question: do I charge GST/HST yet? The answer depends on one number -- C$30,000 -- and two separate tests. Here is exactly how they work.",
+    body: [
+      { type: "p", text: "Canada's GST/HST system confuses new freelancers and small business owners for one key reason: you do not collect it right away. Unlike countries where every VAT-registered business charges tax from day one, Canada has a 'small supplier' exemption that lets you operate without collecting GST or HST until your taxable revenues cross a threshold. Once you cross it, however, the obligation to register and collect kicks in fast -- within 29 days. This guide explains the rules, the tests, and what belongs on a Canadian invoice once you are registered." },
+      { type: "callout", text: "Invoicing Canadian clients? <a href=\"/invoice-generator-canada\">PDF Bill Builder's Canada invoice generator</a> lets you add your GST/HST registration number, select the applicable rate, and download a clean PDF -- free, no signup." },
+      { type: "h2", text: "The C$30,000 small supplier threshold" },
+      { type: "p", text: "Under the <a href=\"https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/2-2/small-suppliers.html\">CRA small suppliers rules</a>, you are a small supplier -- and therefore not required to register for or collect GST/HST -- as long as your total taxable supplies do not exceed C$30,000 in any single calendar quarter and in the previous four consecutive calendar quarters. The threshold is C$30,000, not indexed for inflation. It has stayed at this level since 1991." },
+      { type: "p", text: "Once you cross C$30,000, you stop being a small supplier and must register for GST/HST. The obligation is strict: you must collect GST/HST on the supply that pushed you over the threshold, and you have 29 days from that supply to register with the CRA." },
+      { type: "h2", text: "Two ways to cross the threshold" },
+      { type: "p", text: "The CRA applies two separate tests, and you cross the threshold if either one is triggered:" },
+      { type: "ul", items: [
+        "<strong>Single-quarter test:</strong> If your taxable revenues in a single calendar quarter exceed C$30,000, you are no longer a small supplier from the day that supply is made. You must collect GST/HST on that very supply and register within 29 days.",
+        "<strong>Four-consecutive-quarter test:</strong> If your taxable revenues over any four consecutive calendar quarters (even if no single quarter exceeded C$30,000) total more than C$30,000, you stop being a small supplier on the day you make your first taxable supply after the four-quarter period ends.",
+      ] },
+      { type: "p", text: "Example: a freelance copywriter earns C$8,000 in Q1, C$7,500 in Q2, C$9,000 in Q3, and C$6,500 in Q4 -- a total of C$31,000 over the year. Even though no single quarter crossed C$30,000, the four-quarter total did. The copywriter stops being a small supplier at the start of the next quarter and must register." },
+      { type: "h2", text: "What counts toward the threshold?" },
+      { type: "p", text: "Only <strong>taxable supplies</strong> count -- these are supplies made in Canada at the standard rate (5% GST or HST at the applicable provincial rate) and zero-rated supplies (exported goods and services, basic groceries, prescription drugs). The following do <strong>not</strong> count toward the C$30,000:" },
+      { type: "ul", items: [
+        "Exempt supplies (residential rent, most health care, basic educational services, financial services).",
+        "Employment income (salary, wages -- even if you also run a business).",
+        "Investment income (interest, dividends).",
+        "Sale of capital property (for example, selling a business vehicle or equipment).",
+      ] },
+      { type: "h2", text: "GST vs HST vs QST: provincial rates" },
+      { type: "p", text: "Canada has a federal GST rate of 5%. Some provinces have combined theirs with the federal tax into a single Harmonized Sales Tax (HST). Others collect a separate provincial sales tax (PST) alongside the federal GST, and Quebec has its own Quebec Sales Tax (QST). What you charge depends on the province where your supply is made or where your customer is located (the 'place of supply' rules):" },
+      { type: "ul", items: [
+        "<strong>Ontario, Prince Edward Island:</strong> HST 13%.",
+        "<strong>Nova Scotia:</strong> HST 15%.",
+        "<strong>New Brunswick, Newfoundland and Labrador:</strong> HST 15%.",
+        "<strong>British Columbia, Saskatchewan, Manitoba:</strong> GST 5% + separate PST (6%, 6%, 7% respectively). You register for GST with the CRA and register separately for PST with the province.",
+        "<strong>Alberta, Northwest Territories, Nunavut, Yukon:</strong> GST 5% only -- no provincial sales tax.",
+        "<strong>Quebec:</strong> GST 5% + QST 9.975%. Register for both -- GST with CRA, QST with Revenu Quebec.",
+      ] },
+      { type: "h2", text: "What to put on a Canadian GST/HST invoice" },
+      { type: "p", text: "Once registered, CRA requires you to give clients a receipt or invoice that lets them claim their input tax credit (ITC). According to the CRA's <a href=\"https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/charge-collect-receipts-invoices.html\">GST/HST invoicing rules</a>, a complete GST/HST invoice must include:" },
+      { type: "ul", items: [
+        "Your business name (or trading name) and GST/HST registration number.",
+        "The invoice date.",
+        "The buyer's name or trading name (for invoices over C$150).",
+        "A brief description of the goods or services.",
+        "The total amount of GST/HST charged -- or a statement that the price includes GST/HST and the applicable rate.",
+        "For invoices over C$150: the total before tax, the GST/HST rate for each item, and the total GST/HST charged.",
+      ] },
+      { type: "p", text: "For invoices under C$30 total, even simpler receipts are acceptable -- just the supplier name, date, and total with GST/HST noted. The detail requirements scale up with invoice size." },
+      { type: "h2", text: "Exporting services: are they GST/HST-free?" },
+      { type: "p", text: "If you are a Canadian supplier providing consulting, design, software, or other services to a client outside Canada, those services are generally zero-rated -- you do not charge GST/HST. The key condition is that the supply is made to a non-resident who is outside Canada when the service is performed. Zero-rated does not mean tax-free for you: you are still a GST/HST registrant, you file returns, and you can claim ITCs on your business expenses. It just means the rate on that export is 0%." },
+      { type: "p", text: "For a broader comparison of invoice requirements across the US, UK, Canada, and Australia, see the <a href=\"/blog/invoice-requirements-by-country\">invoice requirements by country guide</a>. The existing <a href=\"/blog/invoice-requirements-canada\">Canada invoice requirements post</a> covers the general fields; this post focuses specifically on the GST/HST registration threshold and rate structure." },
+      { type: "callout", text: CTA },
+    ],
+    faq: [
+      { q: "Do I charge GST/HST if I earn under C$30,000?", a: "No. As a small supplier below the C$30,000 threshold, you are not required to register for or collect GST/HST. You also cannot charge it -- only GST/HST registrants are permitted to collect and remit the tax. Once you cross the threshold in any single quarter or over four consecutive quarters, you must register within 29 days and begin collecting on the supply that pushed you over." },
+      { q: "What is the GST/HST rate in Canada?", a: "The federal GST rate is 5%. Some provinces combine it with provincial tax into HST: Ontario and PEI at 13%, Nova Scotia, New Brunswick, and Newfoundland and Labrador at 15%. Other provinces keep GST and provincial sales tax separate: BC, Saskatchewan, and Manitoba each have their own PST alongside the 5% GST. Alberta has no provincial sales tax, so the rate is just 5% GST." },
+      { q: "How do I register for GST/HST in Canada?", a: "Register through the CRA's Business Registration Online (BRO) service at canada.ca, by phone at 1-800-959-5525, or through a CRA My Business Account. You will receive a 15-digit business number with a GST/HST program identifier (RT). Registration is free." },
+      { q: "What is an input tax credit (ITC) in Canada?", a: "An ITC lets GST/HST registrants recover the GST/HST they paid on business expenses. If you buy a laptop for your consulting business and pay 5% GST on it, you can claim that GST back as an ITC when you file your GST/HST return -- reducing what you owe. This is why your clients ask for proper tax invoices with your registration number: they need it to claim their own ITCs." },
+      { q: "Do freelancers in Canada have to charge GST/HST?", a: "Once you earn more than C$30,000 in taxable supplies over a single calendar quarter or over four consecutive quarters, yes -- you must register and collect. Below that threshold you are a small supplier and are not required to register. Many freelancers voluntarily register early so they can claim ITCs on business expenses, which can be worthwhile even before the mandatory threshold." },
+    ],
+  },
+
 };
 
 export const POST_SLUGS = Object.keys(POSTS);
