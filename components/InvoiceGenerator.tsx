@@ -436,39 +436,36 @@ export default function InvoiceGenerator({
     <div className="ig-root" style={{ minHeight:"100vh", background:"linear-gradient(160deg,#f0f4ff 0%,#f8faff 60%,#faf5ff 100%)" }}>
 
       {/* ── Hero ── */}
-      <div className="ig-hero" style={{ textAlign:"center", padding:"48px 24px 32px" }}>
+      <div className="ig-hero" style={{ textAlign:"center", padding:"52px 24px 34px" }}>
         <div style={{
-          display:"inline-flex", alignItems:"center", gap:8, padding:"5px 16px",
-          borderRadius:99, marginBottom:16, background:"rgba(79,70,229,0.07)",
-          border:"1px solid rgba(79,70,229,0.16)",
+          display:"inline-flex", alignItems:"center", gap:8, padding:"6px 14px",
+          borderRadius:99, marginBottom:20, background:"rgba(79,70,229,0.06)",
+          border:"1px solid rgba(79,70,229,0.14)",
         }}>
-          <span style={{ width:6,height:6,borderRadius:"50%",background:"#4f46e5",display:"inline-block" }}/>
-          <span style={{ fontSize:11,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:"#4f46e5" }}>
-            Free Professional Document Generator
+          <span style={{ width:7,height:7,borderRadius:"50%",background:"#22c55e",display:"inline-block",boxShadow:"0 0 0 3px rgba(34,197,94,0.18)" }}/>
+          <span style={{ fontSize:12.5,fontWeight:600,color:"#4338ca" }}>
+            Free forever — no signup, no watermark
           </span>
         </div>
-        <h1 style={{ fontSize:"clamp(30px,4.5vw,50px)",fontWeight:900,letterSpacing:"-0.04em",color:"#0d1117",lineHeight:1.15,marginBottom:12 }}>
+        <h1 style={{ fontSize:"clamp(32px,5vw,54px)",fontWeight:900,letterSpacing:"-0.04em",color:"#0d1117",lineHeight:1.1,marginBottom:14,maxWidth:640,marginLeft:"auto",marginRight:"auto",textWrap:"balance" as const }}>
           {heading ?? (
-            <>
-              Create{" "}
-              <span style={{ background:"linear-gradient(135deg,#4f46e5,#7c3aed)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent" }}>
-                Professional
-              </span>{" "}
-              Documents
-            </>
+            <>Invoices, done in <span style={{ color:"#4f46e5" }}>two minutes</span>.</>
           )}
         </h1>
-        <p style={{ fontSize:15,color:"#64748b",maxWidth:460,margin:"0 auto 20px",lineHeight:1.65 }}>
+        <p style={{ fontSize:"clamp(15px,1.6vw,17px)",color:"#475569",maxWidth:500,margin:"0 auto 24px",lineHeight:1.6,textWrap:"pretty" as const }}>
           {subheading ?? (
             <>
-              Invoices, Receipts, Quotations — download a perfect PDF in seconds.{" "}
-              <strong style={{ color:"#4f46e5",fontWeight:600 }}>No signup needed.</strong>
+              Fill in the details, watch the live preview, and download a clean PDF
+              invoice, receipt, or quotation — right from your browser.
             </>
           )}
         </p>
-        <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:20,flexWrap:"wrap" }}>
-          {["🔒 100% Private","⚡ Instant PDF","🖨️ Clean Print","📄 Multi-page PDF"].map(t=>(
-            <span key={t} style={{ fontSize:12.5,color:"#94a3b8",fontWeight:500 }}>{t}</span>
+        <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:"10px 22px",flexWrap:"wrap" }}>
+          {["100% private — stays in your browser","Instant PDF & clean print","Works in any currency"].map(t=>(
+            <span key={t} style={{ display:"inline-flex",alignItems:"center",gap:7,fontSize:13,color:"#475569",fontWeight:500 }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+              {t}
+            </span>
           ))}
         </div>
       </div>
