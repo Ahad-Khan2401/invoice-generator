@@ -37,16 +37,17 @@ export const SITE = {
      Why: $9/year = $0.75/mo per customer, so $100/mo needed 133 active
      subscribers. At $6/mo it needs 17. Same traffic, ~8x the revenue.
 
-     ⚠️ OWNER ACTION REQUIRED: create a $6/month subscription variant in
-     Lemon Squeezy (store 397470) and paste its checkout URL into `proLink`
-     below. Until then the button still points at the old $9/year product.
+     ✅ DONE 2026-07-27: the Lemon Squeezy product "PDF Bill Builder Pro"
+     (store 397470) was switched to $5.99 billed monthly. The checkout URL is
+     unchanged because the existing product was edited rather than replaced.
+     These strings MUST stay in sync with the real Lemon Squeezy price.
   ─────────────────────────────────────────────── */
   stripe: {
     proLink:      "https://pdfbillbuilder.lemonsqueezy.com/checkout/buy/94cf5dec-ef98-4595-8e88-8ff23712bead",
-    priceAmount:  "$6",           // headline number
-    pricePeriod:  "month",        // billing period, singular
-    priceMonthly: "$6",
-    priceLabel:   "$6 / month",   // used in buttons + modals everywhere
+    priceAmount:  "$5.99",           // headline number
+    pricePeriod:  "month",           // billing period, singular
+    priceMonthly: "$5.99",
+    priceLabel:   "$5.99 / month",   // used in buttons + modals everywhere
     priceNote:    "cancel anytime",
   },
 } as const;
