@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { X, CheckCircle2, Download, Printer, Save, Crown } from "lucide-react";
+import { SITE } from "@/lib/config";
 
 /* ───────────────────────────────────────────────
    User-initiated "Preparing your file" modal.
@@ -145,7 +146,7 @@ export default function DownloadAdModal({
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p style={{ fontSize: 13, fontWeight: 800, color: "#78350f" }}>Upgrade to Pro</p>
                 <p style={{ fontSize: 11.5, color: "#b45309", marginTop: 1, lineHeight: 1.35 }}>
-                  Premium templates, unlimited history &amp; no watermark — $9/year.
+                  Premium templates, unlimited history &amp; no watermark — {SITE.stripe.priceLabel}.
                 </p>
               </div>
               <button onClick={onUpgrade}

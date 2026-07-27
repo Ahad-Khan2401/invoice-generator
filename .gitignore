@@ -47,3 +47,11 @@ next-env.d.ts
 PROJECT_CONTEXT.md
 BACKLINKS_GUIDE.md
 TRAFFIC_PLAYBOOK.md
+GROWTH_PLAN.md
+BACKLINK_LOG.md
+
+# scratch files that pollute `tsc --noEmit`
+newposts_tmp.ts
+newentries_tmp.ts
+.tsc*.log
+.write_test_*

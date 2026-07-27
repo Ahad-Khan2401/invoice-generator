@@ -99,6 +99,9 @@ const addDays = (dateStr:string, days:number) => {
 };
 let nextId = 2;
 
+/* localStorage key for the "remember my business" profile (see the effect below). */
+const PROFILE_KEY = "pdfbb_profile_v1";
+
 /* ─── Shared styles ──────────────────────────────── */
 const card:React.CSSProperties = {
   background:"#ffffff", borderRadius:20,
@@ -186,6 +189,78 @@ export default function InvoiceGenerator({
       window.history.replaceState({}, "", window.location.pathname);
       setProModalOpen(true);
     }
+  }, []);
+
+  /* ── "Remember my business" ─────────────────────────────────────────
+     Every free invoice generator makes you retype your OWN details on every
+     visit — which is the main reason nobody comes back for a second invoice.
+     We persist only the sender's side (never the client, never the line items)
+     to this device's localStorage. Still no account, still nothing uploaded,
+     but the second invoice takes seconds instead of minutes.
+  ───────────────────────────────────────────────────────────────────── */
+  const [profileSaved, setProfileSaved] = useState(false);
+  const profileReady = useRef(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    // A dashboard "re-edit" (?load=) wins — don't overwrite it with the profile.
+    if (new URLSearchParams(window.location.search).get("load")) {
+      profileReady.current = true;
+      return;
+    }
+    try {
+      const raw = window.localStorage.getItem(PROFILE_KEY);
+      if (raw) {
+        const p = JSON.parse(raw) as Partial<{
+          from: Party; brandLogo: string | null; curLabel: string;
+          color: string; bankDetails: string; notes: string;
+        }>;
+        if (p.from?.name || p.from?.email) {
+          setFrom({ ...blank(), ...p.from });
+          setProfileSaved(true);
+        }
+        if (p.brandLogo) setBrandLogo(p.brandLogo);
+        if (p.color)     setColor(p.color);
+        if (p.curLabel)  setCur((c) => CURRENCIES.find((x) => x.l === p.curLabel) ?? c);
+        if (p.bankDetails || p.notes) {
+          setMeta((m) => ({
+            ...m,
+            bankDetails: p.bankDetails ?? m.bankDetails,
+            notes:       p.notes       ?? m.notes,
+          }));
+        }
+      }
+    } catch { /* private mode or corrupt JSON — just start with a blank form */ }
+    profileReady.current = true;
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !profileReady.current) return;
+    const hasDetails = from.name || from.email || from.phone || from.address;
+    try {
+      if (!hasDetails) {
+        window.localStorage.removeItem(PROFILE_KEY);
+        setProfileSaved(false);
+        return;
+      }
+      window.localStorage.setItem(PROFILE_KEY, JSON.stringify({
+        from,
+        // data-URL logos can be huge; skip anything that would blow the ~5MB quota
+        brandLogo: brandLogo && brandLogo.length < 500_000 ? brandLogo : null,
+        curLabel:  cur.l,
+        color,
+        bankDetails: meta.bankDetails,
+        notes:       meta.notes,
+      }));
+      setProfileSaved(true);
+    } catch { /* quota exceeded — not worth interrupting the user over */ }
+  }, [from, brandLogo, cur, color, meta.bankDetails, meta.notes]);
+
+  const clearProfile = useCallback(() => {
+    try { window.localStorage.removeItem(PROFILE_KEY); } catch { /* ignore */ }
+    setFrom(blank());
+    setBrandLogo(null);
+    setProfileSaved(false);
   }, []);
 
   // /?load=<id> (dashboard "re-edit") → restore the saved invoice into the form
@@ -668,6 +743,16 @@ export default function InvoiceGenerator({
                     <Inp type="email" value={from.email}  placeholder="Email"         accent={color} fi={focusIn} fo={focusOut} onChange={v=>setFrom(p=>({...p,email:v}))}/>
                     <Inp value={from.phone}   placeholder="Phone"         accent={color} fi={focusIn} fo={focusOut} onChange={v=>setFrom(p=>({...p,phone:v}))}/>
                     <TxtArea value={from.address} placeholder="Address"  accent={color} fi={focusIn} fo={focusOut} onChange={v=>setFrom(p=>({...p,address:v}))}/>
+                    {profileSaved && (
+                      <p style={{ display:"flex",alignItems:"center",gap:5,flexWrap:"wrap",margin:0,fontSize:10.5,fontWeight:600,color:"#94a3b8",lineHeight:1.4 }}>
+                        <span style={{ color:"#10b981",fontWeight:800 }}>✓</span>
+                        Saved on this device — your next invoice starts pre-filled.
+                        <button type="button" onClick={clearProfile}
+                          style={{ background:"none",border:"none",padding:0,cursor:"pointer",fontFamily:"inherit",fontSize:10.5,fontWeight:700,color:"#94a3b8",textDecoration:"underline" }}>
+                          Clear
+                        </button>
+                      </p>
+                    )}
                   </div>
                 </div>
                 {/* BILL TO */}

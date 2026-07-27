@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import InvoiceGenerator from "@/components/InvoiceGenerator";
 import SeoContent from "@/components/SeoContent";
+import HomeGuides from "@/components/HomeGuides";
 import AdSlot from "@/components/AdSlot";
 import JsonLd from "@/components/JsonLd";
 import { softwareSchema, faqSchema, howToSchema, breadcrumbSchema } from "@/lib/schema";
@@ -23,6 +24,9 @@ export default function Home() {
     <>
       {/* The interactive tool (hero + generator + feature grid) */}
       <InvoiceGenerator />
+
+      {/* Prominent guides grid - surfaces editorial content high on the page */}
+      <HomeGuides />
 
       {/* SEO body + FAQ (indexable, server-rendered) — includes one in-article ad */}
       <SeoContent midAdSlot={SITE.adSlots.homeMid} />

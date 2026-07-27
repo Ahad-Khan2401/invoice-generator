@@ -32,14 +32,22 @@ export const SITE = {
     howItWorks:   "5411078115",
   },
 
-  /* ── Pro (One-time, via Lemon Squeezy) ──────────
-     $9 one-time = "Pro Forever"
-     Update proLink when you change the LS product price.
+  /* ── Pro (monthly subscription, via Lemon Squeezy) ──────────
+     PRICING CHANGED 2026-07-27: $9/year -> $6/month.
+     Why: $9/year = $0.75/mo per customer, so $100/mo needed 133 active
+     subscribers. At $6/mo it needs 17. Same traffic, ~8x the revenue.
+
+     ⚠️ OWNER ACTION REQUIRED: create a $6/month subscription variant in
+     Lemon Squeezy (store 397470) and paste its checkout URL into `proLink`
+     below. Until then the button still points at the old $9/year product.
   ─────────────────────────────────────────────── */
   stripe: {
     proLink:      "https://pdfbillbuilder.lemonsqueezy.com/checkout/buy/94cf5dec-ef98-4595-8e88-8ff23712bead",
-    priceMonthly: "$9",
-    priceLabel:   "$9 / year",
+    priceAmount:  "$6",           // headline number
+    pricePeriod:  "month",        // billing period, singular
+    priceMonthly: "$6",
+    priceLabel:   "$6 / month",   // used in buttons + modals everywhere
+    priceNote:    "cancel anytime",
   },
 } as const;
 
