@@ -5,6 +5,22 @@ import { X, Zap, Check, AlertCircle, Crown } from "lucide-react";
 import { SITE } from "@/lib/config";
 import { readAuth, saveAuth, clearAuth, needsVerify, type AuthUser } from "@/lib/auth-storage";
 
+/* Fires a GA4 event when someone clicks through to the Lemon Squeezy checkout.
+   Added 2026-07-30 so the owner can see checkout-click vs actual-signup in GA —
+   "Key events" in GA was showing 0 with no way to tell whether that's because
+   nobody is clicking Upgrade, or people click but don't finish payment. Safe
+   no-op if gtag isn't loaded (e.g. GA id unset, ad blocker, consent denied). */
+declare global { interface Window { gtag?: (...args: unknown[]) => void } }
+function trackUpgradeClick(source: string) {
+  if (typeof window !== "undefined" && typeof window.gtag === "function") {
+    window.gtag("event", "begin_checkout", {
+      currency: "USD",
+      value: 5.99,
+      items: [{ item_name: "PDF Bill Builder Pro", item_category: source }],
+    });
+  }
+}
+
 /* ══════════════════════════════════════════════════
    HOOK — useAuth
    Used by Header, InvoiceGenerator, ProModal
@@ -291,6 +307,7 @@ export default function ProModal({ open, onClose, onSignIn, isLoggedIn, isPro, j
                 </ul>
                 <a
                   className="lemonsqueezy-button" href={`${SITE.stripe.proLink}?embed=1&desc=0&media=0&discount=0&checkout[redirect_url]=${encodeURIComponent("https://www.pdfbillbuilder.com/?pro=success")}`}
+                  onClick={() => trackUpgradeClick("choose_modal")}
                   style={{
                     display:"flex", alignItems:"center", justifyContent:"center", gap:8,
                     width:"100%", padding:"12px 20px", borderRadius:12,
@@ -302,7 +319,7 @@ export default function ProModal({ open, onClose, onSignIn, isLoggedIn, isPro, j
                   <Zap size={15} /> Get Pro — {SITE.stripe.priceLabel}
                 </a>
                 <p style={{ textAlign:"center" as const, fontSize:11, color:"#7c3aed", margin:"8px 0 0", fontWeight:600 }}>
-                  Less than $1/month · 30-day money-back guarantee
+                  Cancel anytime · 30-day money-back guarantee
                 </p>
               </div>
               <p style={{ textAlign:"center" as const, fontSize:11.5, color:"#94a3b8", marginTop:10 }}>
@@ -329,6 +346,7 @@ export default function ProModal({ open, onClose, onSignIn, isLoggedIn, isPro, j
               </ul>
               <a
                 className="lemonsqueezy-button" href={`${SITE.stripe.proLink}?embed=1&desc=0&media=0&discount=0&checkout[redirect_url]=${encodeURIComponent("https://www.pdfbillbuilder.com/?pro=success")}`}
+                onClick={() => trackUpgradeClick("upgrade_modal")}
                 style={{
                   display:"flex", alignItems:"center", justifyContent:"center", gap:8,
                   width:"100%", padding:"14px 20px", borderRadius:14,
@@ -340,7 +358,7 @@ export default function ProModal({ open, onClose, onSignIn, isLoggedIn, isPro, j
                 <Zap size={16} /> Upgrade to Pro — {SITE.stripe.priceLabel}
               </a>
               <p style={{ textAlign:"center" as const, fontSize:11, color:"#7c3aed", margin:"8px 0 0", fontWeight:600 }}>
-                Less than $1/month · 30-day money-back guarantee
+                Cancel anytime · 30-day money-back guarantee
               </p>
               <p style={{ textAlign:"center" as const, fontSize:11.5, color:"#94a3b8", marginTop:10 }}>
                 Already paid?{" "}
