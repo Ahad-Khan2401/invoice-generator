@@ -15,6 +15,7 @@ export const SITE = {
      auto-activates each only when its value is filled in. */
   googleSiteVerification: "",   // Search Console → HTML tag → content="..."
   bingSiteVerification:   "",   // Bing Webmaster → meta tag → content="..."
+  pinterestSiteVerification: "1d969e338812e56b4982997a160ed05e", // Pinterest Settings → Claim → Add HTML tag (added 2026-07-30)
   gaId:                   "G-TLB5627NQ9",   // Google Analytics 4 (dedicated PDF Bill Builder property)
 
   /* ───────────────────────────────────────────────

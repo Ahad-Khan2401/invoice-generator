@@ -14,6 +14,7 @@ const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 const otherMeta: Record<string, string> = { "google-adsense-account": SITE.adsenseClient };
 if (SITE.bingSiteVerification) otherMeta["msvalidate.01"] = SITE.bingSiteVerification;
+if (SITE.pinterestSiteVerification) otherMeta["p:domain_verify"] = SITE.pinterestSiteVerification;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
