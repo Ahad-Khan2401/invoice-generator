@@ -1,6 +1,17 @@
 import Link from "next/link";
 import { POST_LIST } from "@/lib/posts";
 
+/* Derives a scannable category tag from each post's existing keywords —
+   avoids hand-tagging every post entry while still giving cards a visual signifier. */
+function categoryOf(keywords: string[]): string {
+  const kw = keywords.join(" ").toLowerCase();
+  if (/\btax\b|vat|gst|hra/.test(kw)) return "Tax";
+  if (/freelance|contractor|hourly rate/.test(kw)) return "Freelance";
+  if (/template|format/.test(kw)) return "Templates";
+  if (/payment|late fee|send|due/.test(kw)) return "Getting Paid";
+  return "Basics";
+}
+
 /* Prominent "Invoicing guides" grid for the homepage. Surfaces real editorial
    content (blog guides) high on the page so visitors - and reviewers - see depth
    beyond the tool, and spreads internal link equity to the blog. Server component. */
@@ -32,7 +43,9 @@ export default function HomeGuides() {
               key={p.slug}
               href={`/blog/${p.slug}`}
               style={{
-                display: "block",
+                display: "flex",
+                flexDirection: "column",
+                height: "100%",
                 background: "white",
                 border: "1px solid #e9edf5",
                 borderRadius: 14,
@@ -41,13 +54,19 @@ export default function HomeGuides() {
                 boxShadow: "0 1px 3px rgba(15,23,42,0.04)",
               }}
             >
+              <span style={{
+                display: "inline-block", alignSelf: "flex-start", fontSize: "0.7rem", fontWeight: 700,
+                color: "#4f46e5", background: "#eef0ff", borderRadius: 99, padding: "2px 9px", marginBottom: 10,
+              }}>
+                {categoryOf(p.keywords)}
+              </span>
               <span style={{ display: "block", fontSize: "1rem", fontWeight: 700, color: "#1e293b", lineHeight: 1.35 }}>
                 {p.title}
               </span>
               <span style={{ display: "block", fontSize: "0.9rem", color: "#64748b", marginTop: 8, lineHeight: 1.55 }}>
                 {p.excerpt}
               </span>
-              <span style={{ display: "block", fontSize: "0.85rem", color: "#4f46e5", fontWeight: 600, marginTop: 10 }}>
+              <span style={{ display: "block", fontSize: "0.85rem", color: "#4f46e5", fontWeight: 600, marginTop: "auto", paddingTop: 10 }}>
                 Read guide &rarr;
               </span>
             </Link>

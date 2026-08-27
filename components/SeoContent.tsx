@@ -68,7 +68,8 @@ export default function SeoContent({ profession, midAdSlot }: { profession?: str
         </p>
 
         {isHome && (
-          <>
+          <details className="seo-more">
+            <summary>Read more: how PDF Bill Builder compares, your data privacy, and more free tools</summary>
             <h2>Why PDF Bill Builder Instead of Word, Excel, or Accounting Software?</h2>
             <p>
               Most people start invoicing in <strong>Word or Excel</strong> — and quickly hit the same
@@ -124,7 +125,7 @@ export default function SeoContent({ profession, midAdSlot }: { profession?: str
               <Link href="/freelancer-invoice">freelancing</Link>, <Link href="/contractor-invoice">contracting</Link>,{" "}
               <Link href="/photographer-invoice">photography</Link>, and <Link href="/cleaning-services-invoice">cleaning services</Link>.
             </p>
-          </>
+          </details>
         )}
 
         <h2>Invoices, Receipts &amp; Quotations — One Free Tool</h2>

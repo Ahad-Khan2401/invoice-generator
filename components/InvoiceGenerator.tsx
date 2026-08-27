@@ -3,6 +3,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import {
   Trash2, Download, Printer, Plus, Upload, X,
   FileText, Receipt, ClipboardList, Tag, Percent,
+  Lock, Zap, ScanLine, Landmark, CheckCircle2,
 } from "lucide-react";
 import DownloadAdModal from "@/components/DownloadAdModal";
 import ProModal, { useAuth } from "@/components/ProModal";
@@ -115,7 +116,7 @@ const baseInput:React.CSSProperties = {
   outline:"none", transition:"all .2s", fontFamily:"inherit",
 };
 const sectionTitle:React.CSSProperties = {
-  fontSize:10.5, fontWeight:800, letterSpacing:"0.09em",
+  fontSize:11.5, fontWeight:800, letterSpacing:"0.07em",
   textTransform:"uppercase", color:"#94a3b8",
   display:"flex", alignItems:"center", gap:8, marginBottom:12,
 };
@@ -124,6 +125,30 @@ const labelStyle:React.CSSProperties = {
   letterSpacing:"0.07em", textTransform:"uppercase",
   color:"#94a3b8", marginBottom:6,
 };
+
+/* ─── Shared tokens (type scale / radius / button variants) ──
+   Collapses the form's many one-off inline styles onto one small set. ── */
+const radius = { sm:8, md:12, lg:18, pill:99 } as const;
+const btnPrimary = (accent:string, disabled?:boolean):React.CSSProperties => ({
+  display:"flex", alignItems:"center", justifyContent:"center", gap:8,
+  padding:"13px 20px", borderRadius:radius.md, border:"none",
+  background: disabled ? "#94a3b8" : accent, color:"white",
+  fontSize:14, fontWeight:700, cursor: disabled ? "not-allowed" : "pointer",
+  boxShadow: disabled ? "none" : `0 4px 16px ${accent}45`,
+  transition:"all .2s", opacity: disabled ? 0.75 : 1,
+});
+const btnOutline:React.CSSProperties = {
+  display:"flex", alignItems:"center", justifyContent:"center", gap:7,
+  padding:"13px 20px", borderRadius:radius.md, border:"1.5px solid #e4e9f2",
+  background:"white", color:"#64748b", fontSize:14, fontWeight:600,
+  cursor:"pointer", transition:"all .2s",
+};
+const btnChip = (active:boolean, accent:string):React.CSSProperties => ({
+  fontSize:9.5, fontWeight:600, padding:"3px 6px", borderRadius:6,
+  border: active ? `1.5px solid ${accent}` : "1px solid #e4e9f2",
+  background: active ? `${accent}0f` : "white",
+  color: active ? accent : "#64748b", cursor:"pointer", transition:"all .15s",
+});
 
 /* ══════════════════════════════════════════════════════
    MAIN COMPONENT
@@ -559,8 +584,10 @@ export default function InvoiceGenerator({
                 <p style={{ fontSize:12,color:"#9ca3af",marginTop:2 }}>Fill in the details below</p>
               </div>
               <div style={{ display:"flex",gap:7,flexWrap:"wrap",alignItems:"center" }}>
+                <span style={{ fontSize:10.5,fontWeight:700,color:"#94a3b8",marginRight:2 }}>Colour</span>
                 {COLORS_FREE.map(c=>(
-                  <button key={c.hex} title={c.name} onClick={()=>setColor(c.hex)} style={{
+                  <button key={c.hex} title={c.name} aria-label={`Set theme colour to ${c.name}`} aria-pressed={color===c.hex}
+                    onClick={()=>setColor(c.hex)} style={{
                     width:21,height:21,borderRadius:"50%",background:c.hex,border:"none",cursor:"pointer",
                     boxShadow: color===c.hex ? `0 0 0 2.5px #fff,0 0 0 4.5px ${c.hex}` : "none",
                     transform: color===c.hex ? "scale(1.2)" : "scale(1)", transition:"all .2s",
@@ -568,7 +595,8 @@ export default function InvoiceGenerator({
                 ))}
                 {isPro
                   ? COLORS_PRO.map(c=>(
-                    <button key={c.hex} title={c.name} onClick={()=>setColor(c.hex)} style={{
+                    <button key={c.hex} title={c.name} aria-label={`Set theme colour to ${c.name}`} aria-pressed={color===c.hex}
+                      onClick={()=>setColor(c.hex)} style={{
                       width:21,height:21,borderRadius:"50%",background:c.hex,border:"none",cursor:"pointer",
                       boxShadow: color===c.hex ? `0 0 0 2.5px #fff,0 0 0 4.5px ${c.hex}` : "none",
                       transform: color===c.hex ? "scale(1.2)" : "scale(1)", transition:"all .2s",
@@ -694,14 +722,10 @@ export default function InvoiceGenerator({
                     <div style={{ position:"relative" }}>
                       <Inp type="date" value={meta.due} accent={color} fi={focusIn} fo={focusOut}
                         onChange={v=>setMeta(p=>({...p,due:v}))}/>
-                      <div style={{ display:"flex",gap:4,marginTop:6,flexWrap:"wrap" }}>
+                      <div style={{ display:"flex",gap:3,marginTop:6,flexWrap:"wrap" }}>
                         {NET_TERMS.map(t=>(
                           <button key={t.label} onClick={()=>setMeta(p=>({...p,due:addDays(p.date,t.days)}))}
-                            style={{
-                              fontSize:10,fontWeight:600,padding:"3px 8px",borderRadius:6,
-                              border:"1px solid #e4e9f2",background:"white",color:"#64748b",
-                              cursor:"pointer",transition:"all .15s",
-                            }}
+                            style={btnChip(false, color)}
                             onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.borderColor=color;(e.currentTarget as HTMLElement).style.color=color;}}
                             onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.borderColor="#e4e9f2";(e.currentTarget as HTMLElement).style.color="#64748b";}}>
                             {t.label}
@@ -738,7 +762,7 @@ export default function InvoiceGenerator({
                       </label>
                     )}
                   </div>
-                  <div style={{ display:"flex",flexDirection:"column",gap:9 }}>
+                  <div style={{ display:"flex",flexDirection:"column",gap:13 }}>
                     <Inp value={from.name}    placeholder="Your Name"    accent={color} fi={focusIn} fo={focusOut} onChange={v=>setFrom(p=>({...p,name:v}))}/>
                     <Inp type="email" value={from.email}  placeholder="Email"         accent={color} fi={focusIn} fo={focusOut} onChange={v=>setFrom(p=>({...p,email:v}))}/>
                     <Inp value={from.phone}   placeholder="Phone"         accent={color} fi={focusIn} fo={focusOut} onChange={v=>setFrom(p=>({...p,phone:v}))}/>
@@ -758,7 +782,7 @@ export default function InvoiceGenerator({
                 {/* BILL TO */}
                 <div>
                   <p style={sectionTitle}><Accent c={color}/>{docType==="receipt"?"Received From":"Bill To"}</p>
-                  <div style={{ display:"flex",flexDirection:"column",gap:9,marginTop:58 }}>
+                  <div style={{ display:"flex",flexDirection:"column",gap:13,marginTop:58 }}>
                     <Inp value={to.name}    placeholder="Client Name"   accent={color} fi={focusIn} fo={focusOut} onChange={v=>setTo(p=>({...p,name:v}))}/>
                     <Inp type="email" value={to.email}  placeholder="Client Email"  accent={color} fi={focusIn} fo={focusOut} onChange={v=>setTo(p=>({...p,email:v}))}/>
                     <Inp value={to.phone}   placeholder="Client Phone"  accent={color} fi={focusIn} fo={focusOut} onChange={v=>setTo(p=>({...p,phone:v}))}/>
@@ -951,7 +975,7 @@ export default function InvoiceGenerator({
               <div style={{ marginBottom:4 }}>
                 <p style={sectionTitle}>
                   <Accent c={color}/>Footer Note
-                  <span style={{ fontSize:10,fontWeight:400,color:"#c4c9d4",textTransform:"none",letterSpacing:0 }}>(auto — editable / clear to hide)</span>
+                  <span style={{ fontSize:11.5,fontWeight:400,color:"#c4c9d4",textTransform:"none",letterSpacing:0 }}>(auto — editable / clear to hide)</span>
                 </p>
                 <TxtArea rows={2} value={meta.signNote} accent={color} fi={focusIn} fo={focusOut}
                   placeholder="This is a computer-generated document and does not require a signature."
@@ -963,21 +987,10 @@ export default function InvoiceGenerator({
             {/* ── Action buttons ── */}
             <div className="ig-formfoot" style={{ borderTop:"1px solid #f0f3fa",display:"flex",flexDirection:"column",gap:10,background:"#fafbff",borderRadius:"0 0 20px 20px" }}>
               <div style={{ display:"flex",gap:12 }}>
-                <button onClick={startDownload} disabled={busy} style={{
-                  flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8,
-                  padding:"13px 20px",borderRadius:12,border:"none",
-                  background: busy ? "#94a3b8" : color, color:"white",
-                  fontSize:14,fontWeight:700,cursor:busy?"not-allowed":"pointer",
-                  boxShadow: busy?"none":`0 4px 16px ${color}45`,
-                  transition:"all .2s",opacity:busy?0.75:1,
-                }}>
+                <button onClick={startDownload} disabled={busy} style={{ ...btnPrimary(color, busy), flex:1 }}>
                   {busy ? <><Spinner/> Generating...</> : <><Download size={15}/> Download PDF</>}
                 </button>
-                <button onClick={startPrint} style={{
-                  display:"flex",alignItems:"center",justifyContent:"center",gap:7,
-                  padding:"13px 20px",borderRadius:12,border:"1.5px solid #e4e9f2",
-                  background:"white",color:"#64748b",fontSize:14,fontWeight:600,cursor:"pointer",transition:"all .2s",
-                }}
+                <button onClick={startPrint} style={btnOutline}
                   onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#f8fafc";(e.currentTarget as HTMLElement).style.borderColor="#c9d0db";}}
                   onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="white";(e.currentTarget as HTMLElement).style.borderColor="#e4e9f2";}}>
                   <Printer size={15}/> Print
@@ -985,13 +998,13 @@ export default function InvoiceGenerator({
               </div>
               {!isPro && (
                 <button onClick={()=>setProModalOpen(true)} style={{
-                  display:"flex",alignItems:"center",justifyContent:"center",gap:7,
-                  padding:"10px 16px",borderRadius:12,
-                  border:"1.5px solid #c4b5fd",background:"#f5f3ff",
-                  color:"#7c3aed",fontSize:12.5,fontWeight:700,cursor:"pointer",transition:"all .2s",
+                  display:"flex",alignItems:"center",justifyContent:"center",gap:6,
+                  padding:"8px 12px",borderRadius:10,border:"none",background:"transparent",
+                  color:"#7c3aed",fontSize:12,fontWeight:600,cursor:"pointer",
+                  textDecoration:"underline",textDecorationColor:"#c4b5fd",transition:"all .2s",
                 }}
-                  onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#ede9fe";}}
-                  onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="#f5f3ff";}}>
+                  onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.color="#6d28d9";}}
+                  onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.color="#7c3aed";}}>
                   {isLoggedIn
                     ? `✦ Upgrade to Pro — Premium templates & no watermark · ${SITE.stripe.priceLabel}`
                     : "✦ Sign In — Save invoices to dashboard (free)"}
@@ -1162,7 +1175,7 @@ export default function InvoiceGenerator({
 
                     {/* ── Computer-generated note ── */}
                     {meta.signNote && (
-                      <p style={{ textAlign:"center",fontSize:10,color:"#9ca3af",fontStyle:"italic",marginTop:24,lineHeight:1.5 }}>
+                      <p style={{ textAlign:"center",fontSize:10.5,color:"#9ca3af",fontStyle:"italic",marginTop:24,lineHeight:1.5 }}>
                         {meta.signNote}
                       </p>
                     )}
@@ -1198,24 +1211,24 @@ export default function InvoiceGenerator({
       <div className="ig-features" style={{ background:"white",borderTop:"1px solid #f0f3fa",padding:"72px 24px" }}>
         <div style={{ maxWidth:1000,margin:"0 auto" }}>
           <div style={{ textAlign:"center",marginBottom:48 }}>
-            <p style={{ fontSize:11.5,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:"#4f46e5",marginBottom:12 }}>Why PDF Bill Builder</p>
+            <p style={{ fontSize:12.5,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:"#4f46e5",marginBottom:12 }}>Why PDF Bill Builder</p>
             <h2 style={{ fontSize:"clamp(22px,3.5vw,34px)",fontWeight:900,letterSpacing:"-0.03em",color:"#0d1117" }}>
               More powerful than any free tool out there
             </h2>
           </div>
-          <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:20 }}>
+          <div className="ig-featgrid">
             {[
-              {e:"🔒",t:"Zero Storage",    d:"Your data never leaves your browser. Pure privacy.",          accent:false},
-              {e:"⚡",t:"3 Doc Types",     d:"Invoice, Receipt & Quotation from one place.",                accent:true },
-              {e:"🏷️",t:"Tax Inclusive",   d:"Toggle between tax-inclusive or exclusive billing.",          accent:false},
-              {e:"📊",t:"Auto A4 Fit",     d:"More items? Content auto-scales to fit one page.",            accent:false},
-              {e:"🏦",t:"Bank Details",    d:"Add payment info directly on your document.",                 accent:false},
-              {e:"✅",t:"Always Free",     d:"Unlimited documents. Zero cost. No credit card.",             accent:false},
+              {Icon:Lock,        t:"Zero Storage",   d:"Your data never leaves your browser. Pure privacy."},
+              {Icon:Zap,         t:"3 Doc Types",     d:"Invoice, Receipt & Quotation from one place."},
+              {Icon:Percent,     t:"Tax Inclusive",   d:"Toggle between tax-inclusive or exclusive billing."},
+              {Icon:ScanLine,    t:"Auto A4 Fit",     d:"More items? Content auto-scales to fit one page."},
+              {Icon:Landmark,    t:"Bank Details",    d:"Add payment info directly on your document."},
+              {Icon:CheckCircle2,t:"Always Free",     d:"Unlimited documents. Zero cost. No credit card."},
             ].map(f=>(
-              <div key={f.t} style={{ padding:"24px 22px",borderRadius:18,background:f.accent?"linear-gradient(135deg,#4f46e5,#7c3aed)":"#f8faff",border:f.accent?"none":"1.5px solid #edf0fa",boxShadow:f.accent?"0 8px 32px rgba(79,70,229,0.3)":"none" }}>
-                <div style={{ fontSize:22,marginBottom:14 }}>{f.e}</div>
-                <p style={{ fontSize:15,fontWeight:800,color:f.accent?"white":"#0d1117",marginBottom:8,letterSpacing:"-0.02em" }}>{f.t}</p>
-                <p style={{ fontSize:13,lineHeight:1.65,color:f.accent?"rgba(255,255,255,0.75)":"#64748b" }}>{f.d}</p>
+              <div key={f.t} style={{ padding:"24px 22px",borderRadius:18,background:"#f8faff",border:"1.5px solid #edf0fa" }}>
+                <f.Icon size={22} style={{ color:"#4f46e5",marginBottom:14 }}/>
+                <p style={{ fontSize:15,fontWeight:800,color:"#0d1117",marginBottom:8,letterSpacing:"-0.02em" }}>{f.t}</p>
+                <p style={{ fontSize:13,lineHeight:1.65,color:"#64748b" }}>{f.d}</p>
               </div>
             ))}
           </div>

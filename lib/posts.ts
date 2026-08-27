@@ -3281,4 +3281,5 @@ export const POST_LIST = POST_SLUGS.map((slug) => ({
   excerpt: POSTS[slug].excerpt,
   date: POSTS[slug].date,
   readMins: POSTS[slug].readMins,
+  keywords: POSTS[slug].keywords,
 }));

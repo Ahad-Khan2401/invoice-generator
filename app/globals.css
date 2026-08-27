@@ -119,6 +119,23 @@ button:active { transform: scale(.97); }
   .ad-wrap { margin: 20px auto; }
 }
 
+/* ── Features grid: explicit 3-col so 6 cards lay out 3x2, not 4-over-2 ── */
+.ig-featgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 760px) { .ig-featgrid { grid-template-columns: 1fr; } }
+@media (min-width: 761px) and (max-width: 900px) { .ig-featgrid { grid-template-columns: repeat(2, 1fr); } }
+
+/* ── Collapsible "deep dive" SEO block — same accordion language as .faq-item ── */
+.seo-more { border: 1.5px solid #eef1f8; border-radius: 14px; background: #f9fbff; padding: 4px 18px; margin: 20px 0; }
+.seo-more summary {
+  cursor: pointer; list-style: none; padding: 14px 0;
+  font-size: 15px; font-weight: 700; color: #0d1117;
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+}
+.seo-more summary::-webkit-details-marker { display: none; }
+.seo-more summary::after { content: "+"; font-size: 20px; font-weight: 400; color: #94a3b8; }
+.seo-more[open] summary::after { content: "\2212"; }
+.seo-more[open] { border-color: #d8def0; padding-bottom: 8px; }
+
 /* ── SEO article typography ── */
 .seo-prose h2 {
   font-size: clamp(20px, 3vw, 26px);

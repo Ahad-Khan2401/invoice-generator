@@ -56,7 +56,7 @@ export default function Footer() {
           <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4 lg:gap-x-12">
             {/* Product */}
             <div className="flex flex-col gap-3">
-              <h4 className="text-[12px] font-bold uppercase tracking-wider text-slate-400">Product</h4>
+              <h3 className="text-[12px] font-bold uppercase tracking-wider text-slate-400">Product</h3>
               <div className="flex flex-col gap-2.5 text-[14px]">
                 <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/">Generator</Link>
                 <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/how-it-works">How it works</Link>
@@ -68,8 +68,8 @@ export default function Footer() {
 
             {/* Free tools */}
             <div className="flex flex-col gap-3">
-              <h4 className="text-[12px] font-bold uppercase tracking-wider text-slate-400">Free Tools</h4>
-              <div className="flex flex-col gap-2.5 text-[14px]">
+              <h3 className="text-[12px] font-bold uppercase tracking-wider text-slate-400">Free Tools</h3>
+              <div className="flex flex-col gap-2.5 text-[14px] [&_a]:leading-snug">
                 {FOOTER_TOOLS.map(({ slug, label }) => (
                   <Link key={slug} className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href={`/tools/${slug}`}>
                     {label}
@@ -84,8 +84,8 @@ export default function Footer() {
 
             {/* Templates (landing pages) */}
             <div className="flex flex-col gap-3">
-              <h4 className="text-[12px] font-bold uppercase tracking-wider text-slate-400">Templates</h4>
-              <div className="flex flex-col gap-2.5 text-[14px]">
+              <h3 className="text-[12px] font-bold uppercase tracking-wider text-slate-400">Templates</h3>
+              <div className="flex flex-col gap-2.5 text-[14px] [&_a]:leading-snug">
                 {FOOTER_TEMPLATES.map(({ slug, label }) => (
                   <Link key={slug} className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href={`/${slug}`}>
                     {label}
@@ -100,13 +100,13 @@ export default function Footer() {
 
             {/* Legal */}
             <div className="flex flex-col gap-3">
-              <h4 className="text-[12px] font-bold uppercase tracking-wider text-slate-400">Legal</h4>
+              <h3 className="text-[12px] font-bold uppercase tracking-wider text-slate-400">Legal</h3>
               <div className="flex flex-col gap-2.5 text-[14px]">
                 <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/privacy">Privacy Policy</Link>
                 <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/terms">Terms of Service</Link>
                 <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/contact">Contact Us</Link>
-                <a className="inline-flex items-center gap-1.5 font-medium text-slate-500 transition-colors hover:text-indigo-600" href="mailto:support@pdfbillbuilder.com">
-                  <Mail className="size-3.5 shrink-0" /> Email support
+                <a className="inline-flex items-start gap-1.5 font-medium text-slate-500 transition-colors hover:text-indigo-600" href="mailto:support@pdfbillbuilder.com">
+                  <Mail className="size-3.5 shrink-0 mt-0.5" /> Email support
                 </a>
               </div>
             </div>
@@ -114,14 +114,10 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom bar */}
-      <div className="mt-4 flex flex-col items-start justify-between gap-3 px-4 text-[13px] text-slate-400 sm:flex-row sm:items-center">
+      {/* Bottom bar — aligned to the card's inner offset (px-6 + md:px-4) above */}
+      <div className="mt-4 flex flex-col items-start justify-between gap-3 px-4 sm:px-6 md:px-10 text-[13px] text-slate-400 sm:flex-row sm:items-center">
         <p>© {year} PDF Bill Builder. All rights reserved.</p>
-        <div className="flex items-center gap-5">
-          <Link href="/privacy" className="hover:text-slate-700">Privacy</Link>
-          <Link href="/terms" className="hover:text-slate-700">Terms</Link>
-          <a href="mailto:support@pdfbillbuilder.com" className="hover:text-slate-700">support@pdfbillbuilder.com</a>
-        </div>
+        <a href="mailto:support@pdfbillbuilder.com" className="hover:text-slate-700">support@pdfbillbuilder.com</a>
       </div>
     </footer>
   );
