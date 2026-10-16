@@ -49,6 +49,10 @@ Status column is updated as work lands.
 | 18 | P2 | Contact page | Uses `<a href>` for internal link. | `Link`. | ✅ Done |
 | 19 | P2 | Legacy route | `/api/activate` unreachable from UI and incompatible token format. | Removed (documented). | ✅ Done |
 
+## 2b. Follow-up (usability): newcomers found the full form hard to approach
+
+Addressed in the Quick mode / layout PR: Quick mode as default for first-time users, example data, a first-run checklist, field hints, and a pictured Layout & logo panel. See `FEATURES_AND_PRICING.md` and `TEST_REPORT.md` §2b.
+
 ## 3. Things verified as working (preserved)
 
 - Guest generation with live preview, logo upload, 3 doc types, inclusive/exclusive tax, % / fixed discount, print view.

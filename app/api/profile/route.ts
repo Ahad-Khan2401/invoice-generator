@@ -14,6 +14,7 @@ import { getDb, isDbReady } from "@/lib/db";
 import { resolvePlan } from "@/lib/entitlements";
 import { planFor } from "@/lib/plans";
 import { readJson, str, party, dataUrlImage, uuid, LIMITS } from "@/lib/validate";
+import { sanitizeLayout } from "@/lib/layout";
 
 const NO_CACHE = { "Cache-Control": "no-store" };
 
@@ -40,6 +41,7 @@ function profileData(v: unknown) {
     taxLabel:    str(o.taxLabel, 30),
     tax:         typeof o.tax === "number" && isFinite(o.tax) ? Math.max(0, Math.min(1000, o.tax)) : 0,
     numberPrefix: str(o.numberPrefix, 20),
+    layout:      sanitizeLayout(o.layout),
   };
 }
 

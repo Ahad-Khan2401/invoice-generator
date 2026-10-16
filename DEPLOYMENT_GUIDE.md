@@ -47,7 +47,7 @@ Option A — API (preferred; uses the deployed code):
 curl -X POST https://www.pdfbillbuilder.com/api/db-init -H "x-init-secret: $DB_INIT_SECRET"
 ```
 
-Expected: `{"ok":true,"applied":17,...}`. Safe to re-run.
+Expected: `{"ok":true,"applied":14,...}`. Safe to re-run.
 
 Option B — Neon SQL editor: paste the statements from `SCHEMA_STATEMENTS` in `lib/db.ts`
 (they are plain `CREATE TABLE IF NOT EXISTS` / `ALTER TABLE … ADD COLUMN IF NOT EXISTS`).

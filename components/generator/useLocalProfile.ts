@@ -7,6 +7,7 @@
  * follows them across devices.
  */
 import type { InvoiceDoc, Party, Currency, DocType } from "@/lib/invoice-doc";
+import { sanitizeLayout, type Layout } from "@/lib/layout";
 
 export const PROFILE_KEY = "pdfbb_profile_v2";
 const LEGACY_KEY = "pdfbb_profile_v1";
@@ -23,12 +24,17 @@ export interface LocalProfile {
   tax: number;
   template?: string;
   paper?: "a4" | "letter";
+  layout?: Layout;
   /** Last used number per doc type — the next document auto-increments. */
   lastNos?: Partial<Record<DocType, string>>;
 }
 
 export interface LocalSettings {
   saveToDashboard: boolean;   // auto-save downloads when signed in
+  /** "quick" = 5 essential fields; "full" = every option. Unset = decide by whether the person is new. */
+  mode?: "quick" | "full";
+  /** First-time 3-step guide: dismissed (skipped or finished) on this device. */
+  guideDismissed?: boolean;
 }
 
 export function readProfile(): LocalProfile | null {
@@ -48,6 +54,7 @@ export function readProfile(): LocalProfile | null {
       tax: typeof p.tax === "number" ? p.tax : 0,
       template: p.template,
       paper: p.paper,
+      layout: p.layout ? sanitizeLayout(p.layout) : undefined,
       lastNos: p.lastNos ?? {},
     };
   } catch { return null; }
@@ -66,6 +73,7 @@ export function profileFromDoc(doc: InvoiceDoc, prev: LocalProfile | null): Loca
     tax: doc.tax,
     template: doc.template,
     paper: doc.paper,
+    layout: doc.layout,
     lastNos: prev?.lastNos ?? {},
   };
 }
