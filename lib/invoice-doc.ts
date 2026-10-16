@@ -3,6 +3,7 @@
  * dashboard, export/import and the save API.
  */
 import { defaultNumber, localIso } from "./invoice-math.ts";
+import { DEFAULT_LAYOUT, sanitizeLayout, type Layout } from "./layout.ts";
 
 export type DocType   = "invoice" | "receipt" | "quotation" | "estimate";
 export type PayStatus = "paid" | "unpaid";
@@ -42,6 +43,7 @@ export interface InvoiceDoc {
   color: string;
   template: TemplateKey;
   paper: PaperSize;
+  layout: Layout;
   brandLogo: string | null;
   wmLogo: string | null;
 }
@@ -101,6 +103,7 @@ export function newDoc(overrides: Partial<InvoiceDoc> = {}): InvoiceDoc {
     color: "#4f46e5",
     template: "classic",
     paper: "a4",
+    layout: DEFAULT_LAYOUT,
     brandLogo: null,
     wmLogo: null,
     ...overrides,
@@ -156,6 +159,7 @@ export function sanitizeDoc(input: unknown, base: InvoiceDoc = newDoc()): Invoic
     color:    /^#[0-9a-f]{6}$/i.test(s(o.color, 7)) ? s(o.color, 7) : base.color,
     template: (["classic", "minimal", "bold"] as const).includes(o.template as TemplateKey) ? (o.template as TemplateKey) : "classic",
     paper:    o.paper === "letter" ? "letter" : "a4",
+    layout:   o.layout ? sanitizeLayout(o.layout) : base.layout,
     brandLogo: img(o.brandLogo),
     wmLogo:    img(o.wmLogo),
   };

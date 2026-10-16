@@ -55,6 +55,25 @@ Routes probed on the dev server (all 200): `/`, `/pricing`, `/receipt-generator`
 `/dashboard` (renders spinner, client-side redirect to `/` when signed out), `/llms.txt`;
 `sitemap.xml` → 117 URLs including the 5 new ones; canonical on `/pricing` correct.
 
+## 2b. Quick mode and layout controls (dev server, 2026-10-16)
+
+| # | Check | Result |
+|---|---|---|
+| 1 | New visitor (empty localStorage) | Quick mode, 3 visible fields (name, client, currency) + items, guide shown, no template/layout/tax panels |
+| 2 | "Fill with an example" | Sample fills form; total $606.00 (hand-checked: 450 + 2×60 + 3×12); warning shown; steps stay unticked; **nothing written to the remembered-business profile** |
+| 3 | "Clear the example" | Form returns to blank; button flips back to "Fill with an example" |
+| 4 | Real data typed | Step 1 ticks after both names, step 2 after a described item with a price |
+| 5 | Download | Valid PDF (103 KB), step 3 ticks, "Your first document is done", Close persists `guideDismissed` |
+| 6 | All options | Template, layout panel, dates, tax, discount, payment details appear; choice persisted as `mode: full` |
+| 7 | Layout as a free user | Stacked header + logo top-centre + Large + Rounded applied in preview (logo 76 px, 12 px radius, centred row); layout saved in the local profile |
+| 8 | Pro tile as a free user | Opens the upgrade modal; header stays Classic |
+| 9 | Pro session (UI-only seeded token, local) | Reversed puts the title block first; Centered centres it; notes-first order; hiding phone and item numbers removes them (table drops to 4 columns) |
+| 10 | Mobile 375 px | No horizontal overflow; guide steps stack with the button under the text; Quick form is a single column |
+
+Unit tests added (`tests/layout.test.ts`, 8): sanitiser defaults and enum rejection, prototype-pollution key ignored, plan gating (free falls back, paid keeps), plan config matches the UI's Pro list, logo size ordering, old saved documents gain a default layout, save-API sanitiser keeps layout. Total suite: 33 tests, all passing.
+
+Not verified: server-side persistence of `layout` in `profiles`/`invoices.data` against a real database (covered by the sanitiser unit test only), and real Pro entitlement for advanced layouts (Pro was simulated client-side).
+
 ## 3. Not tested (requires credentials or accounts)
 
 | Area | Why not | How to test |

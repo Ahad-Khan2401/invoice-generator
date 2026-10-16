@@ -38,11 +38,11 @@ interface BaseProps {
 }
 
 export function Inp({
-  label, srOnly, value, onChange, placeholder, type = "text", accent, inputMode, autoComplete, list, hint, error, min, step, onKeyDown,
+  label, srOnly, value, onChange, placeholder, type = "text", accent, inputMode, autoComplete, list, hint, error, min, step, onKeyDown, dataField,
 }: BaseProps & {
   value: string; onChange: (v: string) => void; type?: string;
   inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"]; autoComplete?: string; list?: string;
-  min?: number | string; step?: number | string;
+  min?: number | string; step?: number | string; dataField?: string;
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
 }) {
   const id = useId();
@@ -50,7 +50,7 @@ export function Inp({
     <div className="ig-field" style={{ ["--accent" as string]: accent }}>
       <label htmlFor={id} className={srOnly ? "sr-only" : "ig-label"}>{label}</label>
       <input
-        id={id} type={type} value={value} placeholder={placeholder} inputMode={inputMode}
+        id={id} data-field={dataField} type={type} value={value} placeholder={placeholder} inputMode={inputMode}
         autoComplete={autoComplete} list={list} min={min} step={step}
         aria-invalid={error ? true : undefined}
         aria-describedby={hint || error ? `${id}-h` : undefined}
@@ -78,15 +78,16 @@ export function TxtArea({
 }
 
 export function Sel({
-  label, srOnly, value, onChange, accent, children,
-}: { label: string; srOnly?: boolean; value: string; onChange: (v: string) => void; accent: string; children: React.ReactNode }) {
+  label, srOnly, value, onChange, accent, children, hint,
+}: { label: string; srOnly?: boolean; value: string; onChange: (v: string) => void; accent: string; children: React.ReactNode; hint?: string }) {
   const id = useId();
   return (
     <div className="ig-field" style={{ ["--accent" as string]: accent }}>
       <label htmlFor={id} className={srOnly ? "sr-only" : "ig-label"}>{label}</label>
-      <select id={id} value={value} onChange={(e) => onChange(e.target.value)} className="ig-input ig-select">
+      <select id={id} value={value} onChange={(e) => onChange(e.target.value)} className="ig-input ig-select" aria-describedby={hint ? `${id}-h` : undefined}>
         {children}
       </select>
+      {hint && <p id={`${id}-h`} className="ig-hint">{hint}</p>}
     </div>
   );
 }

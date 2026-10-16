@@ -3,13 +3,21 @@ import { forwardRef } from "react";
 import type { InvoiceDoc } from "@/lib/invoice-doc";
 import { DOC_TYPE_INFO } from "@/lib/invoice-doc";
 import { formatMoney, formatQty, type Totals } from "@/lib/invoice-math";
-import { tplTokens, STATUS_CFG } from "./templates";
+import { LOGO_DIMS, type HeaderPreset, type Layout } from "@/lib/layout";
+import { tplTokens, STATUS_CFG, type TplTokens } from "./templates";
 
 /* ───────────────────────────────────────────────
    The document itself. Rendered once on screen (live preview) and
    captured by lib/pdf.ts for the download, so what you see is what
    you get. Elements that must not be split across PDF pages carry
    `data-pdf-block`.
+
+   The header is driven by `doc.layout`:
+     - header preset   classic | reversed | centered | stacked
+     - logo position   left (inside your details) | center | right (own row)
+     - logo size/shape small–large, original / rounded / circle
+     - show/hide       email, phone, address, status badge, item numbers
+     - section order   payment details before or after notes
 ─────────────────────────────────────────────── */
 interface Props {
   doc: InvoiceDoc;
@@ -25,11 +33,58 @@ function fmtDate(iso: string): string {
   return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
 
+/** Text alignment of the business block / title block for each header design. */
+const ALIGN: Record<HeaderPreset, { biz: "left" | "right" | "center"; title: "left" | "right" | "center" }> = {
+  classic:  { biz: "left",   title: "right"  },
+  reversed: { biz: "right",  title: "left"   },
+  centered: { biz: "center", title: "center" },
+  stacked:  { biz: "left",   title: "left"   },
+};
+
+const JUSTIFY = { left: "flex-start", center: "center", right: "flex-end" } as const;
+
+function Logo({ doc, tpl, size }: { doc: InvoiceDoc; tpl: TplTokens; size: "block" | "row" }) {
+  const lay: Layout = doc.layout;
+  const dims = LOGO_DIMS[lay.logoSize];
+  const radius = lay.logoShape === "circle" ? "50%" : lay.logoShape === "rounded" ? 12 : 0;
+  const bottom = size === "block" ? 12 : 0;
+
+  if (doc.brandLogo) {
+    const circle = lay.logoShape === "circle";
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={doc.brandLogo}
+        alt={doc.from.name ? `${doc.from.name} logo` : "Business logo"}
+        style={{
+          height: dims.h, width: circle ? dims.h : undefined, maxWidth: circle ? dims.h : dims.maxW,
+          objectFit: circle ? "cover" : "contain", borderRadius: radius, display: "block", marginBottom: bottom,
+        }}
+      />
+    );
+  }
+  const tile = Math.max(36, Math.round(dims.h * 0.88));
+  return (
+    <div
+      aria-hidden="true"
+      style={{
+        width: tile, height: tile, borderRadius: lay.logoShape === "circle" ? "50%" : lay.logoShape === "rounded" ? 12 : 4,
+        background: tpl.logoBg, display: "flex", alignItems: "center", justifyContent: "center",
+        color: tpl.logoColor, fontWeight: 800, fontSize: Math.round(tile * 0.45), marginBottom: bottom, boxShadow: tpl.logoShadow,
+      }}
+    >
+      {(doc.from.name || "B")[0].toUpperCase()}
+    </div>
+  );
+}
+
 const InvoicePreview = forwardRef<HTMLDivElement, Props>(function InvoicePreview({ doc, totals, whiteLabel }, ref) {
   const { from, to, meta, items, cur, color, docType, status, taxType, tax, taxLabel, discount, discType } = doc;
+  const lay = doc.layout;
+  const show = lay.show;
   const tpl = tplTokens(doc.template, color);
   const info = DOC_TYPE_INFO[docType];
-  const showStatus = docType === "invoice" || docType === "receipt";
+  const showStatusBadge = (docType === "invoice" || docType === "receipt") && show.statusBadge;
   const st = STATUS_CFG[docType === "receipt" ? "paid" : status];
   const money = (n: number) => formatMoney(n, cur.s, cur.l);
   const isQuote = docType === "quotation" || docType === "estimate";
@@ -37,159 +92,198 @@ const InvoicePreview = forwardRef<HTMLDivElement, Props>(function InvoicePreview
   const dueLabel = isQuote ? "Valid until" : "Due";
   const partyLabel = docType === "receipt" ? "Received from" : isQuote ? "Prepared for" : "Bill to";
 
+  const align = ALIGN[lay.header];
+  const logoInside = lay.logoPos === "left";
+  const stackedHeader = lay.header === "centered" || lay.header === "stacked";
+  const colsAfterNumber = show.itemNumbers ? 1 : 0;
+
+  /* ── Header blocks ── */
+  const business = (
+    <div style={{ minWidth: 0, flex: stackedHeader ? undefined : 1, textAlign: align.biz }}>
+      {logoInside && (
+        <div style={{ display: "flex", justifyContent: JUSTIFY[align.biz] }}>
+          <Logo doc={doc} tpl={tpl} size="block" />
+        </div>
+      )}
+      <p style={{ fontSize: 14, fontWeight: 800, color: tpl.hPrimary, letterSpacing: "-0.02em", overflowWrap: "anywhere" }}>{from.name || "Your business name"}</p>
+      {show.email && (from.email || !from.name) && <p style={{ fontSize: 11.5, color: tpl.hSecondary, marginTop: 3, overflowWrap: "anywhere" }}>{from.email || "you@example.com"}</p>}
+      {show.phone && from.phone && <p style={{ fontSize: 11, color: tpl.hTertiary, marginTop: 2 }}>{from.phone}</p>}
+      {show.address && from.address && <p style={{ fontSize: 11, color: tpl.hTertiary, marginTop: 2, whiteSpace: "pre-line", overflowWrap: "anywhere" }}>{from.address}</p>}
+    </div>
+  );
+
+  const titleBlock = (
+    <div style={{ textAlign: align.title, flexShrink: 0 }}>
+      <p style={{ fontSize: tpl.docTitleSize, fontWeight: 900, color: tpl.docTitle, letterSpacing: "-0.03em", lineHeight: 1 }}>
+        {info.upper}
+      </p>
+      <p style={{ fontSize: 14, fontWeight: 800, color: tpl.hPrimary, marginTop: 8, overflowWrap: "anywhere" }}>#{meta.no || "—"}</p>
+      <p style={{ fontSize: 11.5, color: tpl.hTertiary, marginTop: 5 }}>
+        {dateLabel}: <span style={{ color: tpl.hValue, fontWeight: 600 }}>{fmtDate(meta.date)}</span>
+      </p>
+      {meta.due && docType !== "receipt" && (
+        <p style={{ fontSize: 11.5, color: tpl.hTertiary, marginTop: 3 }}>
+          {dueLabel}: <span style={{ color: tpl.hValue, fontWeight: 600 }}>{fmtDate(meta.due)}</span>
+        </p>
+      )}
+      {meta.poNumber && (
+        <p style={{ fontSize: 11.5, color: tpl.hTertiary, marginTop: 3 }}>
+          PO: <span style={{ color: tpl.hValue, fontWeight: 600 }}>{meta.poNumber}</span>
+        </p>
+      )}
+      {showStatusBadge && (
+        <span style={{ display: "inline-block", marginTop: 10, padding: "4px 14px", borderRadius: 99, fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.07em", background: st.bg, color: st.color, border: `1.5px solid ${st.border}` }}>
+          {st.label}
+        </span>
+      )}
+    </div>
+  );
+
+  const headerRow = stackedHeader
+    ? (
+      <div style={{ display: "flex", flexDirection: "column", alignItems: JUSTIFY[align.biz], gap: 20 }}>
+        {business}{titleBlock}
+      </div>
+    )
+    : (
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 24 }}>
+        {lay.header === "reversed" ? <>{titleBlock}{business}</> : <>{business}{titleBlock}</>}
+      </div>
+    );
+
+  /* ── Bottom sections (order is a layout option) ── */
+  const bankSection = meta.bankDetails ? (
+    <div data-pdf-block key="bank" style={{ marginBottom: 18, padding: "12px 14px", borderRadius: 10, background: "#f8fafc", border: "1px solid #f0f3fa" }}>
+      <p style={{ fontSize: 9.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: "#64748b", marginBottom: 6 }}>Payment details</p>
+      <p style={{ fontSize: 11.5, color: "#334155", lineHeight: 1.7, whiteSpace: "pre-line", overflowWrap: "anywhere" }}>{meta.bankDetails}</p>
+    </div>
+  ) : null;
+
+  const notesSection = meta.notes ? (
+    <div data-pdf-block key="notes" style={{ paddingTop: 16, marginBottom: 14, borderTop: "1.5px solid #f0f3fa" }}>
+      <p style={{ fontSize: 9.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: "#64748b", marginBottom: 7 }}>
+        {isQuote ? "Terms & conditions" : "Notes"}
+      </p>
+      <p style={{ fontSize: 12, color: "#475569", lineHeight: 1.7, fontStyle: "italic", whiteSpace: "pre-line", overflowWrap: "anywhere" }}>{meta.notes}</p>
+    </div>
+  ) : null;
+
   return (
-    <div ref={ref} style={{ fontFamily:"'Inter',system-ui,sans-serif", background:"white", position:"relative", color:"#0d1117" }}>
+    <div ref={ref} style={{ fontFamily: "'Inter',system-ui,sans-serif", background: "white", position: "relative", color: "#0d1117" }}>
       {/* Accent stripe (Classic only) */}
-      {tpl.stripe && <div style={{ height:5, background:`linear-gradient(90deg,${color},${color}bb)` }}/>}
+      {tpl.stripe && <div style={{ height: 5, background: `linear-gradient(90deg,${color},${color}bb)` }} />}
 
       {/* Watermark */}
       {doc.wmLogo && (
-        <div aria-hidden="true" style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", pointerEvents:"none", zIndex:0, overflow:"hidden" }}>
+        <div aria-hidden="true" style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={doc.wmLogo} alt="" style={{ maxHeight:220, maxWidth:320, objectFit:"contain", opacity:0.06 }}/>
+          <img src={doc.wmLogo} alt="" style={{ maxHeight: 220, maxWidth: 320, objectFit: "contain", opacity: 0.06 }} />
         </div>
       )}
 
-      <div style={{ padding:"36px 44px", position:"relative", zIndex:1 }}>
+      <div style={{ padding: "36px 44px", position: "relative", zIndex: 1 }}>
 
         {/* ── Header ── */}
-        <div data-pdf-block style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:24, marginBottom:30,
-          ...(tpl.band ? { background:`linear-gradient(135deg,${color},${color}dd)`, margin:"-36px -44px 28px", padding:"30px 44px 26px" } : {}) }}>
-          <div style={{ minWidth:0, flex:1 }}>
-            {doc.brandLogo ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={doc.brandLogo} alt={from.name ? `${from.name} logo` : "Business logo"} style={{ height:50, maxWidth:160, objectFit:"contain", marginBottom:12, display:"block" }}/>
-            ) : (
-              <div aria-hidden="true" style={{ width:44, height:44, borderRadius:12, background:tpl.logoBg, display:"flex", alignItems:"center", justifyContent:"center", color:tpl.logoColor, fontWeight:800, fontSize:20, marginBottom:12, boxShadow:tpl.logoShadow }}>
-                {(from.name || "B")[0].toUpperCase()}
-              </div>
-            )}
-            <p style={{ fontSize:14, fontWeight:800, color:tpl.hPrimary, letterSpacing:"-0.02em", overflowWrap:"anywhere" }}>{from.name || "Your business name"}</p>
-            {(from.email || !from.name) && <p style={{ fontSize:11.5, color:tpl.hSecondary, marginTop:3, overflowWrap:"anywhere" }}>{from.email || "you@example.com"}</p>}
-            {from.phone   && <p style={{ fontSize:11, color:tpl.hTertiary, marginTop:2 }}>{from.phone}</p>}
-            {from.address && <p style={{ fontSize:11, color:tpl.hTertiary, marginTop:2, whiteSpace:"pre-line", overflowWrap:"anywhere" }}>{from.address}</p>}
-          </div>
-          <div style={{ textAlign:"right", flexShrink:0 }}>
-            <p style={{ fontSize:tpl.docTitleSize, fontWeight:900, color:tpl.docTitle, letterSpacing:"-0.03em", lineHeight:1 }}>
-              {info.upper}
-            </p>
-            <p style={{ fontSize:14, fontWeight:800, color:tpl.hPrimary, marginTop:8, overflowWrap:"anywhere" }}>#{meta.no || "—"}</p>
-            <p style={{ fontSize:11.5, color:tpl.hTertiary, marginTop:5 }}>
-              {dateLabel}: <span style={{ color:tpl.hValue, fontWeight:600 }}>{fmtDate(meta.date)}</span>
-            </p>
-            {meta.due && docType !== "receipt" && (
-              <p style={{ fontSize:11.5, color:tpl.hTertiary, marginTop:3 }}>
-                {dueLabel}: <span style={{ color:tpl.hValue, fontWeight:600 }}>{fmtDate(meta.due)}</span>
-              </p>
-            )}
-            {meta.poNumber && (
-              <p style={{ fontSize:11.5, color:tpl.hTertiary, marginTop:3 }}>
-                PO: <span style={{ color:tpl.hValue, fontWeight:600 }}>{meta.poNumber}</span>
-              </p>
-            )}
-            {showStatus && (
-              <span style={{ display:"inline-block", marginTop:10, padding:"4px 14px", borderRadius:99, fontSize:11, fontWeight:800, textTransform:"uppercase", letterSpacing:"0.07em", background:st.bg, color:st.color, border:`1.5px solid ${st.border}` }}>
-                {st.label}
-              </span>
-            )}
-          </div>
+        <div
+          data-pdf-block
+          style={{
+            marginBottom: 30,
+            ...(tpl.band ? { background: `linear-gradient(135deg,${color},${color}dd)`, margin: "-36px -44px 28px", padding: "30px 44px 26px" } : {}),
+          }}
+        >
+          {/* Logo on its own row when placed centre / right */}
+          {!logoInside && (
+            <div style={{ display: "flex", justifyContent: JUSTIFY[lay.logoPos], marginBottom: 16 }}>
+              <Logo doc={doc} tpl={tpl} size="row" />
+            </div>
+          )}
+          {headerRow}
         </div>
 
         {/* ── Bill To ── */}
-        <div data-pdf-block style={{ marginBottom:24, ...(tpl.box ? { padding:"14px 16px", borderRadius:12, background:"#f8fafc", border:"1px solid #f0f3fa" } : {}) }}>
-          <p style={{ fontSize:9.5, fontWeight:800, textTransform:"uppercase", letterSpacing:"0.12em", color:"#64748b", marginBottom:7 }}>
+        <div data-pdf-block style={{ marginBottom: 24, ...(tpl.box ? { padding: "14px 16px", borderRadius: 12, background: "#f8fafc", border: "1px solid #f0f3fa" } : {}) }}>
+          <p style={{ fontSize: 9.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", color: "#64748b", marginBottom: 7 }}>
             {partyLabel}
           </p>
-          <p style={{ fontSize:16, fontWeight:800, color:"#0d1117", letterSpacing:"-0.02em", overflowWrap:"anywhere" }}>{to.name || "Client name"}</p>
-          {(to.email || !to.name) && <p style={{ fontSize:11.5, color:"#475569", marginTop:3, overflowWrap:"anywhere" }}>{to.email || "client@example.com"}</p>}
-          {to.phone   && <p style={{ fontSize:11, color:"#64748b", marginTop:2 }}>{to.phone}</p>}
-          {to.address && <p style={{ fontSize:11, color:"#64748b", marginTop:2, whiteSpace:"pre-line", overflowWrap:"anywhere" }}>{to.address}</p>}
+          <p style={{ fontSize: 16, fontWeight: 800, color: "#0d1117", letterSpacing: "-0.02em", overflowWrap: "anywhere" }}>{to.name || "Client name"}</p>
+          {show.email && (to.email || !to.name) && <p style={{ fontSize: 11.5, color: "#475569", marginTop: 3, overflowWrap: "anywhere" }}>{to.email || "client@example.com"}</p>}
+          {show.phone && to.phone && <p style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>{to.phone}</p>}
+          {show.address && to.address && <p style={{ fontSize: 11, color: "#64748b", marginTop: 2, whiteSpace: "pre-line", overflowWrap: "anywhere" }}>{to.address}</p>}
         </div>
 
         {/* ── Items table ── */}
-        <table style={{ width:"100%", borderCollapse:"collapse", marginBottom:20, tableLayout:"fixed" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 20, tableLayout: "fixed" }}>
           <colgroup>
-            <col style={{ width:30 }} /><col /><col style={{ width:64 }} /><col style={{ width:96 }} /><col style={{ width:104 }} />
+            {colsAfterNumber === 1 && <col style={{ width: 30 }} />}
+            <col /><col style={{ width: 64 }} /><col style={{ width: 96 }} /><col style={{ width: 104 }} />
           </colgroup>
           <thead>
-            <tr data-pdf-block style={{ background:tpl.theadBg }}>
-              {["#","Description","Qty","Rate","Amount"].map((h,i)=>(
-                <th key={h} scope="col" style={{
-                  padding:"9px 8px", fontSize:9.5, fontWeight:800, textTransform:"uppercase",
-                  letterSpacing:"0.08em", color:tpl.thColor,
-                  textAlign:(i===0||i===1?"left":i===2?"center":"right") as "left"|"center"|"right",
-                  borderBottom:tpl.thBorder,
-                }}>{h}</th>
-              ))}
+            <tr data-pdf-block style={{ background: tpl.theadBg }}>
+              {["#", "Description", "Qty", "Rate", "Amount"].filter((h) => h !== "#" || show.itemNumbers).map((h) => {
+                const i = ["#", "Description", "Qty", "Rate", "Amount"].indexOf(h);
+                return (
+                  <th key={h} scope="col" style={{
+                    padding: "9px 8px", fontSize: 9.5, fontWeight: 800, textTransform: "uppercase",
+                    letterSpacing: "0.08em", color: tpl.thColor,
+                    textAlign: (i === 0 || i === 1 ? "left" : i === 2 ? "center" : "right") as "left" | "center" | "right",
+                    borderBottom: tpl.thBorder,
+                  }}>{h}</th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
-            {items.map((it,idx)=>(
-              <tr key={it.id} data-pdf-block style={{ borderBottom:"1px solid #f0f3fa", pageBreakInside:"avoid" }}>
-                <td style={{ padding:"10px 8px", fontSize:11, color:"#94a3b8", fontWeight:700, textAlign:"center", verticalAlign:"top" }}>{idx+1}</td>
-                <td style={{ padding:"10px 8px", fontSize:12.5, color:"#374151", fontWeight:500, whiteSpace:"pre-line", overflowWrap:"anywhere", verticalAlign:"top" }}>{it.desc || `Item ${idx+1}`}</td>
-                <td style={{ padding:"10px 8px", fontSize:12.5, color:"#475569", textAlign:"center", verticalAlign:"top", fontVariantNumeric:"tabular-nums" }}>{formatQty(it.qty)}</td>
-                <td style={{ padding:"10px 8px", fontSize:12.5, color:"#475569", textAlign:"right", verticalAlign:"top", fontVariantNumeric:"tabular-nums" }}>{money(it.rate)}</td>
-                <td style={{ padding:"10px 8px", fontSize:12.5, fontWeight:700, color:"#0d1117", textAlign:"right", verticalAlign:"top", fontVariantNumeric:"tabular-nums" }}>{money(totals.lines[idx] ?? 0)}</td>
+            {items.map((it, idx) => (
+              <tr key={it.id} data-pdf-block style={{ borderBottom: "1px solid #f0f3fa", pageBreakInside: "avoid" }}>
+                {show.itemNumbers && <td style={{ padding: "10px 8px", fontSize: 11, color: "#94a3b8", fontWeight: 700, textAlign: "center", verticalAlign: "top" }}>{idx + 1}</td>}
+                <td style={{ padding: "10px 8px", fontSize: 12.5, color: "#374151", fontWeight: 500, whiteSpace: "pre-line", overflowWrap: "anywhere", verticalAlign: "top" }}>{it.desc || `Item ${idx + 1}`}</td>
+                <td style={{ padding: "10px 8px", fontSize: 12.5, color: "#475569", textAlign: "center", verticalAlign: "top", fontVariantNumeric: "tabular-nums" }}>{formatQty(it.qty)}</td>
+                <td style={{ padding: "10px 8px", fontSize: 12.5, color: "#475569", textAlign: "right", verticalAlign: "top", fontVariantNumeric: "tabular-nums" }}>{money(it.rate)}</td>
+                <td style={{ padding: "10px 8px", fontSize: 12.5, fontWeight: 700, color: "#0d1117", textAlign: "right", verticalAlign: "top", fontVariantNumeric: "tabular-nums" }}>{money(totals.lines[idx] ?? 0)}</td>
               </tr>
             ))}
           </tbody>
         </table>
 
         {/* ── Totals ── */}
-        <div data-pdf-block style={{ display:"flex", justifyContent:"flex-end", marginBottom:24 }}>
-          <div style={{ width:240 }}>
-            <TotRow label="Subtotal" val={money(totals.subtotal)}/>
-            {totals.discount>0 && <TotRow label={`Discount${discType==="%"?` (${discount}%)`:""}`} val={`−${money(totals.discount)}`} red/>}
-            {taxType==="exclusive" && tax>0 && <TotRow label={`${taxLabel || "Tax"} (${tax}%)`} val={money(totals.tax)}/>}
-            {taxType==="inclusive" && tax>0 && (
-              <TotRow label={`Includes ${taxLabel || "tax"} (${tax}%)`} val={money(totals.taxIncluded)} muted/>
+        <div data-pdf-block style={{ display: "flex", justifyContent: "flex-end", marginBottom: 24 }}>
+          <div style={{ width: 240 }}>
+            <TotRow label="Subtotal" val={money(totals.subtotal)} />
+            {totals.discount > 0 && <TotRow label={`Discount${discType === "%" ? ` (${discount}%)` : ""}`} val={`−${money(totals.discount)}`} red />}
+            {taxType === "exclusive" && tax > 0 && <TotRow label={`${taxLabel || "Tax"} (${tax}%)`} val={money(totals.tax)} />}
+            {taxType === "inclusive" && tax > 0 && (
+              <TotRow label={`Includes ${taxLabel || "tax"} (${tax}%)`} val={money(totals.taxIncluded)} muted />
             )}
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", paddingTop:10, borderTop:tpl.totalRule, marginTop:4 }}>
-              <span style={{ fontSize:14, fontWeight:800, color:"#0d1117" }}>{docType === "receipt" ? "Total paid" : docType === "estimate" ? "Estimated total" : "Total"}</span>
-              <span style={{ fontSize:22, fontWeight:900, color:tpl.totalColor, fontVariantNumeric:"tabular-nums", letterSpacing:"-0.03em" }}>{money(totals.total)}</span>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 10, borderTop: tpl.totalRule, marginTop: 4 }}>
+              <span style={{ fontSize: 14, fontWeight: 800, color: "#0d1117" }}>{docType === "receipt" ? "Total paid" : docType === "estimate" ? "Estimated total" : "Total"}</span>
+              <span style={{ fontSize: 22, fontWeight: 900, color: tpl.totalColor, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.03em" }}>{money(totals.total)}</span>
             </div>
-            <div style={{ textAlign:"right", marginTop:5 }}>
-              {taxType==="inclusive" && tax>0
-                ? <span style={{ fontSize:9.5, color:"#15803d", fontWeight:700, fontStyle:"italic" }}>All prices include {taxLabel || "tax"}</span>
-                : tax>0
-                ? <span style={{ fontSize:9.5, color:"#64748b", fontStyle:"italic" }}>{taxLabel || "Tax"} added on top of prices</span>
+            <div style={{ textAlign: "right", marginTop: 5 }}>
+              {taxType === "inclusive" && tax > 0
+                ? <span style={{ fontSize: 9.5, color: "#15803d", fontWeight: 700, fontStyle: "italic" }}>All prices include {taxLabel || "tax"}</span>
+                : tax > 0
+                ? <span style={{ fontSize: 9.5, color: "#64748b", fontStyle: "italic" }}>{taxLabel || "Tax"} added on top of prices</span>
                 : null
               }
             </div>
           </div>
         </div>
 
-        {/* ── Bank details ── */}
-        {meta.bankDetails && (
-          <div data-pdf-block style={{ marginBottom:18, padding:"12px 14px", borderRadius:10, background:"#f8fafc", border:"1px solid #f0f3fa" }}>
-            <p style={{ fontSize:9.5, fontWeight:800, textTransform:"uppercase", letterSpacing:"0.12em", color:"#64748b", marginBottom:6 }}>Payment details</p>
-            <p style={{ fontSize:11.5, color:"#334155", lineHeight:1.7, whiteSpace:"pre-line", overflowWrap:"anywhere" }}>{meta.bankDetails}</p>
-          </div>
-        )}
-
-        {/* ── Notes ── */}
-        {meta.notes && (
-          <div data-pdf-block style={{ paddingTop:16, borderTop:"1.5px solid #f0f3fa" }}>
-            <p style={{ fontSize:9.5, fontWeight:800, textTransform:"uppercase", letterSpacing:"0.12em", color:"#64748b", marginBottom:7 }}>
-              {isQuote ? "Terms & conditions" : "Notes"}
-            </p>
-            <p style={{ fontSize:12, color:"#475569", lineHeight:1.7, fontStyle:"italic", whiteSpace:"pre-line", overflowWrap:"anywhere" }}>{meta.notes}</p>
-          </div>
-        )}
+        {/* ── Payment details + Notes (order follows the layout option) ── */}
+        {lay.sectionOrder === "notes-first" ? <>{notesSection}{bankSection}</> : <>{bankSection}{notesSection}</>}
 
         {/* ── Footer note ── */}
         {meta.signNote && (
-          <p data-pdf-block style={{ textAlign:"center", fontSize:10.5, color:"#64748b", fontStyle:"italic", marginTop:24, lineHeight:1.5 }}>
+          <p data-pdf-block style={{ textAlign: "center", fontSize: 10.5, color: "#64748b", fontStyle: "italic", marginTop: 24, lineHeight: 1.5 }}>
             {meta.signNote}
           </p>
         )}
 
         {/* ── "Generated by" line (removed on paid plans) ── */}
         {!whiteLabel && (
-          <div data-pdf-block style={{ display:"flex", justifyContent:"space-between", marginTop:meta.signNote?12:24, paddingTop:12, borderTop:"1px solid #f1f5f9" }}>
-            <span style={{ fontSize:9.5, color:"#94a3b8" }}>Generated by pdfbillbuilder.com</span>
-            <span style={{ fontSize:9.5, color:"#94a3b8" }}>Thank you for your business</span>
+          <div data-pdf-block style={{ display: "flex", justifyContent: "space-between", marginTop: meta.signNote ? 12 : 24, paddingTop: 12, borderTop: "1px solid #f1f5f9" }}>
+            <span style={{ fontSize: 9.5, color: "#94a3b8" }}>Generated by pdfbillbuilder.com</span>
+            <span style={{ fontSize: 9.5, color: "#94a3b8" }}>Thank you for your business</span>
           </div>
         )}
       </div>
@@ -197,11 +291,11 @@ const InvoicePreview = forwardRef<HTMLDivElement, Props>(function InvoicePreview
   );
 });
 
-function TotRow({label,val,red,muted}:{label:string;val:string;red?:boolean;muted?:boolean}) {
+function TotRow({ label, val, red, muted }: { label: string; val: string; red?: boolean; muted?: boolean }) {
   return (
-    <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:red?"#dc2626":muted?"#94a3b8":"#64748b",marginBottom:7,gap:12}}>
+    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: red ? "#dc2626" : muted ? "#94a3b8" : "#64748b", marginBottom: 7, gap: 12 }}>
       <span>{label}</span>
-      <span style={{fontWeight:600,color:red?"#dc2626":muted?"#94a3b8":"#334155",fontVariantNumeric:"tabular-nums"}}>{val}</span>
+      <span style={{ fontWeight: 600, color: red ? "#dc2626" : muted ? "#94a3b8" : "#334155", fontVariantNumeric: "tabular-nums" }}>{val}</span>
     </div>
   );
 }

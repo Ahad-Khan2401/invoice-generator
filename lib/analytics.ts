@@ -27,7 +27,13 @@ export type AnalyticsEvent =
   | "subscription_cancelled"
   | "premium_feature_clicked"
   | "reminder_copied"
-  | "csv_exported";
+  | "csv_exported"
+  | "mode_changed"
+  | "example_filled"
+  | "guide_step_done"
+  | "guide_skipped"
+  | "guide_completed"
+  | "layout_changed";
 
 type Primitive = string | number | boolean;
 

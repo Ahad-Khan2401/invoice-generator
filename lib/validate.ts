@@ -1,3 +1,5 @@
+import { sanitizeLayout } from "./layout.ts";
+
 /**
  * lib/validate.ts — request body validation / sanitisation for API routes.
  * No external deps; keeps payloads bounded and shapes predictable.
@@ -121,6 +123,7 @@ export function documentData(v: unknown): Record<string, unknown> {
     color:    /^#[0-9a-f]{6}$/i.test(String(o.color ?? "")) ? String(o.color) : "#4f46e5",
     template: oneOf(o.template, TEMPLATES, "classic"),
     paper:    oneOf(o.paper, PAPER_SIZES, "a4"),
+    layout:   sanitizeLayout(o.layout),
     brandLogo: dataUrlImage(o.brandLogo),
     wmLogo:    dataUrlImage(o.wmLogo),
   };

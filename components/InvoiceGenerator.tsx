@@ -2,23 +2,27 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import {
   Download, Printer, Upload, X, FileText, Receipt, ClipboardList, Calculator,
-  Tag, Percent, Copy, FilePlus2, Save, FileJson, FolderOpen, ArrowRightLeft, AlertTriangle, ChevronDown, Crown,
+  Tag, Percent, Copy, FilePlus2, Save, FileJson, FolderOpen, ArrowRightLeft, AlertTriangle, ChevronDown, Crown, Sparkles,
 } from "lucide-react";
 import DownloadAdModal from "@/components/DownloadAdModal";
 import { useAuth } from "@/components/AuthProvider";
 import InvoicePreview from "@/components/generator/InvoicePreview";
 import ItemsEditor from "@/components/generator/ItemsEditor";
 import ClientPicker, { type ClientRow } from "@/components/generator/ClientPicker";
+import LayoutPanel from "@/components/generator/LayoutPanel";
+import QuickGuide, { type GuideStep } from "@/components/generator/QuickGuide";
 import { Inp, TxtArea, Sel, Segmented, Chip, SectionTitle, Divider, Spinner } from "@/components/generator/FormControls";
 import { COLORS_FREE, COLORS_PRO, TEMPLATE_META, STATUS_CFG } from "@/components/generator/templates";
+import { SAMPLE_FROM, SAMPLE_TO, sampleItems, isSampleFrom } from "@/components/generator/sample";
 import {
-  readProfile, writeProfile, profileFromDoc, rememberNumber, hasDetails, readSettings, writeSettings, type LocalProfile,
+  readProfile, writeProfile, profileFromDoc, rememberNumber, hasDetails, readSettings, writeSettings, type LocalProfile, type LocalSettings,
 } from "@/components/generator/useLocalProfile";
 import {
-  newDoc, sanitizeDoc, safeFileName, convertToInvoice, receiptFromInvoice, defaultNotes, today,
+  newDoc, sanitizeDoc, safeFileName, convertToInvoice, receiptFromInvoice, defaultNotes, today, blankParty,
   CURRENCIES, DOC_TYPE_INFO, type InvoiceDoc, type DocType, type Party, type TemplateKey, type PaperSize,
 } from "@/lib/invoice-doc";
 import { calcTotals, formatMoney, nextInvoiceNumber, defaultNumber, addDays } from "@/lib/invoice-math";
+import { DEFAULT_LAYOUT, enforceLayoutPlan, isDefaultLayout, sanitizeLayout, type Layout, type LayoutShow } from "@/lib/layout";
 import { renderPdf, downloadBlob } from "@/lib/pdf";
 import { track } from "@/lib/analytics";
 
@@ -35,8 +39,18 @@ const NET_TERMS = [{ label:"Net 7", days:7 }, { label:"Net 15", days:15 }, { lab
 const PAGE_W: Record<PaperSize, number> = { a4: 794, letter: 816 };
 const PAGE_H: Record<PaperSize, number> = { a4: 1123, letter: 1056 };
 const PREVIEW_CAP = 1050; // max on-screen preview height before shrinking further
+const SAMPLE_ID_BASE = 900000;
+
+type Mode = "quick" | "full";
 
 function isDefaultNumber(no: string) { return /^(INV|RCT|QUO|EST)-0*1$/.test(no); }
+
+function focusField(selector: string) {
+  const el = document.querySelector<HTMLElement>(selector);
+  if (!el) return;
+  el.scrollIntoView({ behavior: "smooth", block: "center" });
+  window.setTimeout(() => el.focus({ preventScroll: true }), 350);
+}
 
 /* ══════════════════════════════════════════════════════
    MAIN COMPONENT
@@ -62,7 +76,11 @@ export default function InvoiceGenerator({
   const [savedId, setSavedId] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   const [profileSaved, setProfileSaved] = useState(false);
-  const [settings, setSettings] = useState({ saveToDashboard: true });
+  const [settings, setSettings] = useState<LocalSettings>({ saveToDashboard: true });
+  const [mode, setMode] = useState<Mode>("quick");
+  const [guideOn, setGuideOn] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
+  const [confirmExample, setConfirmExample] = useState(false);
   const [busy, setBusy] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [toast, setToast] = useState("");
@@ -77,6 +95,8 @@ export default function InvoiceGenerator({
   const startedRef = useRef(false);
   const importRef  = useRef<HTMLInputElement>(null);
   const profileRef = useRef<LocalProfile | null>(null);
+  const preExample = useRef<{ from: Party; to: Party; items: InvoiceDoc["items"]; due: string } | null>(null);
+  const doneSteps  = useRef<Set<string>>(new Set());
 
   const patch = useCallback((p: Partial<InvoiceDoc>) => setDoc((d) => ({ ...d, ...p })), []);
   const setMeta = useCallback((p: Partial<InvoiceDoc["meta"]>) => setDoc((d) => ({ ...d, meta: { ...d.meta, ...p } })), []);
@@ -86,6 +106,19 @@ export default function InvoiceGenerator({
   const started = () => { if (!startedRef.current) { startedRef.current = true; track("generator_started", { doc_type: doc.docType }); } };
   const flash = (m: string) => { setToast(m); window.setTimeout(() => setToast(""), 2600); };
 
+  const isQuick = mode === "quick";
+  const exampleActive = isSampleFrom(doc.from);
+
+  function saveSettings(p: Partial<LocalSettings>) {
+    setSettings((s) => { const next = { ...s, ...p }; writeSettings(next); return next; });
+  }
+  function changeMode(m: Mode) {
+    if (m === mode) return;
+    setMode(m);
+    saveSettings({ mode: m });
+    track("mode_changed", { mode: m });
+  }
+
   /* ── Initial load: local profile + URL actions (?load / ?dup) ── */
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -94,9 +127,14 @@ export default function InvoiceGenerator({
     const stored = readProfile();
     profileRef.current = stored;
     const st = readSettings();
+    const returning = !!stored && hasDetails(stored.from);
 
     queueMicrotask(() => {
       setSettings(st);
+      // Newcomers start in Quick mode; people who already saved their details, or are
+      // re-opening a saved document, start with every option. An explicit choice wins.
+      setMode(st.mode ?? (returning || loadId || dupId ? "full" : "quick"));
+      setGuideOn(!st.guideDismissed && !returning && !loadId && !dupId);
       if (stored && !loadId && !dupId) {
         setDoc((d) => {
           const lastNo = stored.lastNos?.[d.docType];
@@ -109,6 +147,7 @@ export default function InvoiceGenerator({
             taxLabel: stored.taxLabel || d.taxLabel,
             tax: stored.tax ?? d.tax,
             paper: stored.paper ?? d.paper,
+            layout: stored.layout ?? d.layout,
             meta: {
               ...d.meta,
               bankDetails: stored.bankDetails || d.meta.bankDetails,
@@ -156,9 +195,9 @@ export default function InvoiceGenerator({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded, user?.token]);
 
-  /* ── Persist "remember my business" locally ── */
+  /* ── Persist "remember my business" locally (never the example data) ── */
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || isSampleFrom(doc.from)) return;
     const t = window.setTimeout(() => {
       if (!hasDetails(doc.from)) {
         // keep settings-only profile (numbers etc.) but drop sender details
@@ -197,6 +236,7 @@ export default function InvoiceGenerator({
         color: p.color ?? d.color,
         taxLabel: p.taxLabel || d.taxLabel,
         tax: typeof p.tax === "number" ? p.tax : d.tax,
+        layout: p.layout ? sanitizeLayout(p.layout) : d.layout,
         meta: { ...d.meta, bankDetails: p.bankDetails || d.meta.bankDetails, notes: p.notes || d.meta.notes },
       });
     }).catch(() => {});
@@ -204,7 +244,7 @@ export default function InvoiceGenerator({
 
   // Debounced push of the business profile to the server (signed-in only)
   useEffect(() => {
-    if (!ready || !user?.token || !hasDetails(doc.from)) return;
+    if (!ready || !user?.token || !hasDetails(doc.from) || isSampleFrom(doc.from)) return;
     const t = window.setTimeout(() => {
       fetch("/api/profile", {
         method: "PUT",
@@ -212,11 +252,12 @@ export default function InvoiceGenerator({
         body: JSON.stringify({ name: doc.from.name || "My business", data: {
           from: doc.from, brandLogo: doc.brandLogo && doc.brandLogo.length < 400_000 ? doc.brandLogo : null,
           color: doc.color, cur: doc.cur, bankDetails: doc.meta.bankDetails, notes: doc.meta.notes, taxLabel: doc.taxLabel, tax: doc.tax,
+          layout: doc.layout,
         } }),
       }).catch(() => {});
     }, 2500);
     return () => window.clearTimeout(t);
-  }, [ready, user?.token, doc.from, doc.brandLogo, doc.color, doc.cur, doc.meta.bankDetails, doc.meta.notes, doc.taxLabel, doc.tax]);
+  }, [ready, user?.token, doc.from, doc.brandLogo, doc.color, doc.cur, doc.meta.bankDetails, doc.meta.notes, doc.taxLabel, doc.tax, doc.layout]);
 
   /* ── Derived ── */
   const totals = useMemo(() => calcTotals(doc.items, { discount: doc.discount, discType: doc.discType, taxRate: doc.tax, taxType: doc.taxType }), [doc.items, doc.discount, doc.discType, doc.tax, doc.taxType]);
@@ -225,7 +266,13 @@ export default function InvoiceGenerator({
   const isQuote = doc.docType === "quotation" || doc.docType === "estimate";
   const showStatus = doc.docType === "invoice";
   const whiteLabel = isLoaded && limits.whiteLabel;
+  const advancedLayouts = limits.advancedLayouts;
   const money = (n: number) => formatMoney(n, doc.cur.s, doc.cur.l);
+
+  /* Pro-only layout options fall back to free ones once the plan is known and
+     does not include them (e.g. after a downgrade). The stored choice is kept. */
+  const layoutView = useMemo(() => (isLoaded ? enforceLayoutPlan(doc.layout, advancedLayouts) : doc.layout), [isLoaded, doc.layout, advancedLayouts]);
+  const viewDoc = useMemo<InvoiceDoc>(() => ({ ...doc, layout: layoutView }), [doc, layoutView]);
 
   const warnings = useMemo(() => {
     const w: string[] = [];
@@ -236,8 +283,9 @@ export default function InvoiceGenerator({
     if (doc.meta.due && doc.meta.date && doc.meta.due < doc.meta.date) w.push(`The ${isQuote ? "valid-until" : "due"} date is before the issue date.`);
     if (doc.discType === "fixed" && doc.discount > totals.subtotal && totals.subtotal > 0) w.push("The fixed discount is larger than the subtotal, so it has been capped.");
     if (doc.items.some((i) => i.qty < 0 || i.rate < 0)) w.push("An item has a negative quantity or rate — double-check it is intentional (e.g. a credit).");
+    if (exampleActive) w.push("This is example data — replace it with your own details before you send it.");
     return w;
-  }, [doc, totals, isQuote]);
+  }, [doc, totals, isQuote, exampleActive]);
 
   /* ── Auto-scale preview to fit one page; estimate page count ── */
   const autoScale = useCallback(() => {
@@ -256,7 +304,7 @@ export default function InvoiceGenerator({
       wrap.style.height = `${Math.ceil(natural * s)}px`; wrap.style.overflow = "hidden";
     });
   }, [doc.paper]);
-  useEffect(() => { autoScale(); }, [doc, whiteLabel, autoScale]);
+  useEffect(() => { autoScale(); }, [viewDoc, whiteLabel, autoScale]);
   useEffect(() => {
     let lastW = 0;
     const ro = new ResizeObserver((entries) => {
@@ -304,10 +352,11 @@ export default function InvoiceGenerator({
         title: `${info.label} ${doc.meta.no}`.trim(),
         subject: doc.to.name ? `${info.label} for ${doc.to.name}` : info.label,
       });
-      track("pdf_generated", { doc_type: doc.docType, template: doc.template, paper: doc.paper, items: doc.items.length, pages });
+      track("pdf_generated", { doc_type: doc.docType, template: doc.template, paper: doc.paper, items: doc.items.length, pages, mode });
       downloadBlob(blob, safeFileName(doc.meta.no, doc.docType, "pdf"));
       track("pdf_downloaded", { doc_type: doc.docType, signed_in: isLoggedIn });
       ok = true;
+      setDownloaded(true);
       rememberNumber(doc.docType, doc.meta.no);
       if (user?.token && settings.saveToDashboard) didSave = await saveToServer(false);
     } catch (e) {
@@ -353,7 +402,7 @@ export default function InvoiceGenerator({
   }
   function startNew() {
     const no = nextInvoiceNumber(doc.meta.no);
-    setDoc((d) => newDoc({ docType: d.docType, from: d.from, brandLogo: d.brandLogo, cur: d.cur, color: d.color, template: d.template, paper: d.paper, tax: d.tax, taxLabel: d.taxLabel, taxType: d.taxType,
+    setDoc((d) => newDoc({ docType: d.docType, from: d.from, brandLogo: d.brandLogo, cur: d.cur, color: d.color, template: d.template, paper: d.paper, tax: d.tax, taxLabel: d.taxLabel, taxType: d.taxType, layout: d.layout,
       meta: { ...newDoc({ docType: d.docType }).meta, no, bankDetails: d.meta.bankDetails, notes: d.meta.notes, signNote: d.meta.signNote } }));
     setSavedId(null); setMoreOpen(false);
     flash(`New ${info.label.toLowerCase()} ${no}`);
@@ -420,6 +469,93 @@ export default function InvoiceGenerator({
     } catch { return "error"; } finally { setSavingClient(false); }
   }
 
+  /* ── Example data ── */
+  function fillExample() {
+    started();
+    preExample.current = { from: doc.from, to: doc.to, items: doc.items, due: doc.meta.due };
+    setDoc((d) => ({
+      ...d,
+      from: SAMPLE_FROM,
+      to: SAMPLE_TO,
+      items: sampleItems(SAMPLE_ID_BASE),
+      meta: { ...d.meta, due: d.docType === "receipt" ? "" : addDays(d.meta.date, 30) },
+    }));
+    setConfirmExample(false);
+    track("example_filled", { doc_type: doc.docType, mode });
+  }
+  function clearExample() {
+    const p = preExample.current;
+    setDoc((d) => ({
+      ...d,
+      from: p?.from && !isSampleFrom(p.from) ? p.from : blankParty(),
+      to: p?.to && p.to.name !== SAMPLE_TO.name ? p.to : blankParty(),
+      items: p?.items?.length && !p.items.some((i) => i.id >= SAMPLE_ID_BASE) ? p.items : [{ id: 1, desc: "", qty: 1, rate: 0 }],
+      meta: { ...d.meta, due: p?.due ?? "" },
+    }));
+    preExample.current = null;
+  }
+  function requestExample() {
+    const hasOwnContent = (hasDetails(doc.from) && !exampleActive) || !!doc.to.name.trim() || doc.items.some((i) => i.desc.trim());
+    if (hasOwnContent && !exampleActive) setConfirmExample(true);
+    else fillExample();
+  }
+
+  /* ── Layout controls ── */
+  const setLayout = (p: Partial<Layout>) => {
+    setDoc((d) => ({ ...d, layout: { ...d.layout, ...p } }));
+    track("layout_changed", { option: Object.keys(p).join(",") });
+  };
+  const setShow = (k: keyof LayoutShow, v: boolean) => {
+    setDoc((d) => ({ ...d, layout: { ...d.layout, show: { ...d.layout.show, [k]: v } } }));
+    track("layout_changed", { option: "show", item: k, on: v });
+  };
+
+  /* ── First-time guide (3 steps, ticked off as the person really does them) ── */
+  const hasRealItems = doc.items.some((i) => i.desc.trim() && i.qty * i.rate > 0);
+  const guideSteps: GuideStep[] = [
+    {
+      id: "details", title: "Add your name and your client's name",
+      text: "So the document says who it is from and who it is for.",
+      done: !exampleActive && !!doc.from.name.trim() && !!doc.to.name.trim(),
+      actionLabel: "Go to field",
+      onAction: () => focusField(doc.from.name.trim() ? '[data-field="to-name"]' : '[data-field="from-name"]'),
+    },
+    {
+      id: "items", title: "Describe what you're charging for",
+      text: "One line per thing: a description, how many, and the price. We add up the total.",
+      done: !exampleActive && hasRealItems,
+      actionLabel: "Go to items",
+      onAction: () => focusField('input[data-col="desc"]'),
+    },
+    {
+      id: "download", title: "Download your PDF",
+      text: "Check the live preview on the right, then download. Free, with no watermark.",
+      done: downloaded,
+      actionLabel: "Go to download",
+      onAction: () => focusField('[data-field="download"]'),
+    },
+  ];
+  const guideAllDone = guideSteps.every((s) => s.done);
+  const guideVisible = ready && guideOn;
+
+  useEffect(() => {
+    if (!guideVisible) return;
+    for (const s of guideSteps) {
+      if (s.done && !doneSteps.current.has(s.id)) {
+        doneSteps.current.add(s.id);
+        track("guide_step_done", { step: s.id });
+      }
+    }
+    if (guideAllDone && !doneSteps.current.has("__all")) { doneSteps.current.add("__all"); track("guide_completed", {}); }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [guideVisible, guideAllDone, exampleActive, doc.from.name, doc.to.name, hasRealItems, downloaded]);
+
+  function closeGuide(skipped: boolean) {
+    setGuideOn(false);
+    saveSettings({ guideDismissed: true });
+    if (skipped) track("guide_skipped", { done: guideSteps.filter((s) => s.done).length });
+  }
+
   const st = STATUS_CFG[doc.docType === "receipt" ? "paid" : doc.status];
 
   /* ══════ RENDER ══════ */
@@ -480,6 +616,39 @@ export default function InvoiceGenerator({
 
             <div className="ig-formbody">
 
+              {/* ── First-time guide ── */}
+              {guideVisible && (
+                <QuickGuide steps={guideSteps} accent={color} exampleActive={exampleActive}
+                  onSkip={() => closeGuide(true)} onClose={() => closeGuide(false)} onExample={requestExample} />
+              )}
+
+              {/* ── Quick / All options switch + example data ── */}
+              <div className="ig-modebar">
+                <Segmented<Mode> label="How much detail" accent={color} value={mode} onChange={changeMode}
+                  options={[{ value: "quick", label: "Quick" }, { value: "full", label: "All options" }]} />
+                {exampleActive ? (
+                  <button type="button" className="ig-linkbtn" onClick={clearExample}>Clear the example</button>
+                ) : (
+                  <button type="button" className="ig-linkbtn" onClick={requestExample}><Sparkles size={12} aria-hidden="true" /> Fill with an example</button>
+                )}
+                <p className="ig-modebar__text" style={{ flexBasis: "100%" }}>
+                  {isQuick
+                    ? "Quick mode shows only the essentials. Your logo, tax, dates and notes are one click away."
+                    : "Every option is showing: template, layout, tax, discount, dates, payment details and more."}
+                </p>
+              </div>
+
+              {confirmExample && (
+                <div role="alertdialog" aria-label="Replace what you typed with the example?" className="ig-note" style={{ background: "#fffbeb", border: "1.5px solid #fde68a", color: "#78350f", marginBottom: 16 }}>
+                  <strong>Replace what you&apos;ve typed with the example?</strong>{" "}
+                  Your name, client and items will be swapped for sample data. You can clear it afterwards.
+                  <span style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                    <button type="button" className="ig-chip" onClick={fillExample}>Yes, use the example</button>
+                    <button type="button" className="ig-chip" onClick={() => setConfirmExample(false)}>Keep my details</button>
+                  </span>
+                </div>
+              )}
+
               {/* ── Document type ── */}
               <div className="ig-block">
                 <SectionTitle accent={color}>Document type</SectionTitle>
@@ -498,177 +667,247 @@ export default function InvoiceGenerator({
                 </div>
               </div>
 
-              {/* ── Template style ── */}
-              <div className="ig-block">
-                <SectionTitle accent={color}>Template style</SectionTitle>
-                <div className="ig-tplgrid" role="radiogroup" aria-label="PDF template">
-                  {TEMPLATE_META.map((t) => {
-                    const active = doc.template === t.key; const locked = t.pro && !limits.premiumTemplates;
-                    return (
-                      <button key={t.key} type="button" role="radio" aria-checked={active} className="ig-tile"
-                        title={locked ? `${t.name} — Pro template` : t.name} onClick={() => chooseTemplate(t.key, locked)}
-                        style={{ borderColor: active ? color : undefined, background: active ? `${color}0f` : undefined }}>
-                        {locked && <span className="ig-tile__pro">✦ PRO</span>}
-                        <span style={{ fontSize: 12.5, fontWeight: 700, color: active ? color : locked ? "#64748b" : "#334155" }}>{t.name}</span>
-                        <span className="ig-tile__desc">{t.desc}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* ── Payment status (invoice only) ── */}
-              {showStatus && (
-                <div className="ig-block">
-                  <SectionTitle accent={color}>Payment status</SectionTitle>
-                  <div className="ig-grid2" role="radiogroup" aria-label="Payment status">
-                    {(["unpaid", "paid"] as const).map((s) => {
-                      const cfg = STATUS_CFG[s]; const active = doc.status === s;
-                      return (
-                        <button key={s} type="button" role="radio" aria-checked={active} onClick={() => patch({ status: s })} className="ig-tile ig-tile--row"
-                          style={{ borderColor: active ? cfg.border : undefined, background: active ? cfg.bg : undefined }}>
-                          <span aria-hidden="true" style={{ fontSize: 15 }}>{s === "paid" ? "✅" : "⏳"}</span>
-                          <span style={{ fontSize: 13, fontWeight: 700, color: active ? cfg.color : "#64748b" }}>{cfg.label}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              <Divider />
-
-              {/* ── Number · Currency · PO ── */}
-              <div className="ig-grid2" style={{ margin: "20px 0 16px" }}>
-                <Inp label={`${info.label} number`} value={doc.meta.no} placeholder={defaultNumber(doc.docType)} accent={color}
-                  onChange={(v) => setMeta({ no: v })} hint="Auto-increments for your next document" />
-                <Sel label="Currency" value={doc.cur.l} accent={color} onChange={(v) => patch({ cur: CURRENCIES.find((c) => c.l === v) ?? doc.cur })}>
-                  {CURRENCIES.map((c) => <option key={c.l} value={c.l}>{c.l} — {c.s}</option>)}
-                </Sel>
-              </div>
-
-              {/* ── Dates ── */}
-              <div className="ig-grid2" style={{ marginBottom: 16 }}>
-                <Inp type="date" label={doc.docType === "receipt" ? "Payment date" : "Issue date"} value={doc.meta.date} accent={color} onChange={(v) => setMeta({ date: v })} />
-                {doc.docType !== "receipt" && (
-                  <div>
-                    <Inp type="date" label={isQuote ? "Valid until" : "Due date"} value={doc.meta.due} accent={color} onChange={(v) => setMeta({ due: v })}
-                      error={doc.meta.due && doc.meta.date && doc.meta.due < doc.meta.date ? "Before the issue date" : undefined} />
-                    <div style={{ display: "flex", gap: 4, marginTop: 6, flexWrap: "wrap" }} aria-label="Quick payment terms">
-                      {NET_TERMS.map((t) => (
-                        <Chip key={t.label} accent={color} onClick={() => setMeta({ due: addDays(doc.meta.date, t.days) })} active={!!doc.meta.date && doc.meta.due === addDays(doc.meta.date, t.days)} title={`Due ${t.days} days after the issue date`}>
-                          {isQuote ? `${t.days} days` : t.label}
-                        </Chip>
-                      ))}
+              {!isQuick && (
+                <>
+                  {/* ── Template style ── */}
+                  <div className="ig-block">
+                    <SectionTitle accent={color}>Template style</SectionTitle>
+                    <div className="ig-tplgrid" role="radiogroup" aria-label="PDF template">
+                      {TEMPLATE_META.map((t) => {
+                        const active = doc.template === t.key; const locked = t.pro && !limits.premiumTemplates;
+                        return (
+                          <button key={t.key} type="button" role="radio" aria-checked={active} className="ig-tile"
+                            title={locked ? `${t.name} — Pro template` : t.name} onClick={() => chooseTemplate(t.key, locked)}
+                            style={{ borderColor: active ? color : undefined, background: active ? `${color}0f` : undefined }}>
+                            {locked && <span className="ig-tile__pro">✦ PRO</span>}
+                            <span style={{ fontSize: 12.5, fontWeight: 700, color: active ? color : locked ? "#64748b" : "#334155" }}>{t.name}</span>
+                            <span className="ig-tile__desc">{t.desc}</span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
-                )}
-              </div>
-              {doc.docType === "invoice" && (
-                <div style={{ marginBottom: 16 }}>
-                  <Inp label="PO / reference number" value={doc.meta.poNumber} placeholder="Optional — e.g. PO-4471" accent={color} onChange={(v) => setMeta({ poNumber: v })} />
-                </div>
-              )}
 
-              <Divider />
+                  {/* ── Layout & logo ── */}
+                  <details className="ig-more">
+                    <summary>
+                      <span>Layout &amp; logo <span style={{ fontWeight: 500, color: "#64748b", fontSize: 12 }}>— header design, logo size and position, what to show</span></span>
+                    </summary>
+                    <div className="ig-more__body">
+                      <LayoutPanel
+                        layout={layoutView} advanced={advancedLayouts} accent={color}
+                        onChange={setLayout} onShow={setShow}
+                        onLocked={(f) => openModal("upgrade", f)}
+                        onReset={() => { setDoc((d) => ({ ...d, layout: DEFAULT_LAYOUT })); track("layout_changed", { option: "reset" }); }}
+                        isDefault={isDefaultLayout(layoutView)}
+                        logo={doc.brandLogo}
+                        onLogoFile={(f) => readFile(f, (u) => patch({ brandLogo: u }))}
+                        onLogoRemove={() => patch({ brandLogo: null })}
+                      />
+                    </div>
+                  </details>
 
-              {/* ── From + Bill To ── */}
-              <div className="ig-twocol" style={{ margin: "20px 0 22px" }}>
-                <div>
-                  <SectionTitle accent={color}>From (you)</SectionTitle>
-                  <div style={{ marginBottom: 10 }}>
-                    {doc.brandLogo ? (
-                      <div style={{ position: "relative", display: "inline-block" }}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={doc.brandLogo} alt="Your logo" style={{ height: 44, maxWidth: 110, objectFit: "contain", borderRadius: 8, border: "1.5px solid #e4e9f2", padding: 4, background: "white" }} />
-                        <button type="button" onClick={() => patch({ brandLogo: null })} aria-label="Remove logo" className="ig-removebadge"><X size={10} aria-hidden="true" /></button>
+                  {/* ── Payment status (invoice only) ── */}
+                  {showStatus && (
+                    <div className="ig-block">
+                      <SectionTitle accent={color}>Payment status</SectionTitle>
+                      <div className="ig-grid2" role="radiogroup" aria-label="Payment status">
+                        {(["unpaid", "paid"] as const).map((s) => {
+                          const cfg = STATUS_CFG[s]; const active = doc.status === s;
+                          return (
+                            <button key={s} type="button" role="radio" aria-checked={active} onClick={() => patch({ status: s })} className="ig-tile ig-tile--row"
+                              style={{ borderColor: active ? cfg.border : undefined, background: active ? cfg.bg : undefined }}>
+                              <span aria-hidden="true" style={{ fontSize: 15 }}>{s === "paid" ? "✅" : "⏳"}</span>
+                              <span style={{ fontSize: 13, fontWeight: 700, color: active ? cfg.color : "#64748b" }}>{cfg.label}</span>
+                            </button>
+                          );
+                        })}
                       </div>
-                    ) : (
-                      <label className="ig-upload" style={{ ["--accent" as string]: color }}>
-                        <Upload size={12} aria-hidden="true" /> Upload logo
-                        <input type="file" accept="image/*" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) readFile(f, (u) => patch({ brandLogo: u })); e.target.value = ""; }} />
-                      </label>
-                    )}
-                  </div>
-                  <div className="ig-stack">
-                    <Inp label="Your name or business" srOnly value={doc.from.name} placeholder="Your name or business" accent={color} autoComplete="organization" onChange={(v) => setFrom({ name: v })} />
-                    <Inp type="email" label="Your email" srOnly value={doc.from.email} placeholder="Email" accent={color} autoComplete="email" onChange={(v) => setFrom({ email: v })} />
-                    <Inp type="tel" label="Your phone" srOnly value={doc.from.phone} placeholder="Phone" accent={color} autoComplete="tel" onChange={(v) => setFrom({ phone: v })} />
-                    <TxtArea label="Your address" srOnly value={doc.from.address} placeholder="Address" accent={color} onChange={(v) => setFrom({ address: v })} />
-                    {profileSaved && (
-                      <p className="ig-saved">
-                        <span style={{ color: "#15803d", fontWeight: 800 }}>✓</span>
-                        {isLoggedIn ? "Saved to your account — your next document starts pre-filled." : "Saved on this device — your next document starts pre-filled."}
-                        <button type="button" onClick={() => { patch({ from: { name: "", email: "", phone: "", address: "" }, brandLogo: null }); }} className="ig-linkbtn">Clear</button>
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div>
-                  <SectionTitle accent={color}>{doc.docType === "receipt" ? "Received from" : isQuote ? "Prepared for" : "Bill to"}</SectionTitle>
-                  {isLoggedIn && (
-                    <div style={{ marginBottom: 10 }}>
-                      <ClientPicker clients={clients} current={doc.to} accent={color} limit={clientsLimit} saving={savingClient}
-                        locked={false} onUpgrade={() => openModal("upgrade", "clients_limit")}
-                        onPick={(c) => setTo({ name: c.name, email: c.email, phone: c.phone, address: c.address })} onSave={saveClient} />
                     </div>
                   )}
+
+                  <Divider />
+
+                  {/* ── Number · Currency · PO ── */}
+                  <div className="ig-grid2" style={{ margin: "20px 0 16px" }}>
+                    <Inp label={`${info.label} number`} value={doc.meta.no} placeholder={defaultNumber(doc.docType)} accent={color}
+                      onChange={(v) => setMeta({ no: v })} hint="Every document needs its own number. It goes up by one next time." />
+                    <Sel label="Currency" value={doc.cur.l} accent={color} hint="Used for every amount on the document."
+                      onChange={(v) => patch({ cur: CURRENCIES.find((c) => c.l === v) ?? doc.cur })}>
+                      {CURRENCIES.map((c) => <option key={c.l} value={c.l}>{c.l} — {c.s}</option>)}
+                    </Sel>
+                  </div>
+
+                  {/* ── Dates ── */}
+                  <div className="ig-grid2" style={{ marginBottom: 16 }}>
+                    <Inp type="date" label={doc.docType === "receipt" ? "Payment date" : "Issue date"} value={doc.meta.date} accent={color} onChange={(v) => setMeta({ date: v })} />
+                    {doc.docType !== "receipt" && (
+                      <div>
+                        <Inp type="date" label={isQuote ? "Valid until" : "Due date"} value={doc.meta.due} accent={color} onChange={(v) => setMeta({ due: v })}
+                          hint={isQuote ? "How long this offer stays open." : "When you expect to be paid. Use a quick option below."}
+                          error={doc.meta.due && doc.meta.date && doc.meta.due < doc.meta.date ? "Before the issue date" : undefined} />
+                        <div style={{ display: "flex", gap: 4, marginTop: 6, flexWrap: "wrap" }} aria-label="Quick payment terms">
+                          {NET_TERMS.map((t) => (
+                            <Chip key={t.label} accent={color} onClick={() => setMeta({ due: addDays(doc.meta.date, t.days) })} active={!!doc.meta.date && doc.meta.due === addDays(doc.meta.date, t.days)} title={`Due ${t.days} days after the issue date`}>
+                              {isQuote ? `${t.days} days` : t.label}
+                            </Chip>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {doc.docType === "invoice" && (
+                    <div style={{ marginBottom: 16 }}>
+                      <Inp label="PO / reference number" value={doc.meta.poNumber} placeholder="Optional — e.g. PO-4471" accent={color} onChange={(v) => setMeta({ poNumber: v })} />
+                    </div>
+                  )}
+
+                  <Divider />
+                </>
+              )}
+
+              {/* ── From + Bill To ── */}
+              {isQuick ? (
+                <div className="ig-block" style={{ marginTop: 4 }}>
+                  <SectionTitle accent={color}>Who is it from, and who is it for?</SectionTitle>
                   <div className="ig-stack">
-                    <Inp label="Client name" srOnly value={doc.to.name} placeholder="Client name" accent={color} onChange={(v) => setTo({ name: v })} />
-                    <Inp type="email" label="Client email" srOnly value={doc.to.email} placeholder="Client email" accent={color} onChange={(v) => setTo({ email: v })} />
-                    <Inp type="tel" label="Client phone" srOnly value={doc.to.phone} placeholder="Client phone" accent={color} onChange={(v) => setTo({ phone: v })} />
-                    <TxtArea label="Client address" srOnly value={doc.to.address} placeholder="Client address" accent={color} onChange={(v) => setTo({ address: v })} />
+                    <Inp label="Your name or business" dataField="from-name" value={doc.from.name} placeholder="e.g. Alex Morgan Design" accent={color} autoComplete="organization"
+                      hint="Shown at the top of the document." onChange={(v) => setFrom({ name: v })} />
+                    <Inp label={doc.docType === "receipt" ? "Received from" : isQuote ? "Prepared for (client name)" : "Bill to (client name)"} dataField="to-name" value={doc.to.name} placeholder="e.g. Sunrise Café" accent={color}
+                      hint="The person or company you are billing." onChange={(v) => setTo({ name: v })} />
+                    <Sel label="Currency" value={doc.cur.l} accent={color} hint="Used for every amount on the document."
+                      onChange={(v) => patch({ cur: CURRENCIES.find((c) => c.l === v) ?? doc.cur })}>
+                      {CURRENCIES.map((c) => <option key={c.l} value={c.l}>{c.l} — {c.s}</option>)}
+                    </Sel>
+                  </div>
+                  {profileSaved && !exampleActive && (
+                    <p className="ig-saved" style={{ marginTop: 10 }}>
+                      <span style={{ color: "#15803d", fontWeight: 800 }}>✓</span>
+                      Your details are remembered on this device, so next time this is already filled in.
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="ig-twocol" style={{ margin: "20px 0 22px" }}>
+                  <div>
+                    <SectionTitle accent={color}>From (you)</SectionTitle>
+                    <div style={{ marginBottom: 10 }}>
+                      {doc.brandLogo ? (
+                        <div style={{ position: "relative", display: "inline-block" }}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={doc.brandLogo} alt="Your logo" style={{ height: 44, maxWidth: 110, objectFit: "contain", borderRadius: 8, border: "1.5px solid #e4e9f2", padding: 4, background: "white" }} />
+                          <button type="button" onClick={() => patch({ brandLogo: null })} aria-label="Remove logo" className="ig-removebadge"><X size={10} aria-hidden="true" /></button>
+                        </div>
+                      ) : (
+                        <label className="ig-upload" style={{ ["--accent" as string]: color }}>
+                          <Upload size={12} aria-hidden="true" /> Upload logo
+                          <input type="file" accept="image/*" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) readFile(f, (u) => patch({ brandLogo: u })); e.target.value = ""; }} />
+                        </label>
+                      )}
+                    </div>
+                    <div className="ig-stack">
+                      <Inp label="Your name or business" srOnly dataField="from-name" value={doc.from.name} placeholder="Your name or business" accent={color} autoComplete="organization" onChange={(v) => setFrom({ name: v })} />
+                      <Inp type="email" label="Your email" srOnly value={doc.from.email} placeholder="Email" accent={color} autoComplete="email" onChange={(v) => setFrom({ email: v })} />
+                      <Inp type="tel" label="Your phone" srOnly value={doc.from.phone} placeholder="Phone" accent={color} autoComplete="tel" onChange={(v) => setFrom({ phone: v })} />
+                      <TxtArea label="Your address" srOnly value={doc.from.address} placeholder="Address" accent={color} onChange={(v) => setFrom({ address: v })} />
+                      {profileSaved && !exampleActive && (
+                        <p className="ig-saved">
+                          <span style={{ color: "#15803d", fontWeight: 800 }}>✓</span>
+                          {isLoggedIn ? "Saved to your account — your next document starts pre-filled." : "Saved on this device — your next document starts pre-filled."}
+                          <button type="button" onClick={() => { patch({ from: { name: "", email: "", phone: "", address: "" }, brandLogo: null }); }} className="ig-linkbtn">Clear</button>
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <SectionTitle accent={color}>{doc.docType === "receipt" ? "Received from" : isQuote ? "Prepared for" : "Bill to"}</SectionTitle>
+                    {isLoggedIn && (
+                      <div style={{ marginBottom: 10 }}>
+                        <ClientPicker clients={clients} current={doc.to} accent={color} limit={clientsLimit} saving={savingClient}
+                          locked={false} onUpgrade={() => openModal("upgrade", "clients_limit")}
+                          onPick={(c) => setTo({ name: c.name, email: c.email, phone: c.phone, address: c.address })} onSave={saveClient} />
+                      </div>
+                    )}
+                    <div className="ig-stack">
+                      <Inp label="Client name" srOnly dataField="to-name" value={doc.to.name} placeholder="Client name" accent={color} onChange={(v) => setTo({ name: v })} />
+                      <Inp type="email" label="Client email" srOnly value={doc.to.email} placeholder="Client email" accent={color} onChange={(v) => setTo({ email: v })} />
+                      <Inp type="tel" label="Client phone" srOnly value={doc.to.phone} placeholder="Client phone" accent={color} onChange={(v) => setTo({ phone: v })} />
+                      <TxtArea label="Client address" srOnly value={doc.to.address} placeholder="Client address" accent={color} onChange={(v) => setTo({ address: v })} />
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
+
+              {isQuick && (
+                <button type="button" className="ig-moreopts" onClick={() => changeMode("full")}>
+                  <span>Need a logo, tax, discount, due date or notes?<small>Show all options — everything you have typed is kept.</small></span>
+                  <span aria-hidden="true">Show all options →</span>
+                </button>
+              )}
 
               <Divider />
 
               {/* ── Items ── */}
               <div className="ig-block" style={{ marginTop: 20 }}>
                 <SectionTitle accent={color}>Items &amp; services</SectionTitle>
+                <p className="ig-hint" style={{ margin: "-4px 0 10px" }}>
+                  One line for each thing you&apos;re charging for. Quantity can be hours, days or pieces — we calculate every total for you.
+                </p>
                 <ItemsEditor items={doc.items} lines={totals.lines} cur={doc.cur} accent={color} onChange={(update) => setDoc((d) => ({ ...d, items: update(d.items) }))} />
 
-                {/* Discount */}
-                <div className="ig-subcard" style={{ marginTop: 12 }}>
-                  <div className="ig-subcard__row">
-                    <span className="ig-subcard__label"><Tag size={13} aria-hidden="true" /> Discount</span>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <Segmented label="Discount type" size="sm" accent={color} value={doc.discType} onChange={(v) => patch({ discType: v })}
-                        options={[{ value: "%", label: "%" }, { value: "fixed", label: doc.cur.s }]} />
-                      <input type="number" inputMode="decimal" min="0" step="any" aria-label="Discount value" value={doc.discount || ""} placeholder="0"
-                        onChange={(e) => patch({ discount: Math.max(0, parseFloat(e.target.value) || 0) })} className="ig-input ig-input--mini" />
-                      <span style={{ fontSize: 12.5, fontWeight: 600, color: "#dc2626", fontVariantNumeric: "tabular-nums", minWidth: 60, textAlign: "right" }}>
-                        {totals.discount > 0 ? `−${money(totals.discount)}` : "—"}
-                      </span>
+                {!isQuick && (
+                  <>
+                    {/* Discount */}
+                    <div className="ig-subcard" style={{ marginTop: 12 }}>
+                      <div className="ig-subcard__row">
+                        <span className="ig-subcard__label"><Tag size={13} aria-hidden="true" /> Discount <span style={{ fontWeight: 500, color: "#64748b" }}>(optional)</span></span>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <Segmented label="Discount type" size="sm" accent={color} value={doc.discType} onChange={(v) => patch({ discType: v })}
+                            options={[{ value: "%", label: "%" }, { value: "fixed", label: doc.cur.s }]} />
+                          <input type="number" inputMode="decimal" min="0" step="any" aria-label="Discount value" value={doc.discount || ""} placeholder="0"
+                            onChange={(e) => patch({ discount: Math.max(0, parseFloat(e.target.value) || 0) })} className="ig-input ig-input--mini" />
+                          <span style={{ fontSize: 12.5, fontWeight: 600, color: "#dc2626", fontVariantNumeric: "tabular-nums", minWidth: 60, textAlign: "right" }}>
+                            {totals.discount > 0 ? `−${money(totals.discount)}` : "—"}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                {/* Tax */}
-                <div className="ig-subcard" style={{ marginTop: 10 }}>
-                  <div className="ig-subcard__row" style={{ marginBottom: 10 }}>
-                    <span className="ig-subcard__label"><Percent size={13} aria-hidden="true" /> Tax</span>
-                    <Segmented label="Tax type" size="sm" accent={color} value={doc.taxType} onChange={(v) => patch({ taxType: v })}
-                      options={[{ value: "exclusive", label: "Added on top" }, { value: "inclusive", label: "Included in prices" }]} />
-                  </div>
-                  <div className="ig-subcard__row">
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                      <Sel label="Tax label" srOnly value={["Tax", "VAT", "GST", "HST", "Sales tax", "IVA", "TVA", "MwSt."].includes(doc.taxLabel) ? doc.taxLabel : "Tax"} accent={color} onChange={(v) => patch({ taxLabel: v })}>
-                        {["Tax", "VAT", "GST", "HST", "Sales tax", "IVA", "TVA", "MwSt."].map((l) => <option key={l} value={l}>{l}</option>)}
-                      </Sel>
-                      <input type="number" inputMode="decimal" min="0" max="100" step="any" aria-label="Tax rate percent" placeholder="0" value={doc.tax || ""}
-                        onChange={(e) => patch({ tax: Math.max(0, Math.min(1000, parseFloat(e.target.value) || 0)) })} className="ig-input ig-input--mini" />
-                      <span style={{ fontSize: 12.5, color: "#64748b" }}>%</span>
+                    {/* Tax */}
+                    <div className="ig-subcard" style={{ marginTop: 10 }}>
+                      <div className="ig-subcard__row" style={{ marginBottom: 10 }}>
+                        <span className="ig-subcard__label"><Percent size={13} aria-hidden="true" /> Tax</span>
+                        <Segmented label="Tax type" size="sm" accent={color} value={doc.taxType} onChange={(v) => patch({ taxType: v })}
+                          options={[{ value: "exclusive", label: "Added on top" }, { value: "inclusive", label: "Included in prices" }]} />
+                      </div>
+                      <div className="ig-subcard__row">
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                          <Sel label="Tax label" srOnly value={["Tax", "VAT", "GST", "HST", "Sales tax", "IVA", "TVA", "MwSt."].includes(doc.taxLabel) ? doc.taxLabel : "Tax"} accent={color} onChange={(v) => patch({ taxLabel: v })}>
+                            {["Tax", "VAT", "GST", "HST", "Sales tax", "IVA", "TVA", "MwSt."].map((l) => <option key={l} value={l}>{l}</option>)}
+                          </Sel>
+                          <input type="number" inputMode="decimal" min="0" max="100" step="any" aria-label="Tax rate percent" placeholder="0" value={doc.tax || ""}
+                            onChange={(e) => patch({ tax: Math.max(0, Math.min(1000, parseFloat(e.target.value) || 0)) })} className="ig-input ig-input--mini" />
+                          <span style={{ fontSize: 12.5, color: "#64748b" }}>%</span>
+                        </div>
+                        <span style={{ fontWeight: 600, color: "#334155", fontVariantNumeric: "tabular-nums", fontSize: 13 }}>
+                          {doc.taxType === "exclusive" ? money(totals.tax) : doc.tax > 0 ? `incl. ${money(totals.taxIncluded)}` : "—"}
+                        </span>
+                      </div>
+                      <p className="ig-hint" style={{ marginTop: 8 }}>Leave at 0 if you don&apos;t charge tax. Choose &ldquo;Included in prices&rdquo; if your prices already contain it.</p>
+                      {doc.taxType === "inclusive" && (
+                        <p className="ig-note ig-note--ok">✓ Prices already include {doc.taxLabel || "tax"}; the PDF shows the included amount for the client&apos;s records.</p>
+                      )}
                     </div>
-                    <span style={{ fontWeight: 600, color: "#334155", fontVariantNumeric: "tabular-nums", fontSize: 13 }}>
-                      {doc.taxType === "exclusive" ? money(totals.tax) : doc.tax > 0 ? `incl. ${money(totals.taxIncluded)}` : "—"}
-                    </span>
-                  </div>
-                  {doc.taxType === "inclusive" && (
-                    <p className="ig-note ig-note--ok">✓ Prices already include {doc.taxLabel || "tax"}; the PDF shows the included amount for the client&apos;s records.</p>
-                  )}
-                </div>
+                  </>
+                )}
+
+                {isQuick && (doc.tax > 0 || doc.discount > 0) && (
+                  <p className="ig-note" style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#1e3a8a", marginTop: 10 }}>
+                    {doc.tax > 0 && <>{doc.taxLabel || "Tax"} of {doc.tax}% is being applied from your saved settings. </>}
+                    {doc.discount > 0 && <>A discount is applied. </>}
+                    <button type="button" className="ig-linkbtn" onClick={() => changeMode("full")}>Change in All options</button>
+                  </p>
+                )}
 
                 {/* Totals */}
                 <div className="ig-totalbox" aria-live="polite">
@@ -688,40 +927,45 @@ export default function InvoiceGenerator({
                 </div>
               </div>
 
-              <Divider />
+              {!isQuick && (
+                <>
+                  <Divider />
 
-              {/* ── Payment details ── */}
-              <div className="ig-block" style={{ marginTop: 20 }}>
-                <TxtArea label="Bank / payment details" hint="Optional — shown in a box above the notes" value={doc.meta.bankDetails} rows={3} accent={color}
-                  placeholder={"Bank: Example Bank\nAccount name: Your Name\nAccount no: 1234-5678 · Sort/Routing: 00-00-00\nor PayPal / UPI / IBAN"} onChange={(v) => setMeta({ bankDetails: v })} />
-              </div>
+                  {/* ── Payment details ── */}
+                  <div className="ig-block" style={{ marginTop: 20 }}>
+                    <TxtArea label="Bank / payment details" hint="Optional — tells your client how to pay you. Shown in a box on the document." value={doc.meta.bankDetails} rows={3} accent={color}
+                      placeholder={"Bank: Example Bank\nAccount name: Your Name\nAccount no: 1234-5678 · Sort/Routing: 00-00-00\nor PayPal / UPI / IBAN"} onChange={(v) => setMeta({ bankDetails: v })} />
+                  </div>
 
-              {/* ── Notes ── */}
-              <div className="ig-block">
-                <TxtArea label={isQuote ? "Terms & conditions" : "Notes / payment terms"} rows={3} value={doc.meta.notes} accent={color}
-                  placeholder={isQuote ? "e.g. Valid for 30 days. 50% deposit to begin." : "e.g. Payment due within 30 days. Late payments incur 2% per month."} onChange={(v) => setMeta({ notes: v })} />
-              </div>
+                  {/* ── Notes ── */}
+                  <div className="ig-block">
+                    <TxtArea label={isQuote ? "Terms & conditions" : "Notes / payment terms"} rows={3} value={doc.meta.notes} accent={color}
+                      hint={isQuote ? "Conditions of the offer: validity, deposit, what is not included." : "Anything the client should know: when to pay, late fees, thank-you."}
+                      placeholder={isQuote ? "e.g. Valid for 30 days. 50% deposit to begin." : "e.g. Payment due within 30 days. Late payments incur 2% per month."} onChange={(v) => setMeta({ notes: v })} />
+                  </div>
 
-              {/* ── Watermark + footer note ── */}
-              <div className="ig-grid2" style={{ marginBottom: 6 }}>
-                <div>
-                  <span className="ig-label">Watermark image <span style={{ fontWeight: 400, color: "#94a3b8" }}>(optional)</span></span>
-                  {doc.wmLogo ? (
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={doc.wmLogo} alt="Watermark preview" style={{ height: 38, maxWidth: 100, objectFit: "contain", borderRadius: 8, border: "1.5px solid #e4e9f2", padding: 4, background: "white" }} />
-                      <button type="button" onClick={() => patch({ wmLogo: null })} className="ig-linkbtn" style={{ color: "#dc2626" }}><X size={12} aria-hidden="true" /> Remove</button>
+                  {/* ── Watermark + footer note ── */}
+                  <div className="ig-grid2" style={{ marginBottom: 6 }}>
+                    <div>
+                      <span className="ig-label">Watermark image <span style={{ fontWeight: 400, color: "#94a3b8" }}>(optional)</span></span>
+                      {doc.wmLogo ? (
+                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={doc.wmLogo} alt="Watermark preview" style={{ height: 38, maxWidth: 100, objectFit: "contain", borderRadius: 8, border: "1.5px solid #e4e9f2", padding: 4, background: "white" }} />
+                          <button type="button" onClick={() => patch({ wmLogo: null })} className="ig-linkbtn" style={{ color: "#dc2626" }}><X size={12} aria-hidden="true" /> Remove</button>
+                        </div>
+                      ) : (
+                        <label className="ig-upload ig-upload--block" style={{ ["--accent" as string]: color }}>
+                          <Upload size={14} aria-hidden="true" /> Upload watermark
+                          <input type="file" accept="image/*" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) readFile(f, (u) => patch({ wmLogo: u })); e.target.value = ""; }} />
+                        </label>
+                      )}
                     </div>
-                  ) : (
-                    <label className="ig-upload ig-upload--block" style={{ ["--accent" as string]: color }}>
-                      <Upload size={14} aria-hidden="true" /> Upload watermark
-                      <input type="file" accept="image/*" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) readFile(f, (u) => patch({ wmLogo: u })); e.target.value = ""; }} />
-                    </label>
-                  )}
-                </div>
-                <TxtArea label="Footer note" hint="Clear to hide" rows={2} value={doc.meta.signNote} accent={color}
-                  placeholder="This is a computer-generated document and does not require a signature." onChange={(v) => setMeta({ signNote: v })} />
-              </div>
+                    <TxtArea label="Footer note" hint="Clear to hide" rows={2} value={doc.meta.signNote} accent={color}
+                      placeholder="This is a computer-generated document and does not require a signature." onChange={(v) => setMeta({ signNote: v })} />
+                  </div>
+                </>
+              )}
 
             </div>{/* end form body */}
 
@@ -736,7 +980,7 @@ export default function InvoiceGenerator({
             {/* ── Actions ── */}
             <div className="ig-formfoot">
               <div style={{ display: "flex", gap: 10 }}>
-                <button type="button" onClick={startDownload} disabled={busy} className="ig-btn ig-btn--primary" style={{ background: busy ? "#94a3b8" : color, boxShadow: busy ? "none" : `0 4px 16px ${color}45`, flex: 1 }}>
+                <button type="button" data-field="download" onClick={startDownload} disabled={busy} className="ig-btn ig-btn--primary" style={{ background: busy ? "#94a3b8" : color, boxShadow: busy ? "none" : `0 4px 16px ${color}45`, flex: 1 }}>
                   {busy ? <><Spinner /> Generating…</> : <><Download size={15} aria-hidden="true" /> Download PDF</>}
                 </button>
                 <button type="button" onClick={startPrint} className="ig-btn ig-btn--outline" title="Print or save as PDF via your browser">
@@ -766,7 +1010,7 @@ export default function InvoiceGenerator({
               <div className="ig-formfoot__meta">
                 {isLoggedIn ? (
                   <label className="ig-check">
-                    <input type="checkbox" checked={settings.saveToDashboard} onChange={(e) => { const s = { ...settings, saveToDashboard: e.target.checked }; setSettings(s); writeSettings(s); }} />
+                    <input type="checkbox" checked={settings.saveToDashboard} onChange={(e) => saveSettings({ saveToDashboard: e.target.checked })} />
                     Save a copy to my dashboard when I download
                   </label>
                 ) : (
@@ -801,7 +1045,7 @@ export default function InvoiceGenerator({
 
             <div ref={wrapRef} className="ig-cardwrap ig-card">
               <div id="invoice-print-area">
-                <InvoicePreview ref={previewRef} doc={doc} totals={totals} whiteLabel={whiteLabel} />
+                <InvoicePreview ref={previewRef} doc={viewDoc} totals={totals} whiteLabel={whiteLabel} />
               </div>
             </div>
 
