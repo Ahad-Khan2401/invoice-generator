@@ -24,8 +24,8 @@ export default function ContactPage() {
       <div className="grid gap-6 sm:grid-cols-2 mb-10">
         {/* Email card */}
         <div className="rounded-3xl border border-slate-100 bg-white p-8 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50">
-            <Mail size={22} className="text-indigo-600" />
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-ink-50">
+            <Mail size={22} className="text-accent-600" />
           </div>
           <h2 className="text-lg font-bold text-slate-900 mb-2">Email Us</h2>
           <p className="text-sm text-slate-500 mb-4 leading-relaxed">
@@ -33,7 +33,7 @@ export default function ContactPage() {
           </p>
           <a
             href="mailto:support@pdfbillbuilder.com"
-            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 hover:bg-indigo-700 transition-colors"
+            className="inline-flex items-center gap-2 rounded-xl bg-ink-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md  hover:bg-ink-700 transition-colors"
           >
             <Mail size={14} />
             support@pdfbillbuilder.com
@@ -58,10 +58,10 @@ export default function ContactPage() {
       </div>
 
       {/* FAQ shortcut */}
-      <div className="rounded-3xl border border-indigo-100 bg-indigo-50 p-8 mb-10">
+      <div className="rounded-3xl border border-ink-100 bg-ink-50 p-8 mb-10">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-100">
-            <MessageSquare size={22} className="text-indigo-600" />
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-ink-100">
+            <MessageSquare size={22} className="text-accent-600" />
           </div>
           <div className="flex-1">
             <h2 className="text-lg font-bold text-slate-900 mb-1">Looking for quick answers?</h2>
@@ -71,7 +71,7 @@ export default function ContactPage() {
           </div>
           <Link
             href="/how-it-works"
-            className="shrink-0 rounded-xl border border-indigo-200 bg-white px-4 py-2.5 text-sm font-semibold text-indigo-600 hover:bg-indigo-50 transition-colors"
+            className="shrink-0 rounded-xl border border-ink-200 bg-white px-4 py-2.5 text-sm font-semibold text-accent-600 hover:bg-ink-50 transition-colors"
           >
             View guides →
           </Link>
@@ -93,7 +93,7 @@ export default function ContactPage() {
           Documents are only stored if you sign in and choose to save them to your dashboard.
         </p>
         <p className="text-sm text-slate-500 leading-relaxed">
-          For business enquiries, partnerships, or press: <a href="mailto:support@pdfbillbuilder.com" className="text-indigo-600 font-medium hover:underline">support@pdfbillbuilder.com</a>
+          For business enquiries, partnerships, or press: <a href="mailto:support@pdfbillbuilder.com" className="text-accent-600 font-medium hover:underline">support@pdfbillbuilder.com</a>
         </p>
       </div>
 

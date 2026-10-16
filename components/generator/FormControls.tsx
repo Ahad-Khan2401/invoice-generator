@@ -8,7 +8,7 @@ import { useId } from "react";
 
 export const sectionTitle: React.CSSProperties = {
   fontSize: 11.5, fontWeight: 800, letterSpacing: "0.07em",
-  textTransform: "uppercase", color: "#64748b",
+  textTransform: "uppercase", color: "#5b6272",
   display: "flex", alignItems: "center", gap: 8, marginBottom: 12,
 };
 
@@ -20,12 +20,12 @@ export function SectionTitle({ accent, children, hint }: { accent: string; child
   return (
     <p style={sectionTitle}>
       <Accent c={accent} />{children}
-      {hint && <span style={{ fontSize: 10, fontWeight: 400, color: "#94a3b8", textTransform: "none", letterSpacing: 0 }}>{hint}</span>}
+      {hint && <span style={{ fontSize: 10, fontWeight: 400, color: "#6b717f", textTransform: "none", letterSpacing: 0 }}>{hint}</span>}
     </p>
   );
 }
 
-export const Divider = () => <hr style={{ border: "none", borderTop: "1.5px solid #f0f3fa", margin: "4px 0" }} />;
+export const Divider = () => <hr style={{ border: "none", borderTop: "1.5px solid #ece6da", margin: "4px 0" }} />;
 
 interface BaseProps {
   label: string;

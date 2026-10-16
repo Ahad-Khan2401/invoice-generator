@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { newDoc, sanitizeDoc, convertToInvoice, receiptFromInvoice, safeFileName } from "../lib/invoice-doc.ts";
+import { DEFAULT_COLOR } from "../lib/brand.ts";
 
 test("sanitizeDoc drops unknown/hostile input and keeps valid fields", () => {
   const d = sanitizeDoc({
@@ -21,7 +22,7 @@ test("sanitizeDoc drops unknown/hostile input and keeps valid fields", () => {
   assert.equal(d.taxType, "inclusive");
   assert.equal(d.discount, 0);
   assert.equal(d.cur.l, "GBP");
-  assert.equal(d.color, "#4f46e5");          // invalid colour -> default
+  assert.equal(d.color, DEFAULT_COLOR);        // invalid colour -> default
   assert.equal(d.template, "bold");
   assert.equal(d.paper, "letter");
   assert.equal(d.brandLogo, null);           // only data: images allowed

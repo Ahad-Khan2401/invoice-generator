@@ -9,17 +9,17 @@ export default function BlogContent({ blocks }: { blocks: Block[] }) {
       {blocks.map((b, i) => {
         switch (b.type) {
           case "h2":
-            return <h2 key={i} className="pt-3 text-[22px] sm:text-[26px] font-extrabold tracking-tight text-slate-900">{b.text}</h2>;
+            return <h2 key={i} className="font-display pt-3 text-[24px] sm:text-[30px] font-semibold tracking-tight text-ink">{b.text}</h2>;
           case "h3":
-            return <h3 key={i} className="pt-2 text-[18px] font-bold text-slate-900">{b.text}</h3>;
+            return <h3 key={i} className="font-display pt-2 text-[20px] font-semibold text-ink">{b.text}</h3>;
           case "p":
-            return <p key={i} className="text-[15.5px] leading-[1.8] text-slate-600 [&_a]:font-medium [&_a]:text-indigo-600 [&_a]:underline [&_a]:underline-offset-2 [&_strong]:text-slate-900" dangerouslySetInnerHTML={{ __html: b.text }} />;
+            return <p key={i} className="text-[15.5px] leading-[1.8] text-slate-600 [&_a]:font-medium [&_a]:text-accent-600 [&_a]:underline [&_a]:underline-offset-2 [&_strong]:text-slate-900" dangerouslySetInnerHTML={{ __html: b.text }} />;
           case "ul":
             return (
               <ul key={i} className="space-y-2.5 pl-1">
                 {b.items.map((it, j) => (
-                  <li key={j} className="flex gap-3 text-[15.5px] leading-relaxed text-slate-600 [&_a]:font-medium [&_a]:text-indigo-600 [&_a]:underline [&_strong]:text-slate-900">
-                    <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-indigo-500" />
+                  <li key={j} className="flex gap-3 text-[15.5px] leading-relaxed text-slate-600 [&_a]:font-medium [&_a]:text-accent-600 [&_a]:underline [&_strong]:text-slate-900">
+                    <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-ink-500" />
                     <span dangerouslySetInnerHTML={{ __html: it }} />
                   </li>
                 ))}
@@ -29,8 +29,8 @@ export default function BlogContent({ blocks }: { blocks: Block[] }) {
             return (
               <ol key={i} className="space-y-2.5">
                 {b.items.map((it, j) => (
-                  <li key={j} className="flex gap-3 text-[15.5px] leading-relaxed text-slate-600 [&_a]:font-medium [&_a]:text-indigo-600 [&_a]:underline [&_strong]:text-slate-900">
-                    <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-indigo-50 text-[12px] font-bold text-indigo-600">{j + 1}</span>
+                  <li key={j} className="flex gap-3 text-[15.5px] leading-relaxed text-slate-600 [&_a]:font-medium [&_a]:text-accent-600 [&_a]:underline [&_strong]:text-slate-900">
+                    <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-ink-50 text-[12px] font-bold text-accent-600">{j + 1}</span>
                     <span className="pt-0.5" dangerouslySetInnerHTML={{ __html: it }} />
                   </li>
                 ))}
@@ -38,7 +38,7 @@ export default function BlogContent({ blocks }: { blocks: Block[] }) {
             );
           case "callout":
             return (
-              <div key={i} className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 sm:p-5 text-[15px] leading-relaxed text-slate-700 [&_a]:font-semibold [&_a]:text-indigo-600 [&_a]:underline" dangerouslySetInnerHTML={{ __html: `💡 ${b.text}` }} />
+              <div key={i} className="rounded-2xl border border-ink-100 bg-ink-50/60 p-4 sm:p-5 text-[15px] leading-relaxed text-slate-700 [&_a]:font-semibold [&_a]:text-accent-600 [&_a]:underline" dangerouslySetInnerHTML={{ __html: `💡 ${b.text}` }} />
             );
           default:
             return null;

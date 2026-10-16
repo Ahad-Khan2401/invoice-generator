@@ -20,30 +20,28 @@ const LINKS = [
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-[70vh] items-center bg-[linear-gradient(160deg,#f0f4ff_0%,#f8faff_55%,#faf5ff_100%)]">
-      <div className="mx-auto max-w-2xl px-6 py-20 text-center">
-        <p className="bg-gradient-to-br from-indigo-600 to-violet-600 bg-clip-text text-[88px] sm:text-[120px] font-black leading-none tracking-tight text-transparent" aria-hidden="true">
-          404
-        </p>
-        <h1 className="mb-3 mt-2 text-2xl font-extrabold tracking-tight text-slate-900">
-          This page doesn&apos;t exist
-        </h1>
-        <p className="mx-auto mb-8 max-w-md text-[15px] text-slate-600">
-          The page may have moved or never existed. The generator is one click away — nothing you were working on is lost if you had it open in another tab.
+    <div className="flex min-h-[70vh] items-center bg-paper">
+      <div className="mx-auto w-full max-w-3xl px-6 py-20">
+        <span className="stamp stamp--hero" style={{ marginBottom: 28 }}>404 · Not found</span>
+        <h1 className="mb-4 text-[clamp(2.2rem,5vw,3.6rem)] text-ink">This page doesn&apos;t exist</h1>
+        <p className="mb-8 max-w-xl text-[17px] leading-relaxed text-ink-500">
+          It may have moved or never existed. The generator is one click away, and nothing you were working on is lost if you had it open in another tab.
         </p>
 
         <CTAButton href="/">Go to the generator</CTAButton>
 
-        <nav className="mt-12" aria-label="Popular pages">
-          <p className="mb-4 text-[11px] font-bold uppercase tracking-widest text-slate-500">Popular pages</p>
-          <div className="flex flex-wrap justify-center gap-2.5">
+        <nav className="mt-14" aria-label="Popular pages">
+          <h2 className="mb-3 font-display text-[20px] font-semibold text-ink">Or try one of these</h2>
+          <ul className="rule-list" style={{ borderTopWidth: 2 }}>
             {LINKS.map((l) => (
-              <Link key={l.href} href={l.href}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-[13px] font-medium text-slate-600 transition-all hover:border-indigo-300 hover:text-indigo-600">
-                {l.label}
-              </Link>
+              <li key={l.href}>
+                <Link href={l.href} style={{ gridTemplateColumns: "1fr auto" }}>
+                  <span className="text-[15.5px] font-medium text-ink">{l.label}</span>
+                  <span className="rule-list__go" aria-hidden="true">→</span>
+                </Link>
+              </li>
             ))}
-          </div>
+          </ul>
         </nav>
       </div>
     </div>

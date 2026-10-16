@@ -1,32 +1,27 @@
 import Link from "next/link";
-import { Lock, Layers, Percent, Globe2 } from "lucide-react";
 
-/* Compact benefits strip for the 41 landing pages (replaces the old
-   in-generator features grid). Server component, zero JS. */
-const ITEMS = [
-  { Icon: Lock,    t: "Private by design",       d: "Generated in your browser — nothing is uploaded unless you sign in to save." },
-  { Icon: Layers,  t: "Multi-page PDFs",          d: "Long item lists break cleanly between rows, with page numbers. A4 or US Letter." },
-  { Icon: Percent, t: "Tax inclusive or on top",  d: "Label it VAT, GST, sales tax or your own term; totals are rounded correctly." },
-  { Icon: Globe2,  t: "18 currencies, 3 styles",  d: "Correct symbols and separators, plus Classic, Minimal and Bold templates." },
+/* Slim strip under the tool on the profession/country/document landing pages:
+   a few plain facts, then links to the other document generators. */
+const FACTS = [
+  "Built in your browser. Nothing is uploaded unless you sign in to save.",
+  "Multi-page PDFs break between rows and number every page, in A4 or US Letter.",
+  "Tax added on top or included, labelled VAT, GST, sales tax or your own word.",
+  "Eighteen currencies, and Classic, Minimal and Bold templates.",
 ];
 
 export default function LandingBenefits() {
   return (
-    <section className="home-section home-section--alt" aria-label="Key features" style={{ padding: "48px 24px" }}>
+    <section className="home-section home-section--rule" aria-label="Key features" style={{ paddingTop: 40, paddingBottom: 40, background: "var(--paper-2)" }}>
       <div className="home-inner">
-        <div className="home-grid" style={{ marginTop: 0 }}>
-          {ITEMS.map(({ Icon, t, d }) => (
-            <div key={t} className="home-card">
-              <Icon size={20} className="text-indigo-600" aria-hidden="true" />
-              <h3 style={{ fontSize: 15 }}>{t}</h3>
-              <p>{d}</p>
-            </div>
-          ))}
-        </div>
-        <p style={{ marginTop: 18, fontSize: 13.5, color: "#475569", textAlign: "center" }}>
-          Need a different document? Try the <Link href="/receipt-generator" className="font-semibold text-indigo-700 underline">receipt generator</Link>,{" "}
-          <Link href="/quotation-generator" className="font-semibold text-indigo-700 underline">quotation generator</Link> or{" "}
-          <Link href="/estimate-generator" className="font-semibold text-indigo-700 underline">estimate generator</Link>, or browse <Link href="/templates" className="font-semibold text-indigo-700 underline">all templates</Link>.
+        <ul className="landing-facts">
+          {FACTS.map((f) => <li key={f}>{f}</li>)}
+        </ul>
+        <p className="landing-more">
+          Need a different document? Try the{" "}
+          <Link href="/receipt-generator" className="home-link">receipt generator</Link>,{" "}
+          <Link href="/quotation-generator" className="home-link">quotation generator</Link> or{" "}
+          <Link href="/estimate-generator" className="home-link">estimate generator</Link>, or browse{" "}
+          <Link href="/templates" className="home-link">all templates</Link>.
         </p>
       </div>
     </section>

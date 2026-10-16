@@ -163,7 +163,7 @@ export default function Dashboard() {
   if (!isLoaded || !isLoggedIn) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center" aria-busy="true">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-ink-600 border-t-transparent" />
       </div>
     );
   }
@@ -179,17 +179,17 @@ export default function Dashboard() {
           <p className="text-sm text-slate-500 mt-1">
             Welcome back, <span className="font-semibold text-slate-700">{user?.name}</span>
             {isPro && (
-              <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2 py-0.5 text-[11px] font-bold text-indigo-700">
+              <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-ink-50 px-2 py-0.5 text-[11px] font-bold text-accent-700">
                 <Crown size={10} aria-hidden="true" /> {plan === "business" ? "BUSINESS" : "PRO"}
               </span>
             )}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button type="button" onClick={exportCsv} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:border-indigo-300 hover:text-indigo-700 transition-colors" title={limits.csvExport ? "Download your history as CSV" : "CSV export is a Pro feature"}>
-            <Download size={15} aria-hidden="true" /> Export CSV {!limits.csvExport && <span className="text-[10px] font-bold text-violet-700">✦ PRO</span>}
+          <button type="button" onClick={exportCsv} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:border-ink-300 hover:text-accent-700 transition-colors" title={limits.csvExport ? "Download your history as CSV" : "CSV export is a Pro feature"}>
+            <Download size={15} aria-hidden="true" /> Export CSV {!limits.csvExport && <span className="text-[10px] font-bold text-accent-700">✦ PRO</span>}
           </button>
-          <Link href="/" className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-500/30 hover:bg-indigo-700 transition-colors">
+          <Link href="/" className="inline-flex items-center gap-2 rounded-xl bg-ink-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md  hover:bg-ink-700 transition-colors">
             <Plus size={15} aria-hidden="true" /> New document
           </Link>
         </div>
@@ -210,14 +210,14 @@ export default function Dashboard() {
 
       {/* Upgrade banner */}
       {!isPro && (
-        <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-indigo-100 bg-indigo-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-ink-100 bg-ink-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-bold text-indigo-900">Upgrade to Pro</p>
-            <p className="text-xs text-indigo-700 mt-0.5">
+            <p className="text-sm font-bold text-accent-900">Upgrade to Pro</p>
+            <p className="text-xs text-accent-700 mt-0.5">
               Unlimited history · Premium templates · White-label PDFs · CSV export · Ad-free — {PLANS.pro.priceMonthly}/month
             </p>
           </div>
-          <button type="button" onClick={() => openModal("upgrade", "dashboard_banner")} className="shrink-0 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white hover:bg-indigo-700 transition-colors">
+          <button type="button" onClick={() => openModal("upgrade", "dashboard_banner")} className="shrink-0 rounded-xl bg-ink-600 px-4 py-2 text-xs font-bold text-white hover:bg-ink-700 transition-colors">
             Get Pro →
           </button>
         </div>
@@ -238,12 +238,12 @@ export default function Dashboard() {
             <label className="relative">
               <span className="sr-only">Search by number or client</span>
               <Search size={14} aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search number or client" className="w-56 rounded-xl border border-slate-200 bg-white py-2 pl-8 pr-3 text-[13px] outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" />
+              <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search number or client" className="w-56 rounded-xl border border-slate-200 bg-white py-2 pl-8 pr-3 text-[13px] outline-none focus:border-ink-400 focus:ring-2 focus:ring-ink-100" />
             </label>
             <div role="radiogroup" aria-label="Filter" className="flex rounded-xl border border-slate-200 bg-slate-50 p-0.5 text-[12px] font-semibold">
               {(["all", "unpaid", "overdue", "paid", "draft"] as Filter[]).map((f) => (
                 <button key={f} type="button" role="radio" aria-checked={filter === f} onClick={() => setFilter(f)}
-                  className={`rounded-lg px-2.5 py-1.5 capitalize ${filter === f ? "bg-white text-indigo-700 shadow-sm" : "text-slate-500"}`}>{f}</button>
+                  className={`rounded-lg px-2.5 py-1.5 capitalize ${filter === f ? "bg-white text-accent-700 shadow-sm" : "text-slate-500"}`}>{f}</button>
               ))}
             </div>
           </div>
@@ -255,13 +255,13 @@ export default function Dashboard() {
         )}
         {loading && (
           <div className="flex items-center justify-center py-16" aria-busy="true">
-            <div className="h-7 w-7 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
+            <div className="h-7 w-7 animate-spin rounded-full border-4 border-ink-600 border-t-transparent" />
           </div>
         )}
         {dbReady && !loading && visible.length === 0 && (
           <Empty icon={<FileText size={24} className="text-slate-400" aria-hidden="true" />} title={rows.length ? "Nothing matches this filter" : "No documents yet"}
             text={rows.length ? "Try another filter or clear the search." : "Download a document while signed in and it will appear here automatically."}
-            cta={!rows.length ? <Link href="/" className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 transition-colors">Create a document</Link> : undefined} />
+            cta={!rows.length ? <Link href="/" className="rounded-xl bg-ink-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-ink-700 transition-colors">Create a document</Link> : undefined} />
         )}
 
         {dbReady && !loading && visible.length > 0 && (
@@ -294,8 +294,8 @@ export default function Dashboard() {
                     {canPay && s !== "paid" && (
                       <IconBtn title="Copy payment reminder e-mail" onClick={() => copyReminder(r)}><Mail size={13} aria-hidden="true" /></IconBtn>
                     )}
-                    <Link href={`/?load=${r.id}`} title="Open and edit" aria-label={`Open ${r.invoice_no}`} className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition-colors hover:border-indigo-300 hover:text-indigo-600"><Pencil size={13} aria-hidden="true" /></Link>
-                    <Link href={`/?dup=${r.id}`} title="Duplicate with next number" aria-label={`Duplicate ${r.invoice_no}`} className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition-colors hover:border-indigo-300 hover:text-indigo-600"><Copy size={13} aria-hidden="true" /></Link>
+                    <Link href={`/?load=${r.id}`} title="Open and edit" aria-label={`Open ${r.invoice_no}`} className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition-colors hover:border-ink-300 hover:text-accent-600"><Pencil size={13} aria-hidden="true" /></Link>
+                    <Link href={`/?dup=${r.id}`} title="Duplicate with next number" aria-label={`Duplicate ${r.invoice_no}`} className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition-colors hover:border-ink-300 hover:text-accent-600"><Copy size={13} aria-hidden="true" /></Link>
                     {confirmId === r.id ? (
                       <span className="flex items-center gap-1 text-[12px]">
                         <button type="button" onClick={() => remove(r.id)} className="rounded-lg bg-red-600 px-2.5 py-1.5 font-bold text-white">Delete</button>
@@ -332,7 +332,7 @@ function Stat({ label, value, tone }: { label: string; value: string; tone: "amb
 }
 
 function IconBtn({ children, title, onClick, tone }: { children: React.ReactNode; title: string; onClick: () => void; tone?: "green" | "red" }) {
-  const hover = tone === "green" ? "hover:border-emerald-300 hover:text-emerald-700" : tone === "red" ? "hover:border-red-300 hover:text-red-600" : "hover:border-indigo-300 hover:text-indigo-600";
+  const hover = tone === "green" ? "hover:border-emerald-300 hover:text-emerald-700" : tone === "red" ? "hover:border-red-300 hover:text-red-600" : "hover:border-ink-300 hover:text-accent-600";
   return (
     <button type="button" title={title} aria-label={title} onClick={onClick} className={`flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition-colors ${hover}`}>
       {children}

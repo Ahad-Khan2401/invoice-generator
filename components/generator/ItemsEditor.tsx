@@ -96,7 +96,7 @@ export default function ItemsEditor({ items, lines, cur, accent, onChange }: Pro
 
             <span className="ig-itemrow__a" aria-label={`Item ${idx + 1} amount`}>
               <span className="ig-cellabel">Amount</span>
-              <span style={{ fontWeight: 700, color: "#0d1117", fontVariantNumeric: "tabular-nums" }}>{formatMoney(lines[idx] ?? 0, cur.s, cur.l)}</span>
+              <span style={{ fontWeight: 700, color: "#151a24", fontVariantNumeric: "tabular-nums" }}>{formatMoney(lines[idx] ?? 0, cur.s, cur.l)}</span>
             </span>
 
             <button

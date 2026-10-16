@@ -27,11 +27,11 @@ function GoogleBtn({ label, onToken, disabled, autoFocus }: {
       disabled={disabled}
       style={{
         display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
-        width: "100%", padding: "13px 20px", borderRadius: 12,
-        border: "1.5px solid #e4e9f2",
-        background: disabled ? "#f8fafc" : "white",
+        width: "100%", padding: "13px 20px", borderRadius: 8,
+        border: "1.5px solid #e3ddd0",
+        background: disabled ? "#f6f2e9" : "white",
         cursor: disabled ? "not-allowed" : "pointer",
-        fontSize: 14, fontWeight: 600, color: "#374151",
+        fontSize: 14, fontWeight: 600, color: "#2f3542",
         boxShadow: "0 1px 4px rgba(0,0,0,0.06)", transition: "all .15s",
       }}
     >
@@ -82,9 +82,9 @@ function CheckoutBtn({ source, big, period, label }: { source: string; big?: boo
       style={{
         display:"flex", alignItems:"center", justifyContent:"center", gap:8,
         width:"100%", padding: big ? "14px 20px" : "12px 20px", borderRadius: big ? 14 : 12,
-        background:"linear-gradient(135deg,#4f46e5,#7c3aed)",
+        background:"#151a24",
         color:"white", fontSize: big ? 15 : 14, fontWeight:700,
-        textDecoration:"none", boxShadow:"0 4px 14px rgba(79,70,229,0.3)",
+        textDecoration:"none", boxShadow:"0 4px 14px rgba(21,26,36,0.3)",
       }}
     >
       <Zap size={15} aria-hidden="true" /> {big ? "Upgrade to Pro" : "Get Pro"} — {label}
@@ -180,8 +180,8 @@ export default function ProModal(props: Props) {
     <div role="group" aria-label="Billing period" style={{ display:"flex", justifyContent:"center", gap:6, marginBottom:12 }}>
       {(["month","year"] as const).map(p => (
         <button key={p} type="button" onClick={() => setPeriod(p)} aria-pressed={period===p}
-          style={{ fontSize:12, fontWeight:700, padding:"5px 12px", borderRadius:99, border:"1.5px solid", cursor:"pointer",
-            borderColor: period===p ? "#7c3aed" : "#e4e9f2", background: period===p ? "#f5f3ff" : "white", color: period===p ? "#7c3aed" : "#64748b" }}>
+          style={{ fontSize:12, fontWeight:700, padding:"5px 12px", borderRadius:10, border:"1.5px solid", cursor:"pointer",
+            borderColor: period===p ? "#b91c26" : "#e3ddd0", background: period===p ? "#fdf0ef" : "white", color: period===p ? "#b91c26" : "#5b6272" }}>
           {p === "month" ? "Monthly" : `Yearly · ${PRO.priceYearly}`}
         </button>
       ))}
@@ -191,7 +191,7 @@ export default function ProModal(props: Props) {
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4 no-print"
-      style={{ background: "rgba(15,23,42,0.6)", backdropFilter: "blur(6px)" }}
+      style={{ background: "rgba(21,26,36,0.6)", backdropFilter: "blur(6px)" }}
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
@@ -204,7 +204,7 @@ export default function ProModal(props: Props) {
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div style={{ background: "linear-gradient(135deg,#4f46e5,#7c3aed)", padding: "24px 28px 20px" }}>
+        <div style={{ background: "#151a24", padding: "24px 28px 20px" }}>
           <button type="button" onClick={onClose} aria-label="Close" style={{ position:"absolute", top:16, right:16, background:"none", border:"none", cursor:"pointer", padding:4 }}>
             <X size={20} color="rgba(255,255,255,0.8)" aria-hidden="true" />
           </button>
@@ -235,11 +235,11 @@ export default function ProModal(props: Props) {
           {/* ── CHOOSE ── */}
           {view === "choose" && (
             <>
-              <div style={{ border:"1.5px solid #e4e9f2", borderRadius:14, padding:"14px 16px", marginBottom:12 }}>
-                <p style={{ fontSize:13, fontWeight:700, color:"#374151", marginBottom:8 }}>Free account</p>
+              <div style={{ border:"1.5px solid #e3ddd0", borderRadius:8, padding:"14px 16px", marginBottom:12 }}>
+                <p style={{ fontSize:13, fontWeight:700, color:"#2f3542", marginBottom:8 }}>Free account</p>
                 <ul style={{ listStyle:"none", margin:0, padding:0, display:"flex", flexDirection:"column", gap:7 }}>
                   {FREE_FEATURES.map(f => (
-                    <li key={f} style={{ display:"flex", alignItems:"center", gap:8, fontSize:13, color:"#64748b" }}>
+                    <li key={f} style={{ display:"flex", alignItems:"center", gap:8, fontSize:13, color:"#5b6272" }}>
                       <Check size={12} color="#10b981" strokeWidth={3} aria-hidden="true" />
                       {f}
                     </li>
@@ -250,33 +250,33 @@ export default function ProModal(props: Props) {
                 </div>
               </div>
 
-              <div style={{ border:"1.5px solid #c4b5fd", borderRadius:14, padding:"14px 16px", background:"#faf5ff" }}>
+              <div style={{ border:"1.5px solid #f1a9a4", borderRadius:8, padding:"14px 16px", background:"#fdf0ef" }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
-                  <p style={{ fontSize:13, fontWeight:700, color:"#7c3aed", margin:0 }}>
+                  <p style={{ fontSize:13, fontWeight:700, color:"#b91c26", margin:0 }}>
                     <Crown size={13} style={{ display:"inline", marginRight:5 }} aria-hidden="true" />
                     Pro account
                   </p>
-                  <span style={{ fontSize:12, fontWeight:700, color:"#7c3aed", background:"#ede9fe", borderRadius:99, padding:"2px 8px" }}>
+                  <span style={{ fontSize:12, fontWeight:700, color:"#b91c26", background:"#fbe0de", borderRadius:10, padding:"2px 8px" }}>
                     {label}
                   </span>
                 </div>
                 <ul style={{ listStyle:"none", margin:"0 0 12px", padding:0, display:"flex", flexDirection:"column", gap:7 }}>
                   {PRO.highlights.slice(1, 5).map(f => (
-                    <li key={f} style={{ display:"flex", alignItems:"center", gap:8, fontSize:13, color:"#374151" }}>
-                      <Check size={12} color="#7c3aed" strokeWidth={3} aria-hidden="true" />
+                    <li key={f} style={{ display:"flex", alignItems:"center", gap:8, fontSize:13, color:"#2f3542" }}>
+                      <Check size={12} color="#b91c26" strokeWidth={3} aria-hidden="true" />
                       {f}
                     </li>
                   ))}
                 </ul>
                 {PeriodToggle}
                 <CheckoutBtn source="choose_modal" period={period} label={label} />
-                <p style={{ textAlign:"center" as const, fontSize:11, color:"#7c3aed", margin:"8px 0 0", fontWeight:600 }}>
+                <p style={{ textAlign:"center" as const, fontSize:11, color:"#b91c26", margin:"8px 0 0", fontWeight:600 }}>
                   Cancel anytime · 30-day money-back guarantee
                 </p>
               </div>
-              <p style={{ textAlign:"center" as const, fontSize:11.5, color:"#64748b", marginTop:10 }}>
+              <p style={{ textAlign:"center" as const, fontSize:11.5, color:"#5b6272", marginTop:10 }}>
                 Already subscribed?{" "}
-                <button type="button" onClick={() => { setView("signin"); setError(""); }} style={{ background:"none", border:"none", color:"#7c3aed", fontSize:11.5, fontWeight:600, cursor:"pointer" }}>
+                <button type="button" onClick={() => { setView("signin"); setError(""); }} style={{ background:"none", border:"none", color:"#b91c26", fontSize:11.5, fontWeight:600, cursor:"pointer" }}>
                   Sign in with Google →
                 </button>
               </p>
@@ -289,22 +289,22 @@ export default function ProModal(props: Props) {
               <ul style={{ listStyle:"none", margin:"0 0 18px", padding:0, display:"flex", flexDirection:"column", gap:10 }}>
                 {PRO.highlights.slice(1).map(f => (
                   <li key={f} style={{ display:"flex", alignItems:"flex-start", gap:10 }}>
-                    <span style={{ width:20, height:20, borderRadius:"50%", background:"#ede9fe", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:1 }}>
-                      <Check size={11} color="#7c3aed" strokeWidth={3} aria-hidden="true" />
+                    <span style={{ width:20, height:20, borderRadius:"50%", background:"#fbe0de", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:1 }}>
+                      <Check size={11} color="#b91c26" strokeWidth={3} aria-hidden="true" />
                     </span>
-                    <span style={{ fontSize:13.5, color:"#374151", fontWeight:500 }}>{f}</span>
+                    <span style={{ fontSize:13.5, color:"#2f3542", fontWeight:500 }}>{f}</span>
                   </li>
                 ))}
               </ul>
               {PeriodToggle}
               <CheckoutBtn source="upgrade_modal" period={period} label={label} big />
-              <p style={{ textAlign:"center" as const, fontSize:11, color:"#7c3aed", margin:"8px 0 0", fontWeight:600 }}>
+              <p style={{ textAlign:"center" as const, fontSize:11, color:"#b91c26", margin:"8px 0 0", fontWeight:600 }}>
                 Cancel anytime · 30-day money-back guarantee · Payments by Lemon Squeezy
               </p>
               {!isLoggedIn && (
-                <p style={{ textAlign:"center" as const, fontSize:11.5, color:"#64748b", marginTop:10 }}>
+                <p style={{ textAlign:"center" as const, fontSize:11.5, color:"#5b6272", marginTop:10 }}>
                   Already paid?{" "}
-                  <button type="button" onClick={() => { setView("signin"); setError(""); }} style={{ background:"none", border:"none", color:"#7c3aed", fontSize:11.5, fontWeight:600, cursor:"pointer" }}>
+                  <button type="button" onClick={() => { setView("signin"); setError(""); }} style={{ background:"none", border:"none", color:"#b91c26", fontSize:11.5, fontWeight:600, cursor:"pointer" }}>
                     Sign in again →
                   </button>
                 </p>
@@ -316,14 +316,14 @@ export default function ProModal(props: Props) {
           {(view === "signin" || view === "loading") && (
             <>
               {justPaid && (
-                <div style={{ padding:"11px 14px", borderRadius:10, background:"#f0fdf4", border:"1.5px solid #bbf7d0", marginBottom:16 }}>
+                <div style={{ padding:"11px 14px", borderRadius:6, background:"#f0fdf4", border:"1.5px solid #bbf7d0", marginBottom:16 }}>
                   <p style={{ fontSize:13, color:"#15803d", fontWeight:600, margin:0 }}>
                     ✅ Payment received. Sign in to activate Pro on this device.
                   </p>
                 </div>
               )}
               {error && (
-                <div role="alert" style={{ padding:"10px 14px", borderRadius:10, background:"#fef2f2", border:"1.5px solid #fecaca", marginBottom:14 }}>
+                <div role="alert" style={{ padding:"10px 14px", borderRadius:6, background:"#fef2f2", border:"1.5px solid #fecaca", marginBottom:14 }}>
                   <div style={{ display:"flex", gap:8 }}>
                     <AlertCircle size={15} color="#dc2626" style={{ flexShrink:0, marginTop:1 }} aria-hidden="true" />
                     <p style={{ fontSize:13, color:"#b91c1c", margin:0 }}>{error}</p>
@@ -335,12 +335,12 @@ export default function ProModal(props: Props) {
                   </p>
                 </div>
               )}
-              <p style={{ fontSize:13.5, color:"#475569", lineHeight:1.65, marginBottom:18 }}>
+              <p style={{ fontSize:13.5, color:"#3a4150", lineHeight:1.65, marginBottom:18 }}>
                 {justPaid ? "Use the same Google account e-mail you entered at checkout." : "Sign in with Google to access your saved documents."}
               </p>
               <GoogleBtn label={busy ? "Signing in…" : "Continue with Google"} onToken={handleToken} disabled={busy} autoFocus />
               {busy && (
-                <div aria-live="polite" style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8, marginTop:14, color:"#64748b", fontSize:13 }}>
+                <div aria-live="polite" style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8, marginTop:14, color:"#5b6272", fontSize:13 }}>
                   <svg style={{ animation:"spin .8s linear infinite", width:16, height:16 }} fill="none" viewBox="0 0 24 24" aria-hidden="true">
                     <circle style={{ opacity:.25 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                     <path style={{ opacity:.8 }} fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
@@ -349,7 +349,7 @@ export default function ProModal(props: Props) {
                 </div>
               )}
               {!busy && !justPaid && (
-                <button type="button" onClick={() => { setView("choose"); setError(""); }} style={{ display:"block", width:"100%", marginTop:10, padding:10, background:"none", border:"none", color:"#64748b", fontSize:13, cursor:"pointer", textAlign:"center" as const }}>
+                <button type="button" onClick={() => { setView("choose"); setError(""); }} style={{ display:"block", width:"100%", marginTop:10, padding:10, background:"none", border:"none", color:"#5b6272", fontSize:13, cursor:"pointer", textAlign:"center" as const }}>
                   ← Back
                 </button>
               )}
@@ -360,21 +360,21 @@ export default function ProModal(props: Props) {
           {view === "success-free" && (
             <div style={{ textAlign:"center" as const }}>
               <div style={{ fontSize:48, marginBottom:12 }} aria-hidden="true">👋</div>
-              <p style={{ fontSize:16, fontWeight:800, color:"#0d1117", marginBottom:8 }}>You&apos;re signed in!</p>
-              <p style={{ fontSize:13.5, color:"#64748b", lineHeight:1.7, marginBottom:8 }}>
+              <p style={{ fontSize:16, fontWeight:800, color:"#151a24", marginBottom:8 }}>You&apos;re signed in!</p>
+              <p style={{ fontSize:13.5, color:"#5b6272", lineHeight:1.7, marginBottom:8 }}>
                 Documents you download are now saved to your dashboard (last {PLANS.free.limits.savedDocuments} on the free plan).
               </p>
-              <div style={{ padding:"10px 14px", borderRadius:10, background:"#faf5ff", border:"1.5px solid #c4b5fd", marginBottom:20 }}>
-                <p style={{ fontSize:13, color:"#7c3aed", fontWeight:600, margin:0 }}>
+              <div style={{ padding:"10px 14px", borderRadius:6, background:"#fdf0ef", border:"1.5px solid #f1a9a4", marginBottom:20 }}>
+                <p style={{ fontSize:13, color:"#b91c26", fontWeight:600, margin:0 }}>
                   <Crown size={13} style={{ display:"inline", marginRight:4 }} aria-hidden="true" />
                   Pro adds unlimited history, premium templates, white-label PDFs &amp; no ads — {label}
                 </p>
               </div>
               <div style={{ display:"flex", gap:10 }}>
-                <button type="button" onClick={onClose} style={{ flex:1, padding:"11px", borderRadius:12, border:"1.5px solid #e4e9f2", background:"white", color:"#374151", fontSize:14, fontWeight:600, cursor:"pointer" }}>
+                <button type="button" onClick={onClose} style={{ flex:1, padding:"11px", borderRadius:8, border:"1.5px solid #e3ddd0", background:"white", color:"#2f3542", fontSize:14, fontWeight:600, cursor:"pointer" }}>
                   Continue
                 </button>
-                <button type="button" onClick={() => setView("upgrade")} style={{ flex:1, padding:"11px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#4f46e5,#7c3aed)", color:"white", fontSize:14, fontWeight:600, cursor:"pointer" }}>
+                <button type="button" onClick={() => setView("upgrade")} style={{ flex:1, padding:"11px", borderRadius:8, border:"none", background:"#151a24", color:"white", fontSize:14, fontWeight:600, cursor:"pointer" }}>
                   See Pro →
                 </button>
               </div>
@@ -385,11 +385,11 @@ export default function ProModal(props: Props) {
           {view === "success-pro" && (
             <div style={{ textAlign:"center" as const }}>
               <div style={{ fontSize:52, marginBottom:14 }} aria-hidden="true">🎉</div>
-              <p style={{ fontSize:16, fontWeight:800, color:"#0d1117", marginBottom:8 }}>Pro is active</p>
-              <p style={{ fontSize:13.5, color:"#64748b", lineHeight:1.7, marginBottom:22 }}>
+              <p style={{ fontSize:16, fontWeight:800, color:"#151a24", marginBottom:8 }}>Pro is active</p>
+              <p style={{ fontSize:13.5, color:"#5b6272", lineHeight:1.7, marginBottom:22 }}>
                 Premium templates · White-label PDFs · 12 premium colours · Unlimited history · Ad-free
               </p>
-              <button type="button" onClick={onClose} style={{ padding:"12px 36px", borderRadius:12, border:"none", background:"linear-gradient(135deg,#4f46e5,#7c3aed)", color:"white", fontSize:14, fontWeight:700, cursor:"pointer", boxShadow:"0 4px 16px rgba(79,70,229,0.3)" }}>
+              <button type="button" onClick={onClose} style={{ padding:"12px 36px", borderRadius:8, border:"none", background:"#151a24", color:"white", fontSize:14, fontWeight:700, cursor:"pointer", boxShadow:"0 4px 16px rgba(21,26,36,0.3)" }}>
                 Start using Pro ✓
               </button>
             </div>

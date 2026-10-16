@@ -15,6 +15,7 @@ import { resolvePlan } from "@/lib/entitlements";
 import { planFor } from "@/lib/plans";
 import { readJson, str, party, dataUrlImage, uuid, LIMITS } from "@/lib/validate";
 import { sanitizeLayout } from "@/lib/layout";
+import { DEFAULT_COLOR } from "@/lib/brand";
 
 const NO_CACHE = { "Cache-Control": "no-store" };
 
@@ -34,7 +35,7 @@ function profileData(v: unknown) {
   return {
     from:        party(o.from),
     brandLogo:   dataUrlImage(o.brandLogo),
-    color:       /^#[0-9a-f]{6}$/i.test(String(o.color ?? "")) ? String(o.color) : "#4f46e5",
+    color:       /^#[0-9a-f]{6}$/i.test(String(o.color ?? "")) ? String(o.color) : DEFAULT_COLOR,
     cur:         { s: str(cur.s, 6) || "$", l: str(cur.l, 6) || "USD" },
     bankDetails: str(o.bankDetails, 2000),
     notes:       str(o.notes, LIMITS.longText),

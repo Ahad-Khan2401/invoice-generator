@@ -17,7 +17,7 @@ const stats = [
 ];
 
 const values = [
-  { icon: "🔒", title: "Privacy First",  desc: "As a guest, nothing you type leaves your browser. Only documents you choose to save while signed in are stored — and you can delete them any time.", bg: "bg-indigo-50" },
+  { icon: "🔒", title: "Privacy First",  desc: "As a guest, nothing you type leaves your browser. Only documents you choose to save while signed in are stored — and you can delete them any time.", bg: "bg-ink-50" },
   { icon: "⚡", title: "Lightning Fast", desc: "No loading screens, no bloat. Open the page and start invoicing instantly.", bg: "bg-emerald-50" },
   { icon: "♾️", title: "Built to Last",  desc: "No account needed and no limits on the free plan. An optional Pro subscription funds the free tool instead of locking it down.", bg: "bg-amber-50" },
 ];
@@ -74,7 +74,7 @@ export default function About() {
             Every template, guide, and calculator on this site is written and reviewed by him, with one
             test: <em>would a real freelancer actually use this to get paid?</em> Spot a mistake or have
             a suggestion? Email{" "}
-            <a href="mailto:support@pdfbillbuilder.com" className="font-semibold text-indigo-600 hover:text-indigo-700">
+            <a href="mailto:support@pdfbillbuilder.com" className="font-semibold text-accent-600 hover:text-accent-700">
               support@pdfbillbuilder.com
             </a>{" "}
             — he reads every message.
@@ -86,7 +86,7 @@ export default function About() {
       <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
         {stats.map(s => (
           <div key={s.label} className="rounded-3xl border border-slate-100 bg-white p-7 text-center shadow-sm">
-            <p className="mb-1 text-4xl font-black text-indigo-600">{s.value}</p>
+            <p className="mb-1 text-4xl font-black text-accent-600">{s.value}</p>
             <p className="text-[13px] font-medium text-slate-500">{s.label}</p>
           </div>
         ))}

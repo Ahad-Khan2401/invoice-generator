@@ -1,114 +1,102 @@
 # Design
 
 > Visual system for PDF Bill Builder, captured from the live code
-> (`app/globals.css`, `lib/config.ts`, `components/*`). Register: **product**.
-> Keep variants on-brand by reading this before design work.
+> (`app/globals.css`, `lib/brand.ts`, `components/*`). Register: **product** for the
+> generator and dashboard, **brand** for the landing, pricing, templates and blog pages.
+> Direction: **Paper & ink**, chosen by the owner in October 2026.
 
 ## Theme
 
-Light, calm, "clean office paper" — a trustworthy productivity tool, not a flashy
-SaaS landing. Near-white indigo-tinted canvas, white surfaces, indigo as the single
-brand accent. The invoice preview itself is the visual centrepiece; the UI around it
-stays quiet so the document looks like the hero.
+A printed document on a desk. Warm off-white paper, ink-black type and buttons, serif
+headings, and one accent: the red from the logo's "PDF" mark. The invoice itself is the
+hero, so wherever the old design used a card with an icon, this one shows a real rendered
+document (`components/Specimen.tsx`) or a plain ruled list.
 
-**Known tension (see PRODUCT.md anti-references):** the current execution sits close
-to the generic "indigo-on-cream AI SaaS" default. Future work should carry the brand
-through typography rhythm, spacing, and one confident expression rather than more
-indigo cards.
+Scene: a freelancer at a desk or a job site, mid-afternoon, trying to get one invoice out
+the door. Light theme, no dark mode.
+
+Replaces the earlier indigo-on-cream look, which read as a generic AI SaaS template
+(see PRODUCT.md anti-references).
 
 ## Color
 
-Format: hex today (migrate to OKLCH when tokens are next refactored). Single-accent
-"restrained" strategy — indigo ≤ ~10% of surface, everything else neutral.
-
-### Core tokens (`app/globals.css` / `lib/config.ts`)
+Strategy: **Restrained**. Paper and ink carry the page, red is under 10% of any screen.
+All values live in `lib/brand.ts` (document colours) and `app/globals.css` (UI tokens).
 
 | Token | Value | Role |
 |---|---|---|
-| `--bg` | `#f5f7ff` | Page canvas (indigo-tinted near-white) |
-| `--primary` | `#4f46e5` | Brand indigo — CTAs, accents, links, active states |
-| `--border` | `#e4e9f2` | Hairline borders on cards, inputs |
-| `--text-1` | `#0d1117` | Primary ink (headings, key values) |
-| `--text-2` | `#4b5563` | Body text |
-| `--text-3` | `#9ca3af` | Muted / captions — **verify ≥4.5:1; borderline on tint** |
-| surface | `#ffffff` | Cards, form, preview paper |
+| `--paper` | `#faf8f3` | Page canvas |
+| `--paper-2` | `#f3efe6` | Quiet panels (guide, summary, landing facts) |
+| `--sheet` | `#ffffff` | Form surface, specimen pages |
+| `--rule` | `#e3ddd0` | Hairlines between rows |
+| `--rule-strong` | `#cfc8b8` | Input and card borders |
+| `--ink` | `#151a24` | Headings, body, primary buttons, footer rule |
+| `--ink-2` | `#3a4150` | Body copy |
+| `--ink-3` | `#5b6272` | Captions (5.6:1 on paper) |
+| `--red` | `#e5252b` | Logo red: stamps, fills, active underline, Pro band button |
+| `--red-ink` | `#b91c26` | Red used as **text** or link (6:1 on paper) |
+| `--navy` | `#17243f` | Default colour of a generated document |
 
-### Semantic / doc-type accents
+Tailwind's indigo, violet and slate ramps are re-pointed in `@theme` to ink, red and a
+warm grey, so legacy utility classes inherit the palette. New code should use `ink-*`,
+`accent-*`, `paper`, and the `--rule` variables.
 
-- Invoice indigo `#4f46e5` · Receipt emerald `#10b981` · Quotation amber `#f59e0b`
-- Paid `#16a34a` on `#dcfce7` · Unpaid amber · Pro violet `#7c3aed` on `#faf5ff`
-- Discount/negative red `#ef4444`
-
-### Invoice color palettes (user-selectable)
-
-- **Free (6):** Indigo `#4f46e5`, Sky `#0ea5e9`, Emerald `#10b981`, Amber `#f59e0b`,
-  Red `#ef4444`, Violet `#8b5cf6`.
-- **Pro (12):** deep/muted set — Slate, Crimson `#7f1d1d`, Forest, Navy, Brown,
-  Purple, Teal, Carbon, Rose, Ink, Pine, Maroon.
-
-### Contrast rule
-
-Body ≥4.5:1, large text ≥3:1. `--text-3` (#9ca3af) on `#f5f7ff` is the risk spot —
-prefer `--text-2` for anything users must read.
+Rules:
+- Red text always uses `--red-ink`. The brighter `--red` is for fills, borders and stamps.
+- Never a red or tinted side stripe on a card or callout. Use a full hairline or nothing.
+- Never gradients on text. No glass.
+- Document colours are separate from UI colours. Free swatches: Navy `#17243F`, Red
+  `#E5252B`, Blue `#1F6FE6`, Emerald, Amber, Indigo. Pro adds twelve more.
 
 ## Typography
 
-- **Family:** Inter (`next/font`, `display: swap`), fallback `system-ui`. Single
-  family in multiple weights — no secondary font. If a display/editorial contrast is
-  ever wanted, pair on a real axis (serif or humanist), never a second geometric sans.
-- **Base:** 14px body, `line-height: 1.6`.
-- **Headings:** weight 700–900, `letter-spacing: -0.025em` (display floor -0.04em).
-  Use `text-wrap: balance` on h1–h3.
-- **Article prose (`.seo-prose`):** h2 `clamp(20px,3vw,26px)` / h3 `clamp(16px,2.4vw,19px)`;
-  body 15px / line-height 1.75; cap measure at 65–75ch (article max-width ~820px ≈ ok).
-- **Numerals:** `font-variant-numeric: tabular-nums` on all money/totals.
-- **Hero heading ceiling:** clamp max ≤ 6rem.
+- **Display:** Source Serif 4 (variable, optical size axis) for h1 to h3, prices and
+  numbers that should feel printed. Loaded by `next/font` as `--font-source-serif`.
+- **UI and body:** Public Sans as `--font-public-sans`. 14 to 15px body, line-height 1.6.
+- **Document only:** Inter as `--font-inter`, used by `InvoicePreview` so the PDF output is
+  unchanged by site redesigns.
+- Serif is for headings and money. Never set long body copy or form labels in serif.
+- h1 clamp max stays under 4rem. Use `text-wrap: balance` on headings.
+- Tabular numerals on every amount.
 
-## Layout & Spacing
+## Layout
 
-- **Container widths:** tool `max-width: 1200px`; article/prose `~820px`;
-  page shells `3xl–5xl` via `PageShell`.
-- **Generator grid:** `grid-cols-1 lg:grid-cols-[500px_1fr]`, gap 8 (form left,
-  live preview right; stacks on mobile).
-- **Radii:** cards/inputs `--radius-md: 14px`; pills/buttons 10–12px; large cards
-  up to 24px (`rounded-3xl`).
-- **Shadow:** `--shadow-card: 0 2px 8px rgba(0,0,0,.04), 0 8px 32px rgba(15,23,42,.07)`.
-  Preview paper uses a deeper lift. Keep shadows soft, never harsh.
-- **Responsive:** breakpoints at 1023px (tool leaves its own scroll area) and 640px
-  (tighter paddings). Grids prefer `flex-wrap` / `auto-fit minmax` over fixed columns.
-- **Cards:** used heavily today. Prefer full borders + soft shadow; never nested
-  cards, never side-stripe borders.
+- One content column: **1152px** wide. Header, footer, hero, tool and homepage sections
+  all share it, so left edges line up. Article and prose pages use narrower measures
+  (about 65ch).
+- Generator grid: form on the left, live preview on the right, stacks below 1024px.
+- Radii are small and print-like: 6px inputs and buttons, 8px panels, 12px at most.
+- Shadows are for paper only (specimens, preview sheet, modals). Panels use hairlines.
+- Lists of links, templates, calculators and guides are **ruled lists** (`.rule-list`),
+  not card grids. A real sequence is a numbered ruled list (`.home-steps`). One numbered
+  list per page at most.
 
 ## Components
 
-- **Buttons:** `font: inherit`, no border, `transition: all .2s`, `:active` scale .97.
-  Primary = indigo fill white text; secondary = white + `--border`; Pro = violet
-  dashed/tinted.
-- **Inputs:** white, `--border`, focus tints toward the active accent; number spinners
-  stripped, native date picker dimmed.
-- **Preview paper:** A4 auto-scaled to fit; accent stripe / band / plain header per
-  template (`tplTokens()`), optional watermark, tabular totals.
-- **Templates:** Classic (free, accent stripe) · Minimal (Pro, black/white, no stripe)
-  · Bold (Pro, full-colour header band). Mini CSS mockups in `TemplateStyleCards`.
-- **FAQ:** native `<details>` accordion, `+`/`−` marker, tinted `#f9fbff` card.
-- **Ad slots (`.ad-wrap`):** centered, `min-height:100px` reserves space (low CLS),
-  overflow-hidden safety, "Advertisement" label. Kept polite and secondary.
-- **Modals:** ProModal (gradient indigo header), DownloadAdModal (ad-free progress +
-  save/upgrade CTA). Close on Esc/backdrop.
-- **Footer:** taped-card motif, 4 balanced link columns.
+- **Specimen** (`components/Specimen.tsx`, data in `lib/specimens.ts`): renders the real
+  `InvoicePreview` scaled to its container. Fictional businesses only. Optional "Paid"
+  stamp for receipts.
+- **Stamp** (`.stamp`): a rotated red outline label. Used once per page at most, on the
+  hero or the 404.
+- **Buttons:** primary is ink fill with white text. Secondary is a 2px ink outline.
+  The only red button is the Pro band call to action on the dark section.
+- **Header:** flat, sticky, paper background, hairline underneath, active link has a red
+  underline. **Footer:** 2px ink rule on top, serif tagline, link columns.
+- **PageHero:** serif h1 plus a short red rule. The `badge` prop is accepted for
+  compatibility but not drawn. Do not add eyebrows.
+- **Pro band** (homepage): the only dark section. Ink background, serif headline, two
+  specimen pages (Minimal, Bold), live price from `lib/plans.ts`.
+- **Ad slots (`.ad-wrap`):** centred, reserved height, labelled "Advertisement".
+- **Modals:** ProModal and DownloadAdModal use paper, hairlines and the ink button.
 
 ## Motion
 
-- CSS-driven only (framer-motion removed for bundle size). Durations 160–220ms,
-  `cubic-bezier(.16,1,.3,1)` (ease-out-expo family) — no bounce/elastic.
-- Existing: drawer slide-in, item-row enter, `:active` button press, smooth scroll.
-- **`prefers-reduced-motion: reduce`** disables animations + smooth scroll (in place;
-  extend to any new motion). Reveals must enhance already-visible content, never gate it.
+CSS only, 160 to 220ms, ease-out-expo family, no bounce. `prefers-reduced-motion`
+disables animation and smooth scroll. Reveals enhance content that is already visible.
 
-## Register-specific notes
+## Do not
 
-- **Product surfaces** (generator, dashboard, modals): clarity and speed win. Quiet UI,
-  strong preview, obvious primary action, honest upsells.
-- **Brand surfaces** (landing pages, blog, /pricing, /templates): more room for
-  expression, but stay within this palette + type system. Avoid eyebrow kickers and
-  numbered section markers as default scaffolding.
+- Add eyebrow pills, "01 / 02 / 03" section markers, or icon-in-a-square card grids.
+- Reintroduce indigo, violet gradients, or glass panels.
+- Change the document font or default document colour without checking the PDF output.
+- Put prices in copy. Read them from `lib/plans.ts` (`priceLabel`).

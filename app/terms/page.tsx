@@ -47,11 +47,11 @@ export default function Terms() {
         </Section>
 
         <Section title="7. Pro subscription, cancellation & refunds">
-          <p>The optional Pro plan is billed by our merchant of record, Lemon Squeezy, at the price shown on the <Link href="/pricing" className="text-indigo-600 hover:underline">pricing page</Link>. It renews automatically until cancelled. You can cancel at any time from the customer portal link in your receipt; you keep Pro until the end of the period already paid for. Within 30 days of your first purchase you may request a full refund by emailing support. If a renewal payment fails and cannot be recovered, your account returns to the free plan and nothing you created is deleted.</p>
+          <p>The optional Pro plan is billed by our merchant of record, Lemon Squeezy, at the price shown on the <Link href="/pricing" className="text-accent-600 hover:underline">pricing page</Link>. It renews automatically until cancelled. You can cancel at any time from the customer portal link in your receipt; you keep Pro until the end of the period already paid for. Within 30 days of your first purchase you may request a full refund by emailing support. If a renewal payment fails and cannot be recovered, your account returns to the free plan and nothing you created is deleted.</p>
         </Section>
 
         <Section title="8. Advertising">
-          <p>The Service is supported by third-party advertising (Google AdSense). Your use is also subject to our <Link href="/privacy" className="text-indigo-600 hover:underline">Privacy Policy</Link>.</p>
+          <p>The Service is supported by third-party advertising (Google AdSense). Your use is also subject to our <Link href="/privacy" className="text-accent-600 hover:underline">Privacy Policy</Link>.</p>
         </Section>
 
         <Section title="9. Limitation of liability">
@@ -63,7 +63,7 @@ export default function Terms() {
         </Section>
 
         <Section title="11. Contact">
-          <p>Questions? Email <a className="text-indigo-600 hover:underline" href="mailto:support@pdfbillbuilder.com">support@pdfbillbuilder.com</a>.</p>
+          <p>Questions? Email <a className="text-accent-600 hover:underline" href="mailto:support@pdfbillbuilder.com">support@pdfbillbuilder.com</a>.</p>
         </Section>
       </Card>
 

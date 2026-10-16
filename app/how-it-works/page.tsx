@@ -11,9 +11,9 @@ export const metadata: Metadata = {
 };
 
 const steps = [
-  { num: "1", title: "Enter Your Details",     desc: "Add your business and client details, upload your logo, and pick a brand colour. Choose invoice, receipt, or quotation.", accent: "from-indigo-600 to-indigo-500" },
-  { num: "2", title: "Add Items & Services",   desc: "List your work with quantity and rate. Subtotal, tax, and total calculate automatically as you type.", accent: "from-violet-600 to-violet-500" },
-  { num: "3", title: "Download Your PDF",      desc: "Click Download PDF for a clean, print-ready document — or print it directly. Ready to send in seconds.", accent: "from-emerald-600 to-emerald-500" },
+  { num: "1", title: "Enter Your Details",     desc: "Add your business and client details, upload your logo, and pick a brand colour. Choose invoice, receipt, or quotation." },
+  { num: "2", title: "Add Items & Services",   desc: "List your work with quantity and rate. Subtotal, tax, and total calculate automatically as you type." },
+  { num: "3", title: "Download Your PDF",      desc: "Click Download PDF for a clean, print-ready document — or print it directly. Ready to send in seconds." },
 ];
 
 const faqs = [
@@ -35,19 +35,18 @@ export default function HowItWorks() {
         subtitle="Generate a professional PDF invoice, receipt, quotation or estimate in under 2 minutes — completely free, no account needed."
       />
 
-      {/* Steps */}
-      <div className="mb-14 grid grid-cols-1 md:grid-cols-3 gap-5">
-        {steps.map(s => (
-          <div key={s.num} className="relative overflow-hidden rounded-3xl border border-slate-100 bg-white p-7 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
-            <span className="absolute right-5 top-3 select-none text-[56px] font-black leading-none text-slate-50">{s.num}</span>
-            <div className={`mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${s.accent} text-lg font-black text-white shadow-sm`}>
-              {s.num}
+      {/* Steps: a real sequence, so numbered, as a ruled list */}
+      <ol className="home-steps mb-14" style={{ maxWidth: 760 }}>
+        {steps.map((s) => (
+          <li key={s.num} className="home-steps__item">
+            <span className="home-steps__n" aria-hidden="true">{s.num}</span>
+            <div>
+              <h2 className="home-steps__t">{s.title}</h2>
+              <p className="home-steps__d">{s.desc}</p>
             </div>
-            <h2 className="mb-2 text-[16px] font-bold text-slate-900">{s.title}</h2>
-            <p className="text-[13.5px] leading-relaxed text-slate-500">{s.desc}</p>
-          </div>
+          </li>
         ))}
-      </div>
+      </ol>
 
       {/* Ad — between steps and FAQ */}
       <div className="mb-14">
@@ -62,9 +61,9 @@ export default function HowItWorks() {
         </div>
         <div className="space-y-3">
           {faqs.map(f => (
-            <div key={f.q} className="rounded-2xl border border-slate-100 bg-white p-5 sm:p-6 shadow-sm transition-all hover:border-indigo-100 hover:shadow-md">
+            <div key={f.q} className="rounded-2xl border border-slate-100 bg-white p-5 sm:p-6 shadow-sm transition-all hover:border-ink-100 hover:shadow-md">
               <div className="flex items-start gap-3">
-                <span className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-indigo-50 text-[10px] font-black text-indigo-600">Q</span>
+                <span className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-ink-50 text-[10px] font-black text-accent-600">Q</span>
                 <div>
                   <h3 className="mb-1.5 text-[14.5px] font-bold text-slate-900">{f.q}</h3>
                   <p className="text-[13.5px] leading-relaxed text-slate-500">{f.a}</p>

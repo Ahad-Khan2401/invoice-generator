@@ -55,42 +55,38 @@ export default function Templates() {
         <span aria-current="page">Templates</span>
       </nav>
       <PageHero
-        badge="Templates"
         title="Every free invoice template, in one place"
         subtitle="All templates use the same fast generator — they just start pre-configured for your profession, country, or document type. Pick one and download your PDF in minutes."
       />
 
       {/* PDF style gallery — Classic free, Minimal/Bold Pro */}
-      <section className="mb-14">
-        <h2 className="text-[20px] font-extrabold tracking-tight text-slate-900">Three PDF styles, one generator</h2>
-        <p className="mb-5 mt-1 text-[14px] text-slate-500">
+      <section className="mb-16" aria-labelledby="styles-h">
+        <h2 id="styles-h" className="font-display text-[clamp(1.6rem,3vw,2.2rem)] font-semibold tracking-tight text-ink">Three PDF styles, one generator</h2>
+        <p className="mb-8 mt-2 max-w-xl text-[15.5px] text-ink-500">
           Every template below can be downloaded in any of these looks. Classic is free forever; Minimal and Bold come with Pro.
         </p>
         <TemplateStyleCards showCta />
       </section>
 
       {GROUPS.map((g) => (
-        <section key={g.title} className="mb-12">
-          <h2 className="text-[20px] font-extrabold tracking-tight text-slate-900">{g.title}</h2>
-          <p className="mb-5 mt-1 text-[14px] text-slate-500">{g.blurb}</p>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <section key={g.title} className="mb-14">
+          <h2 className="font-display text-[clamp(1.5rem,2.6vw,1.9rem)] font-semibold tracking-tight text-ink">{g.title}</h2>
+          <p className="mb-5 mt-1 text-[15px] text-ink-500">{g.blurb}</p>
+          <ul className="rule-list">
             {g.slugs.map((slug) => {
               const t = LANDING[slug];
               if (!t) return null;
               return (
-                <Link
-                  key={slug}
-                  href={`/${slug}`}
-                  className="group rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-100 hover:shadow-md"
-                >
-                  <h3 className="text-[15px] font-bold leading-snug text-slate-900 group-hover:text-indigo-600">
-                    {t.h1}
-                  </h3>
-                  <p className="mt-1.5 text-[13px] leading-relaxed text-slate-500">{t.sub}</p>
-                </Link>
+                <li key={slug}>
+                  <Link href={`/${slug}`}>
+                    <span className="rule-list__t">{t.h1.replace(/^Free /, "")}</span>
+                    <span className="rule-list__d">{t.sub}</span>
+                    <span className="rule-list__go" aria-hidden="true">Open →</span>
+                  </Link>
+                </li>
               );
             })}
-          </div>
+          </ul>
         </section>
       ))}
 

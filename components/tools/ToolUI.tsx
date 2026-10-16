@@ -19,7 +19,7 @@ export function Field({
   return (
     <label className="block">
       <span className="mb-1.5 block text-[13px] font-semibold text-slate-600">{label}</span>
-      <div className="flex items-stretch overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100">
+      <div className="flex items-stretch overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-ink-400 focus-within:ring-2 focus-within:ring-ink-100">
         {prefix && (
           <span className="flex items-center bg-slate-50 px-3 text-[13px] font-semibold text-slate-400">{prefix}</span>
         )}
@@ -42,7 +42,7 @@ export function Field({
 
 export function Result({ children }: { children: ReactNode }) {
   return (
-    <div className="mt-6 rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 to-violet-50 p-6">
+    <div className="mt-6 rounded-2xl border border-ink-100 bg-paper-2 p-6">
       {children}
     </div>
   );
@@ -50,9 +50,9 @@ export function Result({ children }: { children: ReactNode }) {
 
 export function ResultRow({ label, value, big }: { label: string; value: string; big?: boolean }) {
   return (
-    <div className={`flex items-baseline justify-between gap-3 ${big ? "border-t border-indigo-200/60 pt-3 mt-3" : "py-1"}`}>
+    <div className={`flex items-baseline justify-between gap-3 ${big ? "border-t border-ink-200/60 pt-3 mt-3" : "py-1"}`}>
       <span className={`${big ? "text-[15px] font-bold text-slate-700" : "text-[13.5px] text-slate-500"}`}>{label}</span>
-      <span className={`${big ? "text-2xl font-black text-indigo-700" : "text-[15px] font-bold text-slate-800"}`}>{value}</span>
+      <span className={`${big ? "text-2xl font-black text-accent-700" : "text-[15px] font-bold text-slate-800"}`}>{value}</span>
     </div>
   );
 }

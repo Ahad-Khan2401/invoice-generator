@@ -67,7 +67,7 @@ export default function DownloadAdModal({
       style={{
         position: "fixed", inset: 0, zIndex: 1000,
         display: "flex", alignItems: "center", justifyContent: "center",
-        padding: 20, background: "rgba(13,17,23,0.55)",
+        padding: 20, background: "rgba(21,26,36,0.55)",
         backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)",
       }}
     >
@@ -81,16 +81,16 @@ export default function DownloadAdModal({
         onClick={e => e.stopPropagation()}
         style={{
           width: "100%", maxWidth: 420, background: "#fff",
-          borderRadius: 20, overflow: "hidden", outline: "none",
-          boxShadow: "0 24px 80px rgba(13,17,23,0.35)",
+          borderRadius: 10, overflow: "hidden", outline: "none",
+          boxShadow: "0 24px 80px rgba(21,26,36,0.35)",
           animation: "modalIn .22s cubic-bezier(.16,1,.3,1)",
         }}
       >
         {/* Header */}
-        <div style={{ padding: "18px 20px 14px", borderBottom: "1px solid #f0f3fa", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+        <div style={{ padding: "18px 20px 14px", borderBottom: "1px solid #ece6da", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <span aria-hidden="true" style={{
-              width: 34, height: 34, borderRadius: 10, flexShrink: 0,
+              width: 34, height: 34, borderRadius: 6, flexShrink: 0,
               display: "flex", alignItems: "center", justifyContent: "center",
               background: status === "done" ? "#dcfce7" : status === "error" ? "#fee2e2" : `${accent}15`,
               color: status === "done" ? "#16a34a" : status === "error" ? "#dc2626" : accent,
@@ -98,12 +98,12 @@ export default function DownloadAdModal({
               {status === "done" ? <CheckCircle2 size={18} /> : status === "error" ? <AlertTriangle size={18} /> : <VerbIcon size={17} />}
             </span>
             <div>
-              <p id="dl-modal-title" style={{ fontSize: 14.5, fontWeight: 800, color: "#0d1117" }}>{title}</p>
-              <p style={{ fontSize: 12, color: "#64748b", marginTop: 1 }}>{sub}</p>
+              <p id="dl-modal-title" style={{ fontSize: 14.5, fontWeight: 800, color: "#151a24" }}>{title}</p>
+              <p style={{ fontSize: 12, color: "#5b6272", marginTop: 1 }}>{sub}</p>
             </div>
           </div>
           <button type="button" onClick={onClose} aria-label="Close"
-            style={{ width: 30, height: 30, borderRadius: 8, border: "none", background: "transparent", color: "#64748b", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
+            style={{ width: 30, height: 30, borderRadius: 6, border: "none", background: "transparent", color: "#5b6272", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
             <X size={18} aria-hidden="true" />
           </button>
         </div>
@@ -113,20 +113,20 @@ export default function DownloadAdModal({
           <div style={{ padding: "16px 20px 4px" }}>
             <div style={{
               display: "flex", alignItems: "center", gap: 12,
-              background: "linear-gradient(135deg,#eef2ff,#faf5ff)",
-              border: "1px solid #e0e7ff", borderRadius: 14, padding: "13px 14px",
+              background: "#f3efe6",
+              border: "1px solid #e3ddd0", borderRadius: 8, padding: "13px 14px",
             }}>
-              <span aria-hidden="true" style={{ width: 36, height: 36, borderRadius: 10, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "#fff", color: "#4f46e5" }}>
+              <span aria-hidden="true" style={{ width: 36, height: 36, borderRadius: 6, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "#fff", color: "#151a24" }}>
                 <Save size={18} />
               </span>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontSize: 13, fontWeight: 800, color: "#1e1b4b" }}>Save this document</p>
-                <p style={{ fontSize: 11.5, color: "#4338ca", marginTop: 1, lineHeight: 1.35 }}>
+                <p style={{ fontSize: 13, fontWeight: 800, color: "#151a24" }}>Save this document</p>
+                <p style={{ fontSize: 11.5, color: "#b91c26", marginTop: 1, lineHeight: 1.35 }}>
                   Sign in free to re-open, duplicate and track it on any device.
                 </p>
               </div>
               <button type="button" onClick={onSignIn}
-                style={{ fontSize: 12.5, fontWeight: 700, color: "#fff", background: "#4f46e5", border: "none", borderRadius: 9, padding: "8px 14px", cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap" }}>
+                style={{ fontSize: 12.5, fontWeight: 700, color: "#fff", background: "#151a24", border: "none", borderRadius: 6, padding: "8px 14px", cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap" }}>
                 Sign in
               </button>
             </div>
@@ -137,10 +137,10 @@ export default function DownloadAdModal({
           <div style={{ padding: "16px 20px 4px" }}>
             <div style={{
               display: "flex", alignItems: "center", gap: 12,
-              background: "linear-gradient(135deg,#fef3c7,#fde68a55)",
-              border: "1px solid #fde68a", borderRadius: 14, padding: "13px 14px",
+              background: "#fbf3dc",
+              border: "1px solid #fde68a", borderRadius: 8, padding: "13px 14px",
             }}>
-              <span aria-hidden="true" style={{ width: 36, height: 36, borderRadius: 10, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "#fff", color: "#b45309" }}>
+              <span aria-hidden="true" style={{ width: 36, height: 36, borderRadius: 6, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "#fff", color: "#b45309" }}>
                 <Crown size={18} />
               </span>
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -150,7 +150,7 @@ export default function DownloadAdModal({
                 </p>
               </div>
               <button type="button" onClick={onUpgrade}
-                style={{ fontSize: 12.5, fontWeight: 700, color: "#fff", background: "#b45309", border: "none", borderRadius: 9, padding: "8px 14px", cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap" }}>
+                style={{ fontSize: 12.5, fontWeight: 700, color: "#fff", background: "#b45309", border: "none", borderRadius: 6, padding: "8px 14px", cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap" }}>
                 Upgrade
               </button>
             </div>
@@ -164,7 +164,7 @@ export default function DownloadAdModal({
             <VerbIcon size={13} aria-hidden="true" /> {status === "error" ? "Try again" : action === "download" ? "Download again" : "Print again"}
           </button>
           <button type="button" onClick={onClose}
-            style={{ fontSize: 13, fontWeight: 700, color: "#fff", background: accent, border: "none", borderRadius: 10, padding: "9px 18px", cursor: "pointer" }}>
+            style={{ fontSize: 13, fontWeight: 700, color: "#fff", background: accent, border: "none", borderRadius: 6, padding: "9px 18px", cursor: "pointer" }}>
             Done
           </button>
         </div>
