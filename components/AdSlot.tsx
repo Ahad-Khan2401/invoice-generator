@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { SITE } from "@/lib/config";
+import { useAuth } from "@/components/AuthProvider";
 
 declare global {
   interface Window { adsbygoogle: unknown[] }
@@ -11,7 +12,8 @@ declare global {
    - Reserves min-height to avoid layout shift (good CLS / Core Web Vitals).
    - Labelled "Advertisement" (required by AdSense policy).
    - .no-print hides it from printed/PDF output.
-   - Never place inside the interactive tool — only between content blocks.
+   - Never placed inside the interactive tool — only between content blocks.
+   - Paid plans are ad-free: renders nothing once the plan is known.
 ─────────────────────────────────────────────── */
 export default function AdSlot({
   slot,
@@ -22,28 +24,25 @@ export default function AdSlot({
   format?: "auto" | "fluid" | "rectangle" | "horizontal";
   label?: boolean;
 }) {
+  const { isLoaded, limits } = useAuth();
+  const adFree = isLoaded && limits.adFree;
   const pushed = useRef(false);
 
   useEffect(() => {
-    // Don't try to render ads until a real client ID is set.
-    if (!SITE.adsenseClient.includes("ca-pub-XXXX") && !pushed.current) {
-      try {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-        pushed.current = true;
-      } catch { /* ignore */ }
-    }
-  }, []);
+    if (adFree || pushed.current) return;
+    if (!isLoaded) return;
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+      pushed.current = true;
+    } catch { /* ignore */ }
+  }, [adFree, isLoaded]);
 
-  // While the placeholder ID is in place, show a neutral box so you can
-  // see exactly where ads will appear (remove once your real ID is live).
-  const isPlaceholder = SITE.adsenseClient.includes("ca-pub-XXXX");
+  if (adFree) return null;
 
   return (
     <div className="ad-wrap no-print" role="complementary" aria-label="Advertisement">
       {label && <span className="ad-label">Advertisement</span>}
-      {isPlaceholder ? (
-        <div className="ad-placeholder">Ad slot {slot} — set your AdSense ID in lib/config.ts</div>
-      ) : (
+      {isLoaded && (
         <ins
           className="adsbygoogle"
           style={{ display: "block" }}

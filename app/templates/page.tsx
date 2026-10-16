@@ -50,6 +50,10 @@ GROUPS[2].slugs = Object.keys(LANDING).filter((s) => !listed.has(s));
 export default function Templates() {
   return (
     <PageShell width="5xl">
+      <nav className="crumbs" aria-label="Breadcrumb">
+        <Link href="/">Home</Link><span aria-hidden="true">/</span>
+        <span aria-current="page">Templates</span>
+      </nav>
       <PageHero
         badge="Templates"
         title="Every free invoice template, in one place"

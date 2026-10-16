@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/privacy" },
 };
 
-const UPDATED = "June 11, 2026";
+const UPDATED = "October 16, 2026";
 
 export default function Privacy() {
   return (
@@ -42,16 +42,19 @@ export default function Privacy() {
           </p>
         </Section>
 
-        <Section title="3. Accounts & saved invoices (optional)">
+        <Section title="3. Accounts, saved documents & client directory (optional)">
           <p>
-            If you choose to sign in with Google, we receive your name, email address, and profile picture
-            from Google to create your session. If you then save an invoice to your dashboard, that invoice&apos;s
-            details are stored in our database so you can re-open and edit it later — this only happens for
-            invoices you explicitly save while signed in. You can delete saved invoices from your dashboard at
-            any time, and you can request full account deletion by emailing{" "}
+            If you choose to sign in with Google, we receive your name and email address from Google to create
+            your session. We store only a one-way hash of your email address alongside your data — never the
+            address itself. While you are signed in, documents you download are saved to your dashboard
+            automatically (you can switch this off with the &quot;Save a copy to my dashboard&quot; checkbox in the
+            generator), and you may also save drafts, a business profile and a client directory. Everything you
+            save can be deleted from your dashboard at any time, and you can request full account deletion by emailing{" "}
             <a className="text-indigo-600 hover:underline" href="mailto:support@pdfbillbuilder.com">support@pdfbillbuilder.com</a>.
             For Pro subscriptions, payment is processed by Lemon Squeezy (our merchant of record) — we never
-            see or store your card details.
+            see or store your card details. Lemon Squeezy notifies us of your subscription status (active,
+            cancelled, payment failed) so we can grant or remove Pro features; we store that status against the
+            same hashed identifier.
           </p>
         </Section>
 
@@ -96,7 +99,15 @@ export default function Privacy() {
           </p>
         </Section>
 
-        <Section title="7. Your choices">
+        <Section title="7. Data retention & export">
+          <p>
+            Saved documents, profiles and clients are kept until you delete them or ask us to delete your account.
+            You can export any document as a file from the generator (&quot;More → Export as file&quot;) and, on the Pro
+            plan, download your full history as CSV from the dashboard.
+          </p>
+        </Section>
+
+        <Section title="8. Your choices">
           <p>
             You can disable cookies in your browser, opt out of personalised ads using the links above, and
             clear locally stored data any time. If you never sign in, we hold no data about you at all; if
@@ -104,11 +115,11 @@ export default function Privacy() {
           </p>
         </Section>
 
-        <Section title="8. Changes to this policy">
+        <Section title="9. Changes to this policy">
           <p>We may update this policy from time to time. The &quot;Last updated&quot; date above reflects the current version.</p>
         </Section>
 
-        <Section title="9. Contact">
+        <Section title="10. Contact">
           <p>
             Questions? Email{" "}
             <a className="text-indigo-600 hover:underline" href="mailto:support@pdfbillbuilder.com">support@pdfbillbuilder.com</a>.

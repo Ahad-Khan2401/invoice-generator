@@ -1844,4 +1844,232 @@ export const LANDING_CONTENT: Record<string, LandingContentEntry> = {
     ],
   },
 
+  /* ───────── By document type ───────── */
+  "receipt-generator": {
+    intro:
+      "A receipt is the document you hand over after money has changed hands. Where an invoice asks for payment, a receipt confirms that payment has arrived, and that small difference in timing changes how the document is used. Customers file receipts to prove a purchase, support a refund or warranty claim, or back up an expense report; businesses keep the matching copy as the record that closes a sale. The generator on this page opens as a receipt, so you can record who paid, how much, by what method, and for what, then download a tidy PDF in a few seconds.",
+    sections: [
+      {
+        h: "Receipt or invoice: which one to issue",
+        p: "The rule of thumb is timing. An invoice goes out before payment and tells the customer what they owe and by when. A receipt goes out after payment and tells them the debt is settled. If a customer pays on the spot, at a counter, at the end of a repair, or by card the moment the work is done, you can skip the invoice entirely and issue a receipt alone. If you invoiced earlier and the money has now landed, a receipt that references the original invoice number gives the customer a clean paper trail from request to settlement.\n\nSome businesses do both for every sale, and that is perfectly fine. The invoice sits in your books as the amount owed; the receipt marks it paid. What you should avoid is sending a receipt for money you have not yet received, because that leaves you with no document actually asking for payment.",
+      },
+      {
+        h: "What a payment receipt should contain",
+        p: "A receipt is short, but each detail on it answers a question somebody may ask later: who paid, when, how much, and for what. If any of those is missing, the receipt loses most of its value as evidence. Keep the layout plain and make sure the following are always present.",
+        list: [
+          "The word Receipt, a unique receipt number, and the date the payment was received",
+          "Your business name and contact details, so the customer can reach you about the purchase",
+          "The customer's name, which is optional for small cash sales but essential for anything they may claim or return",
+          "A description of the goods or services the payment covers, with quantities and prices where relevant",
+          "The amount received, the currency, and the payment method, such as cash, card, or bank transfer",
+          "The invoice number being settled, if there was one, and any balance still outstanding",
+          "If you are registered for VAT/GST, the rate and amount of tax included in the payment",
+        ],
+      },
+      {
+        h: "A worked example",
+        p: "Suppose a phone repair shop replaces a cracked screen and sells a protective case at the same visit. The receipt lists two lines: screen replacement, 1 at 89.00, and protective case, 1 at 12.50, giving a subtotal of 101.50. If the shop is registered for tax at an illustrative rate of 10 percent, it adds a tax line of 10.15 and shows a total of 111.65. Below the total it records that the customer paid 111.65 by card, the balance due is 0.00, and the receipt number is R-0231 dated today.\n\nThat is the entire document. The customer can use it to claim under the repair warranty, and the shop can match the card settlement to receipt R-0231 in its records. In the generator above, type the two items, set the payment status to paid, choose the payment method, and the totals are calculated for you.",
+      },
+      {
+        h: "Deposits and partial payments",
+        p: "Receipts are not only for payments in full. When a customer puts down a deposit or pays in instalments, a receipt for each payment reassures them and keeps your records honest. The key is to show three figures clearly: the total agreed for the job, the amount received today, and the balance that remains. If the next payment has an agreed date, add it as a note so there is no later argument about when it was due.\n\nNumber these receipts in the same running sequence as all your others. When the final payment arrives, issue one last receipt that shows the balance reaching zero. Together, the set of receipts forms a complete payment history that either side can present if a question ever comes up.",
+      },
+      {
+        h: "Refunds and corrections",
+        p: "If you refund a customer, do not edit or delete the original receipt. Instead, issue a new document labelled as a refund receipt, with its own number, that references the original and shows the amount returned and how it was paid back. The original receipt remains proof that the sale happened; the refund receipt proves it was reversed. Keeping both means your records always reconcile with your bank account.\n\nThe same principle applies to simple mistakes, such as a mistyped amount. Issue a corrected receipt that notes it replaces the earlier one, and keep a copy of both. An unbroken, unedited sequence is far easier to defend than a tidy one that has been quietly rewritten.",
+      },
+      {
+        h: "Keeping your receipt records tidy",
+        p: "Receipts are easy to produce and just as easy to lose track of, so a little routine goes a long way. Issue the receipt at the moment payment is received rather than batching them up later, and send the PDF to the customer by email so you both have the same copy. Store your copies by number and date, and once a month tick each one off against your bank statement or card settlements so nothing is missed.",
+        list: [
+          "Use one continuous receipt number sequence for every payment you take",
+          "Issue the receipt immediately, while the details are still fresh",
+          "Email the PDF so the customer and you hold identical copies",
+          "Reconcile receipts against your bank or card statements each month",
+          "Keep refund and correction receipts alongside the originals they relate to",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "Can a receipt replace an invoice?",
+        a: "For a sale paid at the time of purchase, yes: a receipt that lists what was bought and what was paid is usually all a private customer needs. Business customers who want to reclaim tax or process the payment through their accounts often need a proper invoice as well, so when in doubt issue an invoice and then a receipt once it is paid.",
+      },
+      {
+        q: "What is the difference between a receipt and a bank payment confirmation?",
+        a: "A bank confirmation only shows that money moved from one account to another. It says nothing about what the payment was for. A receipt from you links the payment to specific goods or services, names both parties, and carries a reference number, which is what the customer needs for a warranty, an expense claim, or a dispute.",
+      },
+      {
+        q: "How do I write a receipt for a cash payment?",
+        a: "Record the exact amount handed over, state Cash as the payment method, and note any change given if that helps the customer. Include the date, what was purchased, and your business details. Because there is no bank record of a cash sale, the receipt is the only proof for both of you, so issue one for every cash payment, however small.",
+      },
+      {
+        q: "Should I issue a receipt before the money has cleared?",
+        a: "It is safer to wait until the funds have actually arrived, especially for cheques or transfers that can take a few days. If the customer needs something straight away, you can issue a receipt that states the payment method and notes it is subject to clearance, then confirm once the money is in.",
+      },
+      {
+        q: "Does a receipt need the customer's name on it?",
+        a: "Not for a small over-the-counter sale. For anything the customer may later return, claim on a warranty, or submit as a business expense, include their name so the receipt clearly belongs to them. If a business customer asks for a receipt, ask for the company name they want on it.",
+      },
+      {
+        q: "How long should I keep copies of receipts?",
+        a: "Long enough to cover any warranty you offer and whatever record-keeping period your tax authority expects, which is commonly several years. Because the generator produces a PDF, storing copies costs nothing, so keeping every receipt is the simplest policy.",
+      },
+    ],
+  },
+
+  "quotation-generator": {
+    intro:
+      "A quotation is a firm offer to do a defined piece of work for a stated price. Unlike an estimate, which is a best guess, a quote is a number you are prepared to stand behind once the customer accepts, which is exactly why customers ask for one before committing. A well-laid-out quotation does three jobs at once: it tells the customer precisely what they will get, it protects you by spelling out what is and is not included, and it makes the decision to say yes easy. The generator on this page opens as a quotation, so you can itemise the work, add your terms and a validity date, and download a PDF ready to send.",
+    sections: [
+      {
+        h: "What a quotation commits you to",
+        p: "When a customer accepts a quotation, the price and scope on it generally become the basis of your agreement, so every word matters. The scope should describe the finished result, not just the activity: not simply painting, but two coats of emulsion to the walls and ceiling of the living room, with woodwork in satin finish, including preparation and clean-up. That level of detail is what lets you hold the price when the customer later asks whether the hallway was included.\n\nBecause the price is fixed, the quote is also where you protect yourself. List any assumptions you have made, such as access being available on weekdays or the customer supplying the paint, and state what is excluded. If something you could not inspect turns out to be worse than expected, a clear exclusion is what allows you to issue a variation rather than absorb the cost.",
+      },
+      {
+        h: "The quotation format customers expect",
+        p: "There is no single legal template, but customers and purchasing departments have come to expect a consistent set of elements. Including all of them makes the quote look professional and leaves nothing to interpret.",
+        list: [
+          "The word Quotation, a unique quote number, and the date it was issued",
+          "Your business name, address, and contact details, and the customer's name and address",
+          "A short description of the project and where the work will be carried out",
+          "Itemised lines with quantities, unit prices, and line totals for labour, materials, or deliverables",
+          "The subtotal, any tax if you are registered for VAT/GST with its rate and amount, and the total",
+          "A validity period, such as valid for 30 days from the date above",
+          "Payment terms, including any deposit, stage payments, and when the balance is due",
+          "Assumptions, exclusions, and a simple way for the customer to accept",
+        ],
+      },
+      {
+        h: "A worked example",
+        p: "Picture a landscaper quoting for a small rear garden. The quotation lists three lines: clear and level the rear garden, 1 at 480.00; supply and lay turf, 36 square metres at 9.50, totalling 342.00; and supply and fit timber edging, 18 metres at 6.00, totalling 108.00. The subtotal is 930.00. If the landscaper is registered for tax, a tax line at the applicable rate appears next; if not, the total stands at 930.00.\n\nBelow the total, the quote states that it is valid for 30 days, that a 30 percent deposit of 279.00 is payable on acceptance with the balance due on completion, and that removal of existing paving is not included. The customer can see exactly what they are buying, what it costs, and what would cost extra. In the generator above, each of these is a line item or a note, and the deposit figure can be shown as its own line or in the terms.",
+      },
+      {
+        h: "Validity periods and handling changes",
+        p: "Material prices and your own availability both shift, so every quotation should expire. Fourteen or thirty days is typical; a shorter window suits volatile materials, a longer one suits large projects that need board approval. When a customer comes back after the expiry date, you are free to requote at current prices without any awkwardness, because the quote itself said so.\n\nOnce a quote is accepted, treat it as fixed. If the customer asks for more, or you uncover something outside the stated scope, do not silently adjust the figures. Issue a written variation or a revised quotation with a new number that refers back to the original, and get it agreed before you do the extra work. That habit keeps the relationship clear and prevents the end-of-job dispute that so often starts with a verbal change.",
+      },
+      {
+        h: "Turning an accepted quote into an invoice",
+        p: "The smoothest invoicing comes from quoting well. When the job is done, your invoice should mirror the quotation line for line, carry the same figures, and reference the quote number, so the customer recognises what they agreed to and approves payment without delay. If you took a deposit, show it as a deduction so the balance is obvious. Any agreed variations appear as their own clearly described lines rather than being folded into the original items.",
+        list: [
+          "Keep the same line descriptions and prices on the invoice as on the quote",
+          "Reference the quotation number on every invoice that relates to it",
+          "Show deposits and stage payments already received as deductions",
+          "Add agreed variations as separate lines with their own descriptions",
+          "Switch the generator from quotation to invoice and reuse the same items",
+        ],
+      },
+      {
+        h: "Writing a quote that wins the work",
+        p: "A quotation is also a sales document, and the best ones are easy to say yes to. Write the scope in plain language that mirrors what the customer asked for, so they recognise their own project in it. Put the total where it is impossible to miss rather than hiding it behind pages of terms. Where there is a genuine choice, offer two or three options with their prices instead of a single take-it-or-leave-it figure. And send it quickly: a clear quote delivered the day after a site visit beats a perfect one that arrives a week later, because the customer is still engaged and has not yet asked someone else.",
+      },
+    ],
+    faqs: [
+      {
+        q: "What is the difference between a quotation and an estimate?",
+        a: "A quotation is a fixed price for a defined scope of work; once accepted, it is the figure you are expected to honour unless the scope changes. An estimate is an approximate price that may rise or fall once the work is under way. Send a quote when you can see the whole job and an estimate when there are genuine unknowns.",
+      },
+      {
+        q: "Is a quotation legally binding?",
+        a: "In most places an accepted quotation forms the basis of a contract for the price and scope it describes, which is why the wording of your scope, exclusions, and validity period matters. Rules differ by jurisdiction and by the terms you attach, so if a large project is at stake it is worth having your standard terms checked.",
+      },
+      {
+        q: "How long should a quotation be valid?",
+        a: "Most businesses use 14 or 30 days. Choose a shorter period if your material costs move quickly, and a longer one if the customer needs time for internal approval. Whatever you pick, print it on the quote so you can requote without argument once the date has passed.",
+      },
+      {
+        q: "Can I change a quotation after the customer has accepted it?",
+        a: "Only if the scope changes or something excluded on the quote turns out to be needed. In that case, issue a written variation or a revised quotation with a new number, explain what changed and why, and get agreement before doing the extra work. Changing an accepted price without a documented reason damages trust and invites a dispute.",
+      },
+      {
+        q: "Should I show tax on a quotation?",
+        a: "If you are registered for VAT/GST, yes: show the rate and the tax amount so the customer sees the full cost they will actually pay and is not surprised by the invoice. If you are not registered, make that clear so a business customer knows there is no tax to reclaim.",
+      },
+      {
+        q: "What should I do if a customer asks for a discount on my quote?",
+        a: "Rather than quietly cutting your margin, look for a change in scope that lowers the price, such as the customer handling clearance or choosing a different material. If you do offer a discount, show it as its own line against the original figures so the value of your work remains visible and the concession is clearly a one-off.",
+      },
+    ],
+  },
+
+  "estimate-generator": {
+    intro:
+      "An estimate is your professional judgement of what a job is likely to cost before all the facts are known. It is the right document when there are genuine unknowns: hidden damage behind a wall, work billed by the hour, or materials whose prices could move before you buy them. A good estimate gives the customer a realistic figure to plan around while being honest that the final bill may differ, and it sets out what would cause that difference. The generator on this page opens as an estimate, so you can itemise labour and materials, add a contingency, and download a PDF the customer can approve.",
+    sections: [
+      {
+        h: "When an estimate is the right document",
+        p: "Customers often ask for a quote when what they really need is an estimate, and giving a fixed price when you cannot see the whole job is how tradespeople lose money. Reach for an estimate whenever the final scope depends on something you will only discover once work begins, or when the work is naturally open-ended and billed by time. Make sure the document is labelled as an estimate so nobody mistakes it for a firm offer.",
+        list: [
+          "Repairs where the extent of the fault is unknown until you open things up",
+          "Hourly or day-rate work where the time required is uncertain",
+          "Projects that depend on materials whose prices fluctuate",
+          "Early-stage conversations where the customer needs a ballpark to decide whether to proceed",
+          "Jobs with several possible approaches, each with a different cost",
+        ],
+      },
+      {
+        h: "What a good estimate contains",
+        p: "An estimate should be just as carefully laid out as a quotation; the difference is in how the figures are framed, not how much care goes into them. Alongside the usual identifying details, the document needs to explain the basis of the numbers, so the customer understands why the price might change and by roughly how much.",
+        list: [
+          "The word Estimate, a reference number, and the date, so it can be matched to the later invoice",
+          "Your details and the customer's details, plus the address where the work will happen",
+          "A description of the work and the assumptions you have made about it",
+          "Itemised labour as hours or days at your rate, and materials with quantities and unit prices",
+          "A contingency line or a low-to-high range, with a note of what would push the price towards the top",
+          "If you are registered for VAT/GST, a note that tax will be added at the applicable rate",
+          "An expiry date and a statement that the final invoice will reflect the work actually carried out",
+        ],
+      },
+      {
+        h: "A worked example",
+        p: "Imagine a plumber asked to replace a kitchen mixer tap and trace a slow leak under the sink. The estimate lists labour at 3 hours times 55.00, giving 165.00; a replacement mixer tap at 95.00; and fittings and consumables at 18.00. The expected subtotal is 278.00. Because the leak might turn out to be in the pipework behind the cabinet, the plumber adds a contingency line: replacement of up to two metres of pipework if required, up to 120.00. The estimate therefore shows an expected cost of 278.00 and a likely maximum of 398.00.\n\nThe customer now knows the probable cost, the worst reasonable case, and exactly what would trigger it. If the pipework is fine, the invoice comes in at 278.00. If it is not, the plumber can point to the contingency line that was agreed in advance. In the generator above, you can enter the contingency as its own item and describe the condition in the notes.",
+      },
+      {
+        h: "Hourly estimates and not-to-exceed limits",
+        p: "When you bill by time, the estimate is really a forecast of hours. Base it on similar jobs you have done, break the work into stages and estimate each one, and then add a buffer of roughly ten to twenty percent for the things that always take longer than expected. Present the result as a range of hours multiplied by your rate, so the customer can see how the money follows the time.\n\nMany customers will happily agree to an hourly estimate if you offer a not-to-exceed limit: a cap you will not pass without their written approval. It costs you nothing if the job runs as expected, and it gives the customer the confidence to say yes. If you find yourself approaching the cap, stop and explain before continuing; a quick message at that moment is far better received than a surprise on the invoice.",
+      },
+      {
+        h: "From estimate to final invoice",
+        p: "Because the estimate is not the final price, the invoice that follows needs to explain itself. Keep the estimate number on the invoice, use the same line descriptions, and show the actual hours and materials against each. Where the figures differ from the estimate, add a short note saying why, such as the pipework contingency being used or fewer hours being needed. Customers accept variations they understand and dispute variations they do not.",
+        list: [
+          "Get the customer's agreement before doing any work that will push the bill above the estimate",
+          "Reference the estimate number and reuse its line descriptions on the invoice",
+          "Show actual quantities and hours next to each line, not just totals",
+          "Explain each difference from the estimate in a sentence",
+          "If the job came in under the estimate, say so; it builds trust for next time",
+        ],
+      },
+      {
+        h: "Common estimating mistakes",
+        p: "Most estimating errors are errors of omission rather than arithmetic. Travel time, waste disposal, parking, and the hour spent collecting materials are real costs that are easy to leave out when you are keen to win the job. Pricing materials from memory rather than checking current prices is another frequent slip, as is rounding the total down to look competitive and then absorbing the difference. Finally, an estimate without an expiry date or a list of assumptions gives you nothing to point to when circumstances change. The checklist of elements above exists precisely to catch these before the document goes out.",
+      },
+    ],
+    faqs: [
+      {
+        q: "Is an estimate legally binding?",
+        a: "Generally no: an estimate is understood to be an approximate figure that may change once the work is under way, which is why it must be clearly labelled as an estimate rather than a quotation. That said, a final bill that far exceeds the estimate without warning or explanation can still be disputed, so communicate before costs rise and keep the customer's agreement in writing.",
+      },
+      {
+        q: "How much can the final invoice differ from the estimate?",
+        a: "There is no universal rule, but many professionals aim to stay within ten to fifteen percent of the estimated figure and treat anything beyond that as something to discuss with the customer before continuing. Stating a range or a contingency on the estimate itself sets expectations and makes a higher final bill far easier to accept.",
+      },
+      {
+        q: "Should I charge for providing an estimate?",
+        a: "A simple visual estimate is usually offered free as part of winning the work. A detailed estimate that requires a survey, measurements, or diagnostic time can reasonably be charged for, provided you say so before the visit. Many businesses credit the estimate fee against the job if the customer goes ahead.",
+      },
+      {
+        q: "Should I send an estimate or a quotation?",
+        a: "Send a quotation when you can see the whole job and are comfortable committing to a fixed price. Send an estimate when there are unknowns that could change the scope, when the work is billed by time, or when the customer only needs a figure to decide whether to proceed. Labelling the document correctly protects both of you.",
+      },
+      {
+        q: "How do I show a price range on an estimate?",
+        a: "Either list the expected items and add a separate contingency line that explains what it covers, or show a low and a high figure with a sentence describing what would move the price from one to the other. Both approaches work in the generator above; the key is that the customer can see what drives the difference.",
+      },
+      {
+        q: "Do I include tax on an estimate?",
+        a: "If you are registered for VAT/GST, say so and either show the tax at the applicable rate or state clearly that it will be added to the final invoice. If you are not registered, note that no tax applies. Leaving tax unmentioned is one of the most common reasons an invoice comes as an unwelcome surprise.",
+      },
+    ],
+  },
+
 };

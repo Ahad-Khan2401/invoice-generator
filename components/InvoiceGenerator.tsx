@@ -1,154 +1,42 @@
 "use client";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import {
-  Trash2, Download, Printer, Plus, Upload, X,
-  FileText, Receipt, ClipboardList, Tag, Percent,
-  Lock, Zap, ScanLine, Landmark, CheckCircle2,
+  Download, Printer, Upload, X, FileText, Receipt, ClipboardList, Calculator,
+  Tag, Percent, Copy, FilePlus2, Save, FileJson, FolderOpen, ArrowRightLeft, AlertTriangle, ChevronDown, Crown,
 } from "lucide-react";
 import DownloadAdModal from "@/components/DownloadAdModal";
-import ProModal, { useAuth } from "@/components/ProModal";
-import { SITE } from "@/lib/config";
-
-/* ─── Types ──────────────────────────────────────── */
-interface Item  { id: number; desc: string; qty: number; rate: number }
-interface Party { name: string; email: string; phone: string; address: string }
-type DocType    = "invoice" | "receipt" | "quotation";
-type PayStatus  = "paid"    | "unpaid";
-type TaxType    = "exclusive" | "inclusive";
-type DiscType   = "%" | "fixed";
+import { useAuth } from "@/components/AuthProvider";
+import InvoicePreview from "@/components/generator/InvoicePreview";
+import ItemsEditor from "@/components/generator/ItemsEditor";
+import ClientPicker, { type ClientRow } from "@/components/generator/ClientPicker";
+import { Inp, TxtArea, Sel, Segmented, Chip, SectionTitle, Divider, Spinner } from "@/components/generator/FormControls";
+import { COLORS_FREE, COLORS_PRO, TEMPLATE_META, STATUS_CFG } from "@/components/generator/templates";
+import {
+  readProfile, writeProfile, profileFromDoc, rememberNumber, hasDetails, readSettings, writeSettings, type LocalProfile,
+} from "@/components/generator/useLocalProfile";
+import {
+  newDoc, sanitizeDoc, safeFileName, convertToInvoice, receiptFromInvoice, defaultNotes, today,
+  CURRENCIES, DOC_TYPE_INFO, type InvoiceDoc, type DocType, type Party, type TemplateKey, type PaperSize,
+} from "@/lib/invoice-doc";
+import { calcTotals, formatMoney, nextInvoiceNumber, defaultNumber, addDays } from "@/lib/invoice-math";
+import { renderPdf, downloadBlob } from "@/lib/pdf";
+import { track } from "@/lib/analytics";
 
 /* ─── Constants ──────────────────────────────────── */
-const COLORS_FREE = [
-  { hex:"#4f46e5",name:"Indigo"  }, { hex:"#0ea5e9",name:"Sky"    },
-  { hex:"#10b981",name:"Emerald" }, { hex:"#f59e0b",name:"Amber"  },
-  { hex:"#ef4444",name:"Red"     }, { hex:"#8b5cf6",name:"Violet" },
+const DOC_TYPES: { key: DocType; Icon: typeof FileText }[] = [
+  { key: "invoice",   Icon: FileText },
+  { key: "receipt",   Icon: Receipt },
+  { key: "quotation", Icon: ClipboardList },
+  { key: "estimate",  Icon: Calculator },
 ];
-const COLORS_PRO = [
-  { hex:"#0f172a",name:"Slate"   }, { hex:"#7f1d1d",name:"Crimson"},
-  { hex:"#14532d",name:"Forest"  }, { hex:"#1e3a5f",name:"Navy"   },
-  { hex:"#713f12",name:"Brown"   }, { hex:"#4a044e",name:"Purple" },
-  { hex:"#134e4a",name:"Teal"    }, { hex:"#1c1917",name:"Carbon" },
-  { hex:"#831843",name:"Rose"    }, { hex:"#1e1b4b",name:"Ink"    },
-  { hex:"#052e16",name:"Pine"    }, { hex:"#450a0a",name:"Maroon" },
-];
+const NET_TERMS = [{ label:"Net 7", days:7 }, { label:"Net 15", days:15 }, { label:"Net 30", days:30 }, { label:"Net 60", days:60 }];
+/* The document is laid out at a FIXED CSS width (paper width at 96 dpi) and only
+   visually scaled to fit the column, so the PDF is identical on a phone and a desktop. */
+const PAGE_W: Record<PaperSize, number> = { a4: 794, letter: 816 };
+const PAGE_H: Record<PaperSize, number> = { a4: 1123, letter: 1056 };
+const PREVIEW_CAP = 1050; // max on-screen preview height before shrinking further
 
-const CURRENCIES = [
-  {s:"$",l:"USD"},{s:"€",l:"EUR"},{s:"£",l:"GBP"},
-  {s:"₹",l:"INR"},{s:"₨",l:"PKR"},{s:"CA$",l:"CAD"},{s:"A$",l:"AUD"},
-];
-
-/* ─── PDF template styles (Classic = free; Minimal & Bold = Pro) ── */
-type TemplateKey = "classic" | "minimal" | "bold";
-
-const TEMPLATE_META: { key: TemplateKey; name: string; desc: string; pro: boolean }[] = [
-  { key:"classic", name:"Classic", desc:"Colour accents",   pro:false },
-  { key:"minimal", name:"Minimal", desc:"Clean & elegant",  pro:true  },
-  { key:"bold",    name:"Bold",    desc:"Colour header",    pro:true  },
-];
-
-/* Style tokens per template — the preview keeps ONE structure; only
-   these values change, so the PDF (rendered from the same DOM) follows. */
-function tplTokens(t: TemplateKey, color: string) {
-  if (t === "minimal") return {
-    stripe:false, band:false,
-    hPrimary:"#0d1117", hSecondary:"#64748b", hTertiary:"#94a3b8", hValue:"#475569",
-    docTitle:"#0d1117", docTitleSize:20,
-    logoBg:"#0d1117", logoColor:"#fff", logoShadow:"none",
-    box:false,
-    theadBg:"transparent", thColor:"#64748b", thBorder:"1.5px solid #e2e8f0",
-    totalRule:"2px solid #0d1117", totalColor:"#0d1117",
-  };
-  if (t === "bold") return {
-    stripe:false, band:true,
-    hPrimary:"#ffffff", hSecondary:"rgba(255,255,255,0.85)", hTertiary:"rgba(255,255,255,0.65)", hValue:"rgba(255,255,255,0.95)",
-    docTitle:"rgba(255,255,255,0.38)", docTitleSize:26,
-    logoBg:"rgba(255,255,255,0.95)", logoColor:color, logoShadow:"none",
-    box:true,
-    theadBg:color, thColor:"#ffffff", thBorder:"none",
-    totalRule:`2px solid ${color}`, totalColor:color,
-  };
-  return { // classic — the original look
-    stripe:true, band:false,
-    hPrimary:"#0d1117", hSecondary:"#64748b", hTertiary:"#94a3b8", hValue:"#475569",
-    docTitle:"#e8edf5", docTitleSize:28,
-    logoBg:`linear-gradient(135deg,${color},${color}bb)`, logoColor:"#fff", logoShadow:`0 4px 12px ${color}35`,
-    box:true,
-    theadBg:`${color}0d`, thColor:color, thBorder:`2px solid ${color}22`,
-    totalRule:`2px solid ${color}22`, totalColor:color,
-  };
-}
-
-const DOC_TYPES = [
-  { key:"invoice"   as DocType, label:"Invoice",   Icon:FileText,      color:"#4f46e5", desc:"Bill for services"     },
-  { key:"receipt"   as DocType, label:"Receipt",   Icon:Receipt,       color:"#10b981", desc:"Proof of payment"      },
-  { key:"quotation" as DocType, label:"Quotation", Icon:ClipboardList, color:"#f59e0b", desc:"Price estimate"        },
-];
-
-const NET_TERMS = [
-  { label:"Net 15",days:15 }, { label:"Net 30",days:30 },
-  { label:"Net 45",days:45 }, { label:"Net 60",days:60 },
-];
-
-/* ─── Helpers ────────────────────────────────────── */
-const f2    = (n:number) => n.toFixed(2);
-const today = () => new Date().toISOString().split("T")[0];
-const blank = ():Party => ({ name:"",email:"",phone:"",address:"" });
-const addDays = (dateStr:string, days:number) => {
-  const d = new Date(dateStr || Date.now());
-  d.setDate(d.getDate() + days);
-  return d.toISOString().split("T")[0];
-};
-let nextId = 2;
-
-/* localStorage key for the "remember my business" profile (see the effect below). */
-const PROFILE_KEY = "pdfbb_profile_v1";
-
-/* ─── Shared styles ──────────────────────────────── */
-const card:React.CSSProperties = {
-  background:"#ffffff", borderRadius:20,
-  border:"1px solid #e4e9f2",
-  boxShadow:"0 2px 8px rgba(0,0,0,0.04),0 8px 32px rgba(15,23,42,0.07)",
-};
-const baseInput:React.CSSProperties = {
-  width:"100%", padding:"10px 14px", fontSize:13.5,
-  border:"1.5px solid #e4e9f2", borderRadius:10,
-  background:"#fcfcfe", color:"#0d1117",
-  outline:"none", transition:"all .2s", fontFamily:"inherit",
-};
-const sectionTitle:React.CSSProperties = {
-  fontSize:11.5, fontWeight:800, letterSpacing:"0.07em",
-  textTransform:"uppercase", color:"#94a3b8",
-  display:"flex", alignItems:"center", gap:8, marginBottom:12,
-};
-const labelStyle:React.CSSProperties = {
-  display:"block", fontSize:11, fontWeight:700,
-  letterSpacing:"0.07em", textTransform:"uppercase",
-  color:"#94a3b8", marginBottom:6,
-};
-
-/* ─── Shared tokens (type scale / radius / button variants) ──
-   Collapses the form's many one-off inline styles onto one small set. ── */
-const radius = { sm:8, md:12, lg:18, pill:99 } as const;
-const btnPrimary = (accent:string, disabled?:boolean):React.CSSProperties => ({
-  display:"flex", alignItems:"center", justifyContent:"center", gap:8,
-  padding:"13px 20px", borderRadius:radius.md, border:"none",
-  background: disabled ? "#94a3b8" : accent, color:"white",
-  fontSize:14, fontWeight:700, cursor: disabled ? "not-allowed" : "pointer",
-  boxShadow: disabled ? "none" : `0 4px 16px ${accent}45`,
-  transition:"all .2s", opacity: disabled ? 0.75 : 1,
-});
-const btnOutline:React.CSSProperties = {
-  display:"flex", alignItems:"center", justifyContent:"center", gap:7,
-  padding:"13px 20px", borderRadius:radius.md, border:"1.5px solid #e4e9f2",
-  background:"white", color:"#64748b", fontSize:14, fontWeight:600,
-  cursor:"pointer", transition:"all .2s",
-};
-const btnChip = (active:boolean, accent:string):React.CSSProperties => ({
-  fontSize:9.5, fontWeight:600, padding:"3px 6px", borderRadius:6,
-  border: active ? `1.5px solid ${accent}` : "1px solid #e4e9f2",
-  background: active ? `${accent}0f` : "white",
-  color: active ? accent : "#64748b", cursor:"pointer", transition:"all .15s",
-});
+function isDefaultNumber(no: string) { return /^(INV|RCT|QUO|EST)-0*1$/.test(no); }
 
 /* ══════════════════════════════════════════════════════
    MAIN COMPONENT
@@ -157,537 +45,490 @@ export default function InvoiceGenerator({
   heading,
   subheading,
   defaultCurrency,
+  defaultDocType = "invoice",
 }: {
   heading?: React.ReactNode;
   subheading?: React.ReactNode;
   defaultCurrency?: string;
+  defaultDocType?: DocType;
 } = {}) {
+  const { user, isLoggedIn, isPro, isLoaded, limits, openModal } = useAuth();
 
-  /* ── State ── */
-  const [from,       setFrom]       = useState<Party>(blank());
-  const [to,         setTo]         = useState<Party>(blank());
-  const [docType,    setDocType]    = useState<DocType>("invoice");
-  const [status,     setStatus]     = useState<PayStatus>("unpaid");
-  const [taxType,    setTaxType]    = useState<TaxType>("exclusive");
-  const [discType,   setDiscType]   = useState<DiscType>("%");
-  const [discount,   setDiscount]   = useState(0);
-  const [meta,       setMeta]       = useState({
-    no:"INV-001", date:today(), due:"",
-    notes:"Payment due within 30 days. Thank you for your business!",
-    bankDetails:"",
-    signNote:"This is a computer-generated document and does not require a signature.",
-  });
-  const [items,      setItems]      = useState<Item[]>([{id:1,desc:"",qty:1,rate:0}]);
-  const [tax,        setTax]        = useState(0);
-  const [cur,        setCur]        = useState(
-    CURRENCIES.find((c) => c.s === defaultCurrency) ?? CURRENCIES[0]
-  );
-  const [color,      setColor]      = useState(COLORS_FREE[0].hex);
-  const [template,   setTemplate]   = useState<TemplateKey>("classic");
-  const [brandLogo,  setBrandLogo]  = useState<string|null>(null);
-  const [wmLogo,     setWmLogo]     = useState<string|null>(null);
-  const [busy,       setBusy]       = useState(false);
-  // Ad modal shown on Download / Print (user-initiated, never gates the action)
-  const [adModal, setAdModal] = useState<{ open: boolean; status: "working" | "done"; action: "download" | "print" }>({
+  /* ── Document state ── */
+  const [doc, setDoc] = useState<InvoiceDoc>(() => newDoc({
+    docType: defaultDocType,
+    cur: CURRENCIES.find((c) => c.s === defaultCurrency) ?? CURRENCIES[0],
+  }));
+  const [savedId, setSavedId] = useState<string | null>(null);
+  const [ready, setReady] = useState(false);
+  const [profileSaved, setProfileSaved] = useState(false);
+  const [settings, setSettings] = useState({ saveToDashboard: true });
+  const [busy, setBusy] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [toast, setToast] = useState("");
+  const [pages, setPages] = useState(1);
+  const [adModal, setAdModal] = useState<{ open: boolean; status: "working" | "done" | "error"; action: "download" | "print"; saved?: boolean }>({
     open: false, status: "working", action: "download",
   });
-  const [proModalOpen,   setProModalOpen]   = useState(false);
-  const [paymentTrigger, setPaymentTrigger] = useState(false);
-  const { user, isLoggedIn, isPro, isLoaded, justPaid, signIn } = useAuth();
-
-  // Auto-open modal after payment redirect or "pdfbb:openSignIn" event
-  useEffect(() => {
-    if (justPaid) { setPaymentTrigger(true); setProModalOpen(true); }
-  }, [justPaid]);
-
-  useEffect(() => {
-    const handler = () => setProModalOpen(true);
-    window.addEventListener("pdfbb:openSignIn", handler);
-    return () => window.removeEventListener("pdfbb:openSignIn", handler);
-  }, []);
-
-  // /?pro=upgrade (from /pricing or the dashboard) → open the Pro modal
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("pro") === "upgrade") {
-      window.history.replaceState({}, "", window.location.pathname);
-      setProModalOpen(true);
-    }
-  }, []);
-
-  /* ── "Remember my business" ─────────────────────────────────────────
-     Every free invoice generator makes you retype your OWN details on every
-     visit — which is the main reason nobody comes back for a second invoice.
-     We persist only the sender's side (never the client, never the line items)
-     to this device's localStorage. Still no account, still nothing uploaded,
-     but the second invoice takes seconds instead of minutes.
-  ───────────────────────────────────────────────────────────────────── */
-  const [profileSaved, setProfileSaved] = useState(false);
-  const profileReady = useRef(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    // A dashboard "re-edit" (?load=) wins — don't overwrite it with the profile.
-    if (new URLSearchParams(window.location.search).get("load")) {
-      profileReady.current = true;
-      return;
-    }
-    try {
-      const raw = window.localStorage.getItem(PROFILE_KEY);
-      if (raw) {
-        const p = JSON.parse(raw) as Partial<{
-          from: Party; brandLogo: string | null; curLabel: string;
-          color: string; bankDetails: string; notes: string;
-        }>;
-        if (p.from?.name || p.from?.email) {
-          setFrom({ ...blank(), ...p.from });
-          setProfileSaved(true);
-        }
-        if (p.brandLogo) setBrandLogo(p.brandLogo);
-        if (p.color)     setColor(p.color);
-        if (p.curLabel)  setCur((c) => CURRENCIES.find((x) => x.l === p.curLabel) ?? c);
-        if (p.bankDetails || p.notes) {
-          setMeta((m) => ({
-            ...m,
-            bankDetails: p.bankDetails ?? m.bankDetails,
-            notes:       p.notes       ?? m.notes,
-          }));
-        }
-      }
-    } catch { /* private mode or corrupt JSON — just start with a blank form */ }
-    profileReady.current = true;
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !profileReady.current) return;
-    const hasDetails = from.name || from.email || from.phone || from.address;
-    try {
-      if (!hasDetails) {
-        window.localStorage.removeItem(PROFILE_KEY);
-        setProfileSaved(false);
-        return;
-      }
-      window.localStorage.setItem(PROFILE_KEY, JSON.stringify({
-        from,
-        // data-URL logos can be huge; skip anything that would blow the ~5MB quota
-        brandLogo: brandLogo && brandLogo.length < 500_000 ? brandLogo : null,
-        curLabel:  cur.l,
-        color,
-        bankDetails: meta.bankDetails,
-        notes:       meta.notes,
-      }));
-      setProfileSaved(true);
-    } catch { /* quota exceeded — not worth interrupting the user over */ }
-  }, [from, brandLogo, cur, color, meta.bankDetails, meta.notes]);
-
-  const clearProfile = useCallback(() => {
-    try { window.localStorage.removeItem(PROFILE_KEY); } catch { /* ignore */ }
-    setFrom(blank());
-    setBrandLogo(null);
-    setProfileSaved(false);
-  }, []);
-
-  // /?load=<id> (dashboard "re-edit") → restore the saved invoice into the form
-  useEffect(() => {
-    if (typeof window === "undefined" || !isLoaded || !user?.token) return;
-    const params = new URLSearchParams(window.location.search);
-    const loadId = params.get("load");
-    if (!loadId) return;
-    window.history.replaceState({}, "", window.location.pathname);
-
-    fetch(`/api/invoices?id=${encodeURIComponent(loadId)}`, {
-      headers: { Authorization: `Bearer ${user.token}` },
-    })
-      .then(r => (r.ok ? r.json() : null))
-      .then(res => {
-        const d = res?.invoice?.data;
-        if (!d) return;
-        if (d.from)  setFrom(d.from);
-        if (d.to)    setTo(d.to);
-        if (d.meta)  setMeta(m => ({ ...m, ...d.meta }));
-        if (Array.isArray(d.items) && d.items.length) setItems(d.items);
-        if (typeof d.tax === "number")      setTax(d.tax);
-        if (d.taxType)                      setTaxType(d.taxType);
-        if (typeof d.discount === "number") setDiscount(d.discount);
-        if (d.discType)                     setDiscType(d.discType);
-        if (d.docType)                      setDocType(d.docType);
-        if (d.status)                       setStatus(d.status);
-        if (d.cur?.l) setCur(CURRENCIES.find(c => c.l === d.cur.l) ?? d.cur);
-        if (d.color)  setColor(d.color);
-        // Pro-only templates fall back to Classic if the user is no longer Pro
-        if (d.template) {
-          const m = TEMPLATE_META.find(t => t.key === d.template);
-          if (m && (!m.pro || isPro)) setTemplate(d.template);
-        }
-      })
-      .catch(() => {}); // silent — worst case the form simply starts empty
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, user?.token]);
 
   const previewRef = useRef<HTMLDivElement>(null);
   const wrapRef    = useRef<HTMLDivElement>(null);
+  const colRef     = useRef<HTMLDivElement>(null);
+  const startedRef = useRef(false);
+  const importRef  = useRef<HTMLInputElement>(null);
+  const profileRef = useRef<LocalProfile | null>(null);
 
-  /* ── Calculations ── */
-  const subtotal    = items.reduce((s,i) => s + i.qty*i.rate, 0);
-  const discAmt     = discType==="%"
-    ? subtotal * discount / 100
-    : Math.min(discount, subtotal);
-  const afterDisc   = subtotal - discAmt;
-  const taxAmt      = taxType==="exclusive" ? afterDisc * tax / 100 : 0;
-  const total       = afterDisc + taxAmt;
-  const docCfg      = DOC_TYPES.find(d=>d.key===docType)!;
-  const showStatus  = docType !== "quotation";
-  const tpl         = tplTokens(template, color);
+  const patch = useCallback((p: Partial<InvoiceDoc>) => setDoc((d) => ({ ...d, ...p })), []);
+  const setMeta = useCallback((p: Partial<InvoiceDoc["meta"]>) => setDoc((d) => ({ ...d, meta: { ...d.meta, ...p } })), []);
+  const setFrom = useCallback((p: Partial<Party>) => setDoc((d) => ({ ...d, from: { ...d.from, ...p } })), []);
+  const setTo   = useCallback((p: Partial<Party>) => setDoc((d) => ({ ...d, to: { ...d.to, ...p } })), []);
 
-  /* ── Item helpers ── */
-  const addItem    = () => setItems(p=>[...p,{id:nextId++,desc:"",qty:1,rate:0}]);
-  const removeItem = (id:number) => setItems(p=>p.filter(i=>i.id!==id));
-  const editItem   = (id:number, f:keyof Item, v:string|number) =>
-    setItems(p=>p.map(i=>i.id===id ? {...i,[f]:v} : i));
+  const started = () => { if (!startedRef.current) { startedRef.current = true; track("generator_started", { doc_type: doc.docType }); } };
+  const flash = (m: string) => { setToast(m); window.setTimeout(() => setToast(""), 2600); };
 
-  const readFile = (file:File, cb:(url:string)=>void) => {
-    const r = new FileReader();
-    r.onload = e => cb(e.target?.result as string);
-    r.readAsDataURL(file);
-  };
+  /* ── Initial load: local profile + URL actions (?load / ?dup) ── */
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const loadId = params.get("load");
+    const dupId  = params.get("dup");
+    const stored = readProfile();
+    profileRef.current = stored;
+    const st = readSettings();
 
-  /* ── Auto-scale preview to fit A4 ── */
-  const autoScale = useCallback(() => {
-    const el = previewRef.current;
-    const wrap = wrapRef.current;
-    if (!el || !wrap) return;
-    // Reset first to measure natural height
-    el.style.transform = "none";
-    el.style.width = "100%";
-    wrap.style.height = "auto";
-
-    requestAnimationFrame(() => {
-      const natural = el.scrollHeight;
-      const A4_PX   = 1050; // A4 at typical screen DPI
-      if (natural > A4_PX) {
-        const s = A4_PX / natural;
-        el.style.transform      = `scale(${s})`;
-        el.style.transformOrigin= "top left";
-        el.style.width          = `${(100/s).toFixed(2)}%`;
-        wrap.style.height       = `${A4_PX}px`;
-        wrap.style.overflow     = "hidden";
+    queueMicrotask(() => {
+      setSettings(st);
+      if (stored && !loadId && !dupId) {
+        setDoc((d) => {
+          const lastNo = stored.lastNos?.[d.docType];
+          return {
+            ...d,
+            from: hasDetails(stored.from) ? stored.from : d.from,
+            brandLogo: stored.brandLogo ?? d.brandLogo,
+            cur: (defaultCurrency ? d.cur : CURRENCIES.find((c) => c.l === stored.cur.l)) ?? d.cur,
+            color: stored.color || d.color,
+            taxLabel: stored.taxLabel || d.taxLabel,
+            tax: stored.tax ?? d.tax,
+            paper: stored.paper ?? d.paper,
+            meta: {
+              ...d.meta,
+              bankDetails: stored.bankDetails || d.meta.bankDetails,
+              notes: stored.notes || d.meta.notes,
+              no: lastNo ? nextInvoiceNumber(lastNo) : d.meta.no,
+            },
+          };
+        });
+        setProfileSaved(hasDetails(stored.from));
       }
+      setReady(true);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => { autoScale(); },
+  /* ── ?load=<id> / ?dup=<id> (dashboard re-edit / duplicate) ── */
+  useEffect(() => {
+    if (!isLoaded || !user?.token) return;
+    const params = new URLSearchParams(window.location.search);
+    const loadId = params.get("load");
+    const dupId  = params.get("dup");
+    const id = loadId ?? dupId;
+    if (!id) return;
+    window.history.replaceState({}, "", window.location.pathname);
+
+    fetch(`/api/invoices?id=${encodeURIComponent(id)}`, { headers: { Authorization: `Bearer ${user.token}` } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((res) => {
+        const d = res?.invoice?.data;
+        if (!d) { flash("Couldn't load that document"); return; }
+        let loaded = sanitizeDoc(d);
+        // Pro-only templates fall back to Classic if the user is no longer on a paid plan
+        const m = TEMPLATE_META.find((t) => t.key === loaded.template);
+        if (m?.pro && !limits.premiumTemplates) loaded = { ...loaded, template: "classic" };
+        if (dupId) {
+          loaded = { ...loaded, meta: { ...loaded.meta, no: nextInvoiceNumber(loaded.meta.no), date: today(), due: "" }, status: loaded.docType === "receipt" ? "paid" : "unpaid" };
+          setSavedId(null);
+          flash("Duplicated — review and download");
+        } else {
+          setSavedId(id);
+        }
+        setDoc(loaded);
+      })
+      .catch(() => flash("Couldn't load that document"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [items, from, to, meta, tax, taxType, discount, discType, cur, color, wmLogo, brandLogo, docType, status]);
+  }, [isLoaded, user?.token]);
+
+  /* ── Persist "remember my business" locally ── */
+  useEffect(() => {
+    if (!ready) return;
+    const t = window.setTimeout(() => {
+      if (!hasDetails(doc.from)) {
+        // keep settings-only profile (numbers etc.) but drop sender details
+        const prev = profileRef.current;
+        const next = prev ? { ...profileFromDoc(doc, prev), from: { name: "", email: "", phone: "", address: "" }, brandLogo: null } : null;
+        profileRef.current = next; writeProfile(next); setProfileSaved(false); return;
+      }
+      const next = profileFromDoc(doc, profileRef.current);
+      profileRef.current = next; writeProfile(next); setProfileSaved(true);
+    }, 400);
+    return () => window.clearTimeout(t);
+  }, [ready, doc]);
+
+  /* ── Signed-in: sync business profile + clients from the server ── */
+  const [clients, setClients] = useState<ClientRow[]>([]);
+  const [clientsLimit, setClientsLimit] = useState<number | null>(null);
+  const [savingClient, setSavingClient] = useState(false);
+  const syncedTokenRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!isLoaded || !user?.token || syncedTokenRef.current === user.token) return;
+    syncedTokenRef.current = user.token;
+    const auth = { Authorization: `Bearer ${user.token}` };
+    fetch("/api/clients", { headers: auth }).then((r) => r.ok ? r.json() : null).then((j) => {
+      if (j?.clients) { setClients(j.clients); setClientsLimit(j.limit ?? null); }
+    }).catch(() => {});
+    fetch("/api/profile", { headers: auth }).then((r) => r.ok ? r.json() : null).then((j) => {
+      const p = j?.profiles?.[0]?.data;
+      if (!p) return;
+      // Server profile fills in only when this device has no business details yet.
+      setDoc((d) => hasDetails(d.from) ? d : {
+        ...d,
+        from: { ...d.from, ...(p.from ?? {}) },
+        brandLogo: d.brandLogo ?? p.brandLogo ?? null,
+        cur: CURRENCIES.find((c) => c.l === p.cur?.l) ?? d.cur,
+        color: p.color ?? d.color,
+        taxLabel: p.taxLabel || d.taxLabel,
+        tax: typeof p.tax === "number" ? p.tax : d.tax,
+        meta: { ...d.meta, bankDetails: p.bankDetails || d.meta.bankDetails, notes: p.notes || d.meta.notes },
+      });
+    }).catch(() => {});
+  }, [isLoaded, user?.token]);
+
+  // Debounced push of the business profile to the server (signed-in only)
+  useEffect(() => {
+    if (!ready || !user?.token || !hasDetails(doc.from)) return;
+    const t = window.setTimeout(() => {
+      fetch("/api/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${user.token}` },
+        body: JSON.stringify({ name: doc.from.name || "My business", data: {
+          from: doc.from, brandLogo: doc.brandLogo && doc.brandLogo.length < 400_000 ? doc.brandLogo : null,
+          color: doc.color, cur: doc.cur, bankDetails: doc.meta.bankDetails, notes: doc.meta.notes, taxLabel: doc.taxLabel, tax: doc.tax,
+        } }),
+      }).catch(() => {});
+    }, 2500);
+    return () => window.clearTimeout(t);
+  }, [ready, user?.token, doc.from, doc.brandLogo, doc.color, doc.cur, doc.meta.bankDetails, doc.meta.notes, doc.taxLabel, doc.tax]);
+
+  /* ── Derived ── */
+  const totals = useMemo(() => calcTotals(doc.items, { discount: doc.discount, discType: doc.discType, taxRate: doc.tax, taxType: doc.taxType }), [doc.items, doc.discount, doc.discType, doc.tax, doc.taxType]);
+  const info = DOC_TYPE_INFO[doc.docType];
+  const color = doc.color;
+  const isQuote = doc.docType === "quotation" || doc.docType === "estimate";
+  const showStatus = doc.docType === "invoice";
+  const whiteLabel = isLoaded && limits.whiteLabel;
+  const money = (n: number) => formatMoney(n, doc.cur.s, doc.cur.l);
+
+  const warnings = useMemo(() => {
+    const w: string[] = [];
+    if (!doc.from.name.trim()) w.push("Add your business or personal name so the client knows who is billing them.");
+    if (!doc.to.name.trim()) w.push(`Add the client's name under “${doc.docType === "receipt" ? "Received from" : "Bill to"}”.`);
+    if (!doc.items.some((i) => i.desc.trim())) w.push("Describe at least one line item.");
+    if (totals.total <= 0) w.push("The total is zero — check quantities and rates.");
+    if (doc.meta.due && doc.meta.date && doc.meta.due < doc.meta.date) w.push(`The ${isQuote ? "valid-until" : "due"} date is before the issue date.`);
+    if (doc.discType === "fixed" && doc.discount > totals.subtotal && totals.subtotal > 0) w.push("The fixed discount is larger than the subtotal, so it has been capped.");
+    if (doc.items.some((i) => i.qty < 0 || i.rate < 0)) w.push("An item has a negative quantity or rate — double-check it is intentional (e.g. a credit).");
+    return w;
+  }, [doc, totals, isQuote]);
+
+  /* ── Auto-scale preview to fit one page; estimate page count ── */
+  const autoScale = useCallback(() => {
+    const el = previewRef.current, wrap = wrapRef.current, col = colRef.current;
+    if (!el || !wrap || !col) return;
+    const pageW = PAGE_W[doc.paper];
+    el.style.transform = "none"; el.style.width = `${pageW}px`; wrap.style.height = "auto";
+    requestAnimationFrame(() => {
+      const natural = el.scrollHeight;
+      setPages(Math.max(1, Math.ceil((natural - 2) / PAGE_H[doc.paper])));
+      const colW = col.clientWidth || pageW;
+      // Fit the fixed-width page into the column, and shrink further so a long
+      // document still shows in full on screen (the PDF is never shrunk).
+      const s = Math.min(1, colW / pageW, PREVIEW_CAP / natural);
+      el.style.transform = `scale(${s})`; el.style.transformOrigin = "top left";
+      wrap.style.height = `${Math.ceil(natural * s)}px`; wrap.style.overflow = "hidden";
+    });
+  }, [doc.paper]);
+  useEffect(() => { autoScale(); }, [doc, whiteLabel, autoScale]);
+  useEffect(() => {
+    let lastW = 0;
+    const ro = new ResizeObserver((entries) => {
+      const w = Math.round(entries[0]?.contentRect.width ?? 0);
+      if (w && w !== lastW) { lastW = w; autoScale(); }
+    });
+    if (colRef.current) ro.observe(colRef.current);
+    return () => ro.disconnect();
+  }, [autoScale]);
+
+  /* ── Save to dashboard ── */
+  async function saveToServer(isDraft: boolean): Promise<boolean> {
+    if (!user?.token) return false;
+    try {
+      const res = await fetch("/api/invoices", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${user.token}` },
+        body: JSON.stringify({
+          id: savedId ?? undefined,
+          invoice_no: doc.meta.no, doc_type: doc.docType, client_name: doc.to.name,
+          total: totals.total, currency: doc.cur.l, is_draft: isDraft, data: doc,
+        }),
+      });
+      const j = await res.json();
+      if (j?.saved && j.id) { setSavedId(j.id); return true; }
+      return false;
+    } catch { return false; }
+  }
 
   /* ── PDF download ── */
   async function downloadPDF() {
-    const el   = previewRef.current;
-    const wrap = wrapRef.current;
+    const el = previewRef.current, wrap = wrapRef.current;
     if (!el) return;
     setBusy(true);
+    const saved = { tx: el.style.transform, txo: el.style.transformOrigin, w: el.style.width, wh: wrap?.style.height ?? "", wov: wrap?.style.overflow ?? "" };
+    el.style.transform = "none"; el.style.transformOrigin = "top left"; el.style.width = `${PAGE_W[doc.paper]}px`;
+    if (wrap) { wrap.style.height = "auto"; wrap.style.overflow = "visible"; }
+    await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
 
-    // Save ALL scale-related styles (el + wrapper)
-    const savedTx   = el.style.transform;
-    const savedTxO  = el.style.transformOrigin;
-    const savedW    = el.style.width;
-    const savedWH   = wrap ? wrap.style.height   : "";
-    const savedWOv  = wrap ? wrap.style.overflow  : "";
-
-    // Expand to natural size so html2canvas captures the full document
-    el.style.transform       = "none";
-    el.style.transformOrigin = "top left";
-    el.style.width           = "100%";
-    if (wrap) {
-      wrap.style.height   = "auto";
-      wrap.style.overflow = "visible";
-    }
-
-    // Two animation frames: first lets React flush, second lets browser reflow
-    await new Promise<void>(res =>
-      requestAnimationFrame(() => requestAnimationFrame(() => res()))
-    );
-
-    let downloadOk = false;
+    let ok = false, didSave = false;
     try {
-      // html2canvas-pro: drop-in replacement that supports Tailwind v4
-      // lab()/oklch() color functions (html2canvas v1 hangs on them)
-      const [{default:jsPDF},{default:html2canvas}] = await Promise.all([
-        import("jspdf"), import("html2canvas-pro"),
-      ]);
-      const canvas = await html2canvas(el, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: "#ffffff",
-        logging: false,
+      const blob = await renderPdf(el, {
+        paper: doc.paper,
+        fileName: safeFileName(doc.meta.no, doc.docType, "pdf"),
+        title: `${info.label} ${doc.meta.no}`.trim(),
+        subject: doc.to.name ? `${info.label} for ${doc.to.name}` : info.label,
       });
-      const pdf = new jsPDF({ unit:"mm", format:"a4" });
-      const pw  = pdf.internal.pageSize.getWidth();
-      const ph  = pdf.internal.pageSize.getHeight();
-      const ih  = (canvas.height * pw) / canvas.width;
-
-      if (ih <= ph) {
-        // Single page
-        pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, pw, ih);
-      } else {
-        // Multi-page split
-        const pageCanvas = document.createElement("canvas");
-        const pxPerMm    = canvas.width / pw;
-        const pageHpx    = ph * pxPerMm;
-        let   y          = 0;
-        while (y < canvas.height) {
-          const sliceH = Math.min(pageHpx, canvas.height - y);
-          pageCanvas.width  = canvas.width;
-          pageCanvas.height = sliceH;
-          const ctx = pageCanvas.getContext("2d")!;
-          ctx.drawImage(canvas, 0, y, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
-          if (y > 0) pdf.addPage();
-          pdf.addImage(pageCanvas.toDataURL("image/png"), "PNG", 0, 0, pw, sliceH / pxPerMm);
-          y += pageHpx;
-        }
-      }
-
-      // Reliable cross-browser download via Blob URL
-      const blob = pdf.output("blob");
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement("a");
-      a.href     = url;
-      a.download = `${meta.no || docType}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 2000);
-      downloadOk = true;
-
-      // Auto-save to dashboard (signed-in users only — fire-and-forget)
-      if (user?.token) {
-        fetch("/api/invoices", {
-          method:  "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${user.token}` },
-          body: JSON.stringify({
-            invoice_no:  meta.no,
-            doc_type:    docType,
-            client_name: to.name,
-            total,
-            currency: cur.l,
-            data: { from, to, meta, items, tax, taxType, discount, discType, docType, status, cur, color, template },
-          }),
-        }).catch(() => {}); // silent — dashboard is a convenience, not critical
-      }
+      track("pdf_generated", { doc_type: doc.docType, template: doc.template, paper: doc.paper, items: doc.items.length, pages });
+      downloadBlob(blob, safeFileName(doc.meta.no, doc.docType, "pdf"));
+      track("pdf_downloaded", { doc_type: doc.docType, signed_in: isLoggedIn });
+      ok = true;
+      rememberNumber(doc.docType, doc.meta.no);
+      if (user?.token && settings.saveToDashboard) didSave = await saveToServer(false);
     } catch (e) {
       console.error("PDF generation failed:", e);
     } finally {
-      // Restore preview transform/layout styles
-      el.style.transform       = savedTx;
-      el.style.transformOrigin = savedTxO;
-      el.style.width           = savedW;
-      if (wrap) {
-        wrap.style.height   = savedWH;
-        wrap.style.overflow = savedWOv;
-      }
+      el.style.transform = saved.tx; el.style.transformOrigin = saved.txo; el.style.width = saved.w;
+      if (wrap) { wrap.style.height = saved.wh; wrap.style.overflow = saved.wov; }
       setBusy(false);
-      // Only mark modal "done" if download actually succeeded
-      if (downloadOk) {
-        setAdModal(m => m.open ? { ...m, status: "done" } : m);
-      } else {
-        setAdModal({ open: false, status: "working", action: "download" });
-      }
+      setAdModal((m) => m.open ? { ...m, status: ok ? "done" : "error", saved: didSave } : m);
     }
   }
 
-  /* ── User-initiated actions: open the ad modal, then run the action.
-        The download/print ALWAYS proceeds — it is never gated by the ad. ── */
   function startDownload() {
-    // Pro users skip the ad modal entirely
-    if (isPro) { downloadPDF(); return; }
     setAdModal({ open: true, status: "working", action: "download" });
-    downloadPDF();
+    void downloadPDF();
   }
   function startPrint() {
-    if (isPro) { setTimeout(() => window.print(), 50); return; }
+    track("print_started", { doc_type: doc.docType });
     setAdModal({ open: true, status: "working", action: "print" });
-    setTimeout(() => {
-      window.print();
-      setAdModal(m => m.open ? { ...m, status: "done" } : m);
-    }, 400);
+    window.setTimeout(() => { window.print(); setAdModal((m) => m.open ? { ...m, status: "done" } : m); }, 400);
   }
 
-  /* ── Status config ── */
-  const stCfg = {
-    paid:   { label:"✓ Paid",  color:"#16a34a", bg:"#dcfce7", border:"#bbf7d0" },
-    unpaid: { label:"Unpaid",  color:"#b45309", bg:"#fef3c7", border:"#fde68a" },
+  /* ── Document actions ── */
+  function changeDocType(t: DocType) {
+    started();
+    track("document_type_selected", { doc_type: t });
+    setDoc((d) => ({
+      ...d,
+      docType: t,
+      status: t === "receipt" ? "paid" : d.status,
+      meta: {
+        ...d.meta,
+        no: isDefaultNumber(d.meta.no) ? defaultNumber(t) : d.meta.no,
+        notes: d.meta.notes === defaultNotes(d.docType) ? defaultNotes(t) : d.meta.notes,
+        due: t === "receipt" ? "" : d.meta.due,
+      },
+    }));
+  }
+  function chooseTemplate(t: TemplateKey, locked: boolean) {
+    if (locked) { openModal("upgrade", `template_${t}`); return; }
+    track("template_selected", { template: t });
+    patch({ template: t });
+  }
+  function startNew() {
+    const no = nextInvoiceNumber(doc.meta.no);
+    setDoc((d) => newDoc({ docType: d.docType, from: d.from, brandLogo: d.brandLogo, cur: d.cur, color: d.color, template: d.template, paper: d.paper, tax: d.tax, taxLabel: d.taxLabel, taxType: d.taxType,
+      meta: { ...newDoc({ docType: d.docType }).meta, no, bankDetails: d.meta.bankDetails, notes: d.meta.notes, signNote: d.meta.signNote } }));
+    setSavedId(null); setMoreOpen(false);
+    flash(`New ${info.label.toLowerCase()} ${no}`);
+  }
+  function duplicate() {
+    setDoc((d) => ({ ...d, meta: { ...d.meta, no: nextInvoiceNumber(d.meta.no), date: today(), due: "" }, status: d.docType === "receipt" ? "paid" : "unpaid" }));
+    setSavedId(null); setMoreOpen(false);
+    flash("Duplicated with the next number");
+  }
+  function exportJson() {
+    const blob = new Blob([JSON.stringify(doc, null, 2)], { type: "application/json" });
+    downloadBlob(blob, safeFileName(doc.meta.no, doc.docType, "json"));
+    track("document_exported", { doc_type: doc.docType });
+    setMoreOpen(false);
+  }
+  function importJson(file: File) {
+    const r = new FileReader();
+    r.onload = (e) => {
+      try {
+        const parsed = JSON.parse(String(e.target?.result ?? "{}"));
+        setDoc(sanitizeDoc(parsed, doc)); setSavedId(null);
+        track("document_imported", {});
+        flash("Document restored from file");
+      } catch { flash("That file isn't a valid PDF Bill Builder export"); }
+    };
+    r.readAsText(file);
+    setMoreOpen(false);
+  }
+  async function saveDraft() {
+    if (!isLoggedIn) { openModal("choose", "save_draft"); return; }
+    setMoreOpen(false);
+    const ok = await saveToServer(true);
+    track("draft_saved", { ok });
+    flash(ok ? "Draft saved to your dashboard" : "Couldn't save — history may be unavailable");
+  }
+  function convert() {
+    if (isQuote) { setDoc(convertToInvoice(doc)); flash("Converted to an invoice"); }
+    else if (doc.docType === "invoice") { setDoc(receiptFromInvoice({ ...doc, status: "paid" })); flash("Receipt created from this invoice"); }
+    setSavedId(null); setMoreOpen(false);
+  }
+
+  const readFile = (file: File, cb: (url: string) => void) => {
+    if (!file.type.startsWith("image/")) { flash("Please choose an image file"); return; }
+    if (file.size > 2_000_000) { flash("Image is too large — please use one under 2 MB"); return; }
+    const r = new FileReader();
+    r.onload = (e) => cb(e.target?.result as string);
+    r.readAsDataURL(file);
   };
 
-  /* ─── Inline input focus helpers ─── */
-  const focusIn  = (e:React.FocusEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>) => {
-    e.currentTarget.style.borderColor  = color;
-    e.currentTarget.style.boxShadow    = `0 0 0 3px ${color}18`;
-    e.currentTarget.style.background   = "white";
-  };
-  const focusOut = (e:React.FocusEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>) => {
-    e.currentTarget.style.borderColor  = "#e4e9f2";
-    e.currentTarget.style.boxShadow    = "none";
-    e.currentTarget.style.background   = "#fcfcfe";
-  };
+  async function saveClient(): Promise<"saved" | "limit" | "error"> {
+    if (!user?.token) return "error";
+    setSavingClient(true);
+    try {
+      const res = await fetch("/api/clients", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${user.token}` }, body: JSON.stringify(doc.to) });
+      const j = await res.json();
+      if (j?.saved) {
+        setClients((cs) => {
+          const rest = cs.filter((c) => c.id !== j.id && c.name.toLowerCase() !== doc.to.name.trim().toLowerCase());
+          return [...rest, { id: j.id, ...doc.to }].sort((a, b) => a.name.localeCompare(b.name));
+        });
+        return "saved";
+      }
+      return j?.reason === "limit" ? "limit" : "error";
+    } catch { return "error"; } finally { setSavingClient(false); }
+  }
+
+  const st = STATUS_CFG[doc.docType === "receipt" ? "paid" : doc.status];
 
   /* ══════ RENDER ══════ */
   return (
-    <div className="ig-root" style={{ minHeight:"100vh", background:"linear-gradient(160deg,#f0f4ff 0%,#f8faff 60%,#faf5ff 100%)" }}>
+    <div className="ig-root">
 
       {/* ── Hero ── */}
-      <div className="ig-hero" style={{ textAlign:"center", padding:"52px 24px 34px" }}>
-        <div style={{
-          display:"inline-flex", alignItems:"center", gap:8, padding:"6px 14px",
-          borderRadius:99, marginBottom:20, background:"rgba(79,70,229,0.06)",
-          border:"1px solid rgba(79,70,229,0.14)",
-        }}>
-          <span style={{ width:7,height:7,borderRadius:"50%",background:"#22c55e",display:"inline-block",boxShadow:"0 0 0 3px rgba(34,197,94,0.18)" }}/>
-          <span style={{ fontSize:12.5,fontWeight:600,color:"#4338ca" }}>
-            Free forever — no signup, no watermark
-          </span>
+      <div className="ig-hero">
+        <div className="ig-hero__pill">
+          <span className="ig-hero__dot" aria-hidden="true" />
+          Free forever · no signup · no watermark
         </div>
-        <h1 style={{ fontSize:"clamp(32px,5vw,54px)",fontWeight:900,letterSpacing:"-0.04em",color:"#0d1117",lineHeight:1.1,marginBottom:14,maxWidth:640,marginLeft:"auto",marginRight:"auto",textWrap:"balance" as const }}>
-          {heading ?? (
-            <>Invoices, done in <span style={{ color:"#4f46e5" }}>two minutes</span>.</>
-          )}
+        <h1 className="ig-hero__h1">
+          {heading ?? <>Free PDF Invoice Generator</>}
         </h1>
-        <p style={{ fontSize:"clamp(15px,1.6vw,17px)",color:"#475569",maxWidth:500,margin:"0 auto 24px",lineHeight:1.6,textWrap:"pretty" as const }}>
+        <p className="ig-hero__sub">
           {subheading ?? (
-            <>
-              Fill in the details, watch the live preview, and download a clean PDF
-              invoice, receipt, or quotation — right from your browser.
-            </>
+            <>Create professional invoices, bills, receipts and quotations in your browser. Fill in the form, watch the live preview update, and download a clean PDF — no account needed.</>
           )}
         </p>
-        <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:"10px 22px",flexWrap:"wrap" }}>
-          {["100% private — stays in your browser","Instant PDF & clean print","Works in any currency"].map(t=>(
-            <span key={t} style={{ display:"inline-flex",alignItems:"center",gap:7,fontSize:13,color:"#475569",fontWeight:500 }}>
+        <ul className="ig-hero__trust" aria-label="Key benefits">
+          {["Private — your data stays in your browser", "Live preview, A4 or US Letter PDF", "Works in any currency, tax inclusive or exclusive"].map((t) => (
+            <li key={t}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
               {t}
-            </span>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
 
-      {/* ── Two-column ── */}
-      <div className="ig-toolwrap" style={{ maxWidth:1200,margin:"0 auto" }}>
+      {/* ── Two-column tool ── */}
+      <div className="ig-toolwrap">
         <div className="ig-grid grid grid-cols-1 lg:grid-cols-[500px_1fr] gap-8 items-start">
 
           {/* ══════════════ FORM CARD ══════════════ */}
-          <div className="ig-form" style={card}>
+          <section className="ig-form ig-card" aria-label="Document details form" onInput={started}>
 
-            {/* Header */}
-            <div className="ig-formhead" style={{ borderBottom:"1px solid #f0f3fa",display:"flex",alignItems:"center",justifyContent:"space-between" }}>
+            <div className="ig-formhead">
               <div>
-                <p style={{ fontSize:17,fontWeight:800,color:"#0d1117",letterSpacing:"-0.02em" }}>Document Details</p>
-                <p style={{ fontSize:12,color:"#9ca3af",marginTop:2 }}>Fill in the details below</p>
+                <h2 className="ig-formhead__title">{info.label} details</h2>
+                <p className="ig-formhead__sub">Changes appear in the preview instantly</p>
               </div>
-              <div style={{ display:"flex",gap:7,flexWrap:"wrap",alignItems:"center" }}>
-                <span style={{ fontSize:10.5,fontWeight:700,color:"#94a3b8",marginRight:2 }}>Colour</span>
-                {COLORS_FREE.map(c=>(
-                  <button key={c.hex} title={c.name} aria-label={`Set theme colour to ${c.name}`} aria-pressed={color===c.hex}
-                    onClick={()=>setColor(c.hex)} style={{
-                    width:21,height:21,borderRadius:"50%",background:c.hex,border:"none",cursor:"pointer",
-                    boxShadow: color===c.hex ? `0 0 0 2.5px #fff,0 0 0 4.5px ${c.hex}` : "none",
-                    transform: color===c.hex ? "scale(1.2)" : "scale(1)", transition:"all .2s",
-                  }}/>
+              <div className="ig-colors" role="radiogroup" aria-label="Brand colour">
+                {COLORS_FREE.map((c) => (
+                  <button key={c.hex} type="button" role="radio" title={c.name} aria-label={c.name} aria-checked={color === c.hex}
+                    onClick={() => patch({ color: c.hex })} className="ig-colorbtn" style={{ background: c.hex, boxShadow: color === c.hex ? `0 0 0 2.5px #fff,0 0 0 4.5px ${c.hex}` : "none", transform: color === c.hex ? "scale(1.15)" : "none" }} />
                 ))}
-                {isPro
-                  ? COLORS_PRO.map(c=>(
-                    <button key={c.hex} title={c.name} aria-label={`Set theme colour to ${c.name}`} aria-pressed={color===c.hex}
-                      onClick={()=>setColor(c.hex)} style={{
-                      width:21,height:21,borderRadius:"50%",background:c.hex,border:"none",cursor:"pointer",
-                      boxShadow: color===c.hex ? `0 0 0 2.5px #fff,0 0 0 4.5px ${c.hex}` : "none",
-                      transform: color===c.hex ? "scale(1.2)" : "scale(1)", transition:"all .2s",
-                    }}/>
+                {limits.premiumColours
+                  ? COLORS_PRO.map((c) => (
+                    <button key={c.hex} type="button" role="radio" title={c.name} aria-label={c.name} aria-checked={color === c.hex}
+                      onClick={() => patch({ color: c.hex })} className="ig-colorbtn" style={{ background: c.hex, boxShadow: color === c.hex ? `0 0 0 2.5px #fff,0 0 0 4.5px ${c.hex}` : "none", transform: color === c.hex ? "scale(1.15)" : "none" }} />
                   ))
                   : (
-                    <button title="Unlock 12 Pro colours" onClick={()=>setProModalOpen(true)} style={{
-                      fontSize:9,fontWeight:800,padding:"3px 7px",borderRadius:6,border:"1.5px dashed #c4b5fd",
-                      background:"#f5f3ff",color:"#7c3aed",cursor:"pointer",letterSpacing:"0.06em",
-                    }}>✦ PRO</button>
-                  )
-                }
+                    <button type="button" title="Unlock 12 premium colours with Pro" onClick={() => openModal("upgrade", "pro_colours")} className="ig-probadge">✦ 12 more</button>
+                  )}
               </div>
             </div>
 
-            {/* Scrollable body */}
             <div className="ig-formbody">
 
-              {/* ── Document Type ── */}
-              <div style={{ marginBottom:22 }}>
-                <p style={sectionTitle}><Accent c={color}/>Document Type</p>
-                <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10 }}>
-                  {DOC_TYPES.map(dt=>{
-                    const active = docType===dt.key;
+              {/* ── Document type ── */}
+              <div className="ig-block">
+                <SectionTitle accent={color}>Document type</SectionTitle>
+                <div className="ig-typegrid" role="radiogroup" aria-label="Document type">
+                  {DOC_TYPES.map(({ key, Icon }) => {
+                    const active = doc.docType === key; const i = DOC_TYPE_INFO[key];
                     return (
-                      <button key={dt.key} onClick={()=>setDocType(dt.key)} style={{
-                        padding:"12px 6px",borderRadius:12,border:"1.5px solid",
-                        borderColor: active ? dt.color : "#e4e9f2",
-                        background:  active ? `${dt.color}0f` : "white",
-                        cursor:"pointer",transition:"all .2s",
-                        display:"flex",flexDirection:"column",alignItems:"center",gap:5,
-                      }}>
-                        <dt.Icon size={16} style={{ color: active?dt.color:"#94a3b8",transition:"color .2s" }}/>
-                        <span style={{ fontSize:12.5,fontWeight:700,color:active?dt.color:"#64748b" }}>{dt.label}</span>
-                        <span style={{ fontSize:10,color:active?dt.color+"99":"#94a3b8",textAlign:"center",lineHeight:1.3 }}>{dt.desc}</span>
+                      <button key={key} type="button" role="radio" aria-checked={active} onClick={() => changeDocType(key)} className="ig-tile"
+                        style={{ borderColor: active ? i.color : undefined, background: active ? `${i.color}0f` : undefined }}>
+                        <Icon size={16} aria-hidden="true" style={{ color: active ? i.color : "#64748b" }} />
+                        <span style={{ color: active ? i.color : "#334155", fontWeight: 700, fontSize: 12.5 }}>{i.label}</span>
+                        <span className="ig-tile__desc">{i.desc}</span>
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* ── Template style (Classic free · Minimal/Bold Pro) ── */}
-              <div style={{ marginBottom:22 }}>
-                <p style={sectionTitle}><Accent c={color}/>Template Style</p>
-                <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10 }}>
-                  {TEMPLATE_META.map(t=>{
-                    const active = template===t.key;
-                    const locked = t.pro && !isPro;
+              {/* ── Template style ── */}
+              <div className="ig-block">
+                <SectionTitle accent={color}>Template style</SectionTitle>
+                <div className="ig-tplgrid" role="radiogroup" aria-label="PDF template">
+                  {TEMPLATE_META.map((t) => {
+                    const active = doc.template === t.key; const locked = t.pro && !limits.premiumTemplates;
                     return (
-                      <button key={t.key}
-                        title={locked ? `${t.name} — Pro template` : t.name}
-                        onClick={()=> locked ? setProModalOpen(true) : setTemplate(t.key)}
-                        style={{
-                          padding:"11px 6px",borderRadius:12,border:"1.5px solid",
-                          borderColor: active ? color : "#e4e9f2",
-                          background:  active ? `${color}0f` : "white",
-                          cursor:"pointer",transition:"all .2s",position:"relative",
-                          display:"flex",flexDirection:"column",alignItems:"center",gap:4,
-                        }}>
-                        {locked && (
-                          <span style={{
-                            position:"absolute",top:6,right:6,fontSize:8,fontWeight:800,
-                            padding:"2px 5px",borderRadius:5,background:"#f5f3ff",
-                            color:"#7c3aed",border:"1px dashed #c4b5fd",letterSpacing:"0.05em",
-                          }}>✦ PRO</span>
-                        )}
-                        <span style={{ fontSize:12.5,fontWeight:700,color: active ? color : (locked ? "#94a3b8" : "#64748b") }}>{t.name}</span>
-                        <span style={{ fontSize:10,color: active ? `${color}99` : "#94a3b8",textAlign:"center",lineHeight:1.3 }}>{t.desc}</span>
+                      <button key={t.key} type="button" role="radio" aria-checked={active} className="ig-tile"
+                        title={locked ? `${t.name} — Pro template` : t.name} onClick={() => chooseTemplate(t.key, locked)}
+                        style={{ borderColor: active ? color : undefined, background: active ? `${color}0f` : undefined }}>
+                        {locked && <span className="ig-tile__pro">✦ PRO</span>}
+                        <span style={{ fontSize: 12.5, fontWeight: 700, color: active ? color : locked ? "#64748b" : "#334155" }}>{t.name}</span>
+                        <span className="ig-tile__desc">{t.desc}</span>
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* ── Payment Status (invoice & receipt only) ── */}
+              {/* ── Payment status (invoice only) ── */}
               {showStatus && (
-                <div style={{ marginBottom:22 }}>
-                  <p style={sectionTitle}><Accent c={color}/>Payment Status</p>
-                  <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:10 }}>
-                    {(["unpaid","paid"] as PayStatus[]).map(s=>{
-                      const cfg = stCfg[s]; const active = status===s;
+                <div className="ig-block">
+                  <SectionTitle accent={color}>Payment status</SectionTitle>
+                  <div className="ig-grid2" role="radiogroup" aria-label="Payment status">
+                    {(["unpaid", "paid"] as const).map((s) => {
+                      const cfg = STATUS_CFG[s]; const active = doc.status === s;
                       return (
-                        <button key={s} onClick={()=>setStatus(s)} style={{
-                          padding:"11px 10px",borderRadius:12,border:"1.5px solid",
-                          borderColor: active ? cfg.border : "#e4e9f2",
-                          background:  active ? cfg.bg     : "white",
-                          cursor:"pointer",transition:"all .2s",
-                          display:"flex",alignItems:"center",justifyContent:"center",gap:8,
-                        }}>
-                          <span style={{ fontSize:15 }}>{s==="paid"?"✅":"⏳"}</span>
-                          <span style={{ fontSize:13,fontWeight:700,color:active?cfg.color:"#94a3b8" }}>{cfg.label}</span>
+                        <button key={s} type="button" role="radio" aria-checked={active} onClick={() => patch({ status: s })} className="ig-tile ig-tile--row"
+                          style={{ borderColor: active ? cfg.border : undefined, background: active ? cfg.bg : undefined }}>
+                          <span aria-hidden="true" style={{ fontSize: 15 }}>{s === "paid" ? "✅" : "⏳"}</span>
+                          <span style={{ fontSize: 13, fontWeight: 700, color: active ? cfg.color : "#64748b" }}>{cfg.label}</span>
                         </button>
                       );
                     })}
@@ -695,633 +536,298 @@ export default function InvoiceGenerator({
                 </div>
               )}
 
-              <Divider/>
+              <Divider />
 
-              {/* ── Doc # + Currency ── */}
-              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,margin:"20px 0" }}>
-                <Fld label={`${docCfg.label} #`}>
-                  <Inp value={meta.no} placeholder="INV-001" accent={color} fi={focusIn} fo={focusOut}
-                    onChange={v=>setMeta(p=>({...p,no:v}))}/>
-                </Fld>
-                <Fld label="Currency">
-                  <select value={cur.s} onChange={e=>setCur(CURRENCIES.find(c=>c.s===e.target.value)!)}
-                    style={{ ...baseInput,cursor:"pointer" }} onFocus={focusIn} onBlur={focusOut}>
-                    {CURRENCIES.map(c=><option key={c.s} value={c.s}>{c.s} — {c.l}</option>)}
-                  </select>
-                </Fld>
+              {/* ── Number · Currency · PO ── */}
+              <div className="ig-grid2" style={{ margin: "20px 0 16px" }}>
+                <Inp label={`${info.label} number`} value={doc.meta.no} placeholder={defaultNumber(doc.docType)} accent={color}
+                  onChange={(v) => setMeta({ no: v })} hint="Auto-increments for your next document" />
+                <Sel label="Currency" value={doc.cur.l} accent={color} onChange={(v) => patch({ cur: CURRENCIES.find((c) => c.l === v) ?? doc.cur })}>
+                  {CURRENCIES.map((c) => <option key={c.l} value={c.l}>{c.l} — {c.s}</option>)}
+                </Sel>
               </div>
 
-              {/* ── Dates + Net Terms ── */}
-              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:20 }}>
-                <Fld label="Date">
-                  <Inp type="date" value={meta.date} accent={color} fi={focusIn} fo={focusOut}
-                    onChange={v=>setMeta(p=>({...p,date:v}))}/>
-                </Fld>
-                {docType!=="receipt" && (
-                  <Fld label="Due Date">
-                    <div style={{ position:"relative" }}>
-                      <Inp type="date" value={meta.due} accent={color} fi={focusIn} fo={focusOut}
-                        onChange={v=>setMeta(p=>({...p,due:v}))}/>
-                      <div style={{ display:"flex",gap:3,marginTop:6,flexWrap:"wrap" }}>
-                        {NET_TERMS.map(t=>(
-                          <button key={t.label} onClick={()=>setMeta(p=>({...p,due:addDays(p.date,t.days)}))}
-                            style={btnChip(false, color)}
-                            onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.borderColor=color;(e.currentTarget as HTMLElement).style.color=color;}}
-                            onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.borderColor="#e4e9f2";(e.currentTarget as HTMLElement).style.color="#64748b";}}>
-                            {t.label}
-                          </button>
-                        ))}
-                      </div>
+              {/* ── Dates ── */}
+              <div className="ig-grid2" style={{ marginBottom: 16 }}>
+                <Inp type="date" label={doc.docType === "receipt" ? "Payment date" : "Issue date"} value={doc.meta.date} accent={color} onChange={(v) => setMeta({ date: v })} />
+                {doc.docType !== "receipt" && (
+                  <div>
+                    <Inp type="date" label={isQuote ? "Valid until" : "Due date"} value={doc.meta.due} accent={color} onChange={(v) => setMeta({ due: v })}
+                      error={doc.meta.due && doc.meta.date && doc.meta.due < doc.meta.date ? "Before the issue date" : undefined} />
+                    <div style={{ display: "flex", gap: 4, marginTop: 6, flexWrap: "wrap" }} aria-label="Quick payment terms">
+                      {NET_TERMS.map((t) => (
+                        <Chip key={t.label} accent={color} onClick={() => setMeta({ due: addDays(doc.meta.date, t.days) })} active={!!doc.meta.date && doc.meta.due === addDays(doc.meta.date, t.days)} title={`Due ${t.days} days after the issue date`}>
+                          {isQuote ? `${t.days} days` : t.label}
+                        </Chip>
+                      ))}
                     </div>
-                  </Fld>
+                  </div>
                 )}
               </div>
+              {doc.docType === "invoice" && (
+                <div style={{ marginBottom: 16 }}>
+                  <Inp label="PO / reference number" value={doc.meta.poNumber} placeholder="Optional — e.g. PO-4471" accent={color} onChange={(v) => setMeta({ poNumber: v })} />
+                </div>
+              )}
 
-              <Divider/>
+              <Divider />
 
               {/* ── From + Bill To ── */}
-              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:20,margin:"20px 0 22px" }}>
-                {/* FROM */}
+              <div className="ig-twocol" style={{ margin: "20px 0 22px" }}>
                 <div>
-                  <p style={sectionTitle}><Accent c={color}/>From (You)</p>
-                  {/* Brand Logo Upload */}
-                  <div style={{ marginBottom:10 }}>
-                    {brandLogo ? (
-                      <div style={{ position:"relative",display:"inline-block" }}>
-                        <img src={brandLogo} alt="Brand" style={{ height:44,maxWidth:110,objectFit:"contain",borderRadius:8,border:"1.5px solid #e4e9f2",padding:4,background:"white" }}/>
-                        <button onClick={()=>setBrandLogo(null)} style={{ position:"absolute",top:-6,right:-6,width:18,height:18,borderRadius:"50%",background:"#ef4444",border:"2px solid white",color:"white",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",padding:0 }}>
-                          <X size={10}/>
-                        </button>
+                  <SectionTitle accent={color}>From (you)</SectionTitle>
+                  <div style={{ marginBottom: 10 }}>
+                    {doc.brandLogo ? (
+                      <div style={{ position: "relative", display: "inline-block" }}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={doc.brandLogo} alt="Your logo" style={{ height: 44, maxWidth: 110, objectFit: "contain", borderRadius: 8, border: "1.5px solid #e4e9f2", padding: 4, background: "white" }} />
+                        <button type="button" onClick={() => patch({ brandLogo: null })} aria-label="Remove logo" className="ig-removebadge"><X size={10} aria-hidden="true" /></button>
                       </div>
                     ) : (
-                      <label style={{ display:"flex",alignItems:"center",gap:6,padding:"8px 12px",border:"1.5px dashed #e4e9f2",borderRadius:10,cursor:"pointer",fontSize:11.5,color:"#94a3b8",fontWeight:500,transition:"all .2s" }}
-                        onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.borderColor=color;(e.currentTarget as HTMLElement).style.color=color;(e.currentTarget as HTMLElement).style.background=`${color}07`;}}
-                        onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.borderColor="#e4e9f2";(e.currentTarget as HTMLElement).style.color="#94a3b8";(e.currentTarget as HTMLElement).style.background="transparent";}}>
-                        <Upload size={12}/> Upload Brand Logo
-                        <input type="file" accept="image/*" style={{ display:"none" }} onChange={e=>{const f=e.target.files?.[0];if(f)readFile(f,setBrandLogo);}}/>
+                      <label className="ig-upload" style={{ ["--accent" as string]: color }}>
+                        <Upload size={12} aria-hidden="true" /> Upload logo
+                        <input type="file" accept="image/*" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) readFile(f, (u) => patch({ brandLogo: u })); e.target.value = ""; }} />
                       </label>
                     )}
                   </div>
-                  <div style={{ display:"flex",flexDirection:"column",gap:13 }}>
-                    <Inp value={from.name}    placeholder="Your Name"    accent={color} fi={focusIn} fo={focusOut} onChange={v=>setFrom(p=>({...p,name:v}))}/>
-                    <Inp type="email" value={from.email}  placeholder="Email"         accent={color} fi={focusIn} fo={focusOut} onChange={v=>setFrom(p=>({...p,email:v}))}/>
-                    <Inp value={from.phone}   placeholder="Phone"         accent={color} fi={focusIn} fo={focusOut} onChange={v=>setFrom(p=>({...p,phone:v}))}/>
-                    <TxtArea value={from.address} placeholder="Address"  accent={color} fi={focusIn} fo={focusOut} onChange={v=>setFrom(p=>({...p,address:v}))}/>
+                  <div className="ig-stack">
+                    <Inp label="Your name or business" srOnly value={doc.from.name} placeholder="Your name or business" accent={color} autoComplete="organization" onChange={(v) => setFrom({ name: v })} />
+                    <Inp type="email" label="Your email" srOnly value={doc.from.email} placeholder="Email" accent={color} autoComplete="email" onChange={(v) => setFrom({ email: v })} />
+                    <Inp type="tel" label="Your phone" srOnly value={doc.from.phone} placeholder="Phone" accent={color} autoComplete="tel" onChange={(v) => setFrom({ phone: v })} />
+                    <TxtArea label="Your address" srOnly value={doc.from.address} placeholder="Address" accent={color} onChange={(v) => setFrom({ address: v })} />
                     {profileSaved && (
-                      <p style={{ display:"flex",alignItems:"center",gap:5,flexWrap:"wrap",margin:0,fontSize:10.5,fontWeight:600,color:"#94a3b8",lineHeight:1.4 }}>
-                        <span style={{ color:"#10b981",fontWeight:800 }}>✓</span>
-                        Saved on this device — your next invoice starts pre-filled.
-                        <button type="button" onClick={clearProfile}
-                          style={{ background:"none",border:"none",padding:0,cursor:"pointer",fontFamily:"inherit",fontSize:10.5,fontWeight:700,color:"#94a3b8",textDecoration:"underline" }}>
-                          Clear
-                        </button>
+                      <p className="ig-saved">
+                        <span style={{ color: "#15803d", fontWeight: 800 }}>✓</span>
+                        {isLoggedIn ? "Saved to your account — your next document starts pre-filled." : "Saved on this device — your next document starts pre-filled."}
+                        <button type="button" onClick={() => { patch({ from: { name: "", email: "", phone: "", address: "" }, brandLogo: null }); }} className="ig-linkbtn">Clear</button>
                       </p>
                     )}
                   </div>
                 </div>
-                {/* BILL TO */}
                 <div>
-                  <p style={sectionTitle}><Accent c={color}/>{docType==="receipt"?"Received From":"Bill To"}</p>
-                  <div style={{ display:"flex",flexDirection:"column",gap:13,marginTop:58 }}>
-                    <Inp value={to.name}    placeholder="Client Name"   accent={color} fi={focusIn} fo={focusOut} onChange={v=>setTo(p=>({...p,name:v}))}/>
-                    <Inp type="email" value={to.email}  placeholder="Client Email"  accent={color} fi={focusIn} fo={focusOut} onChange={v=>setTo(p=>({...p,email:v}))}/>
-                    <Inp value={to.phone}   placeholder="Client Phone"  accent={color} fi={focusIn} fo={focusOut} onChange={v=>setTo(p=>({...p,phone:v}))}/>
-                    <TxtArea value={to.address} placeholder="Address"   accent={color} fi={focusIn} fo={focusOut} onChange={v=>setTo(p=>({...p,address:v}))}/>
+                  <SectionTitle accent={color}>{doc.docType === "receipt" ? "Received from" : isQuote ? "Prepared for" : "Bill to"}</SectionTitle>
+                  {isLoggedIn && (
+                    <div style={{ marginBottom: 10 }}>
+                      <ClientPicker clients={clients} current={doc.to} accent={color} limit={clientsLimit} saving={savingClient}
+                        locked={false} onUpgrade={() => openModal("upgrade", "clients_limit")}
+                        onPick={(c) => setTo({ name: c.name, email: c.email, phone: c.phone, address: c.address })} onSave={saveClient} />
+                    </div>
+                  )}
+                  <div className="ig-stack">
+                    <Inp label="Client name" srOnly value={doc.to.name} placeholder="Client name" accent={color} onChange={(v) => setTo({ name: v })} />
+                    <Inp type="email" label="Client email" srOnly value={doc.to.email} placeholder="Client email" accent={color} onChange={(v) => setTo({ email: v })} />
+                    <Inp type="tel" label="Client phone" srOnly value={doc.to.phone} placeholder="Client phone" accent={color} onChange={(v) => setTo({ phone: v })} />
+                    <TxtArea label="Client address" srOnly value={doc.to.address} placeholder="Client address" accent={color} onChange={(v) => setTo({ address: v })} />
                   </div>
                 </div>
               </div>
 
-              <Divider/>
+              <Divider />
 
               {/* ── Items ── */}
-              <div style={{ margin:"20px 0" }}>
-                <p style={sectionTitle}><Accent c={color}/>Items & Services</p>
+              <div className="ig-block" style={{ marginTop: 20 }}>
+                <SectionTitle accent={color}>Items &amp; services</SectionTitle>
+                <ItemsEditor items={doc.items} lines={totals.lines} cur={doc.cur} accent={color} onChange={(update) => setDoc((d) => ({ ...d, items: update(d.items) }))} />
 
-                <div style={{ border:"1.5px solid #f0f3fa",borderRadius:12,overflow:"hidden" }}>
-                  {/* Head — with S.No */}
-                  <div style={{ display:"grid",gridTemplateColumns:"24px 1fr 44px 64px 60px 24px",padding:"9px 12px",background:"#f8fafc",borderBottom:"1.5px solid #f0f3fa" }}>
-                    {["#","Description","Qty","Rate","Amount",""].map((h,i)=>(
-                      <span key={i} style={{ fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.07em",color:"#9ca3af",textAlign:(i===2?"center":i>=3?"right":"left") as "center"|"right"|"left" }}>
-                        {h}
+                {/* Discount */}
+                <div className="ig-subcard" style={{ marginTop: 12 }}>
+                  <div className="ig-subcard__row">
+                    <span className="ig-subcard__label"><Tag size={13} aria-hidden="true" /> Discount</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <Segmented label="Discount type" size="sm" accent={color} value={doc.discType} onChange={(v) => patch({ discType: v })}
+                        options={[{ value: "%", label: "%" }, { value: "fixed", label: doc.cur.s }]} />
+                      <input type="number" inputMode="decimal" min="0" step="any" aria-label="Discount value" value={doc.discount || ""} placeholder="0"
+                        onChange={(e) => patch({ discount: Math.max(0, parseFloat(e.target.value) || 0) })} className="ig-input ig-input--mini" />
+                      <span style={{ fontSize: 12.5, fontWeight: 600, color: "#dc2626", fontVariantNumeric: "tabular-nums", minWidth: 60, textAlign: "right" }}>
+                        {totals.discount > 0 ? `−${money(totals.discount)}` : "—"}
                       </span>
-                    ))}
-                  </div>
-                  {/* Rows */}
-                  <>
-                    {items.map((item,idx)=>(
-                      <div key={item.id} className="ig-itemrow"
-                        style={{ display:"grid",gridTemplateColumns:"24px 1fr 44px 64px 60px 24px",alignItems:"center",padding:"9px 12px",borderBottom:"1px solid #f8fafc",background:"white" }}>
-                        {/* S.No */}
-                        <span style={{ fontSize:11,fontWeight:700,color:"#c4c9d4",textAlign:"center" }}>{idx+1}</span>
-                        <input style={{ background:"transparent",border:"none",outline:"none",fontSize:13,color:"#374151",width:"100%",fontFamily:"inherit" }}
-                          placeholder={`Item ${idx+1}`} value={item.desc} onChange={e=>editItem(item.id,"desc",e.target.value)}/>
-                        <input type="number" min="0" style={{ background:"transparent",border:"none",outline:"none",fontSize:13,color:"#374151",textAlign:"center",width:"100%",fontFamily:"inherit" }}
-                          value={item.qty} onChange={e=>editItem(item.id,"qty",+e.target.value||0)}/>
-                        <input type="number" min="0" step="0.01" style={{ background:"transparent",border:"none",outline:"none",fontSize:13,color:"#374151",textAlign:"right",width:"100%",fontFamily:"inherit" }}
-                          value={item.rate} onChange={e=>editItem(item.id,"rate",+e.target.value||0)}/>
-                        <span style={{ fontSize:13,fontWeight:700,color:"#0d1117",textAlign:"right",fontVariantNumeric:"tabular-nums" }}>
-                          {cur.s}{f2(item.qty*item.rate)}
-                        </span>
-                        <button onClick={()=>removeItem(item.id)}
-                          style={{ display:"flex",alignItems:"center",justifyContent:"center",width:22,height:22,borderRadius:6,border:"none",background:"transparent",color:"#d1d5db",cursor:"pointer",visibility:items.length===1?"hidden":"visible",transition:"all .15s" }}
-                          onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#fef2f2";(e.currentTarget as HTMLElement).style.color="#ef4444";}}
-                          onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="transparent";(e.currentTarget as HTMLElement).style.color="#d1d5db";}}>
-                          <Trash2 size={11}/>
-                        </button>
-                      </div>
-                    ))}
-                  </>
-                  <div style={{ padding:"9px 12px",borderTop:"1px solid #f8fafc" }}>
-                    <button onClick={addItem} style={{ display:"flex",alignItems:"center",gap:6,fontSize:13,fontWeight:600,color,background:"transparent",border:"none",cursor:"pointer" }}
-                      onMouseEnter={e=>(e.currentTarget as HTMLElement).style.opacity="0.7"}
-                      onMouseLeave={e=>(e.currentTarget as HTMLElement).style.opacity="1"}>
-                      <span style={{ width:17,height:17,borderRadius:"50%",border:`2px solid ${color}`,display:"flex",alignItems:"center",justifyContent:"center" }}>
-                        <Plus size={9} strokeWidth={3}/>
-                      </span>
-                      Add Item
-                    </button>
+                    </div>
                   </div>
                 </div>
 
-                {/* ── Discount ── */}
-                <div style={{ marginTop:12,padding:"12px 14px",background:"#f8fafc",borderRadius:10,border:"1.5px solid #f0f3fa" }}>
-                  <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",gap:10 }}>
-                    <span style={{ fontSize:12.5,color:"#64748b",display:"flex",alignItems:"center",gap:8 }}>
-                      <Tag size={13} style={{ color:"#94a3b8" }}/> Discount
-                      {/* % / Fixed toggle */}
-                      <span style={{ display:"flex",borderRadius:6,overflow:"hidden",border:"1px solid #e4e9f2" }}>
-                        {(["%","fixed"] as DiscType[]).map(t=>(
-                          <button key={t} onClick={()=>setDiscType(t)} style={{
-                            fontSize:10.5,fontWeight:700,padding:"3px 8px",border:"none",cursor:"pointer",transition:"all .15s",
-                            background: discType===t ? color : "white",
-                            color:      discType===t ? "white" : "#94a3b8",
-                          }}>{t==="%" ? "%" : "Fixed"}</button>
-                        ))}
-                      </span>
-                      <input type="number" min="0" value={discount||""} placeholder="0"
-                        onChange={e=>setDiscount(+e.target.value||0)}
-                        style={{ width:60,padding:"4px 8px",textAlign:"center",fontSize:12,border:"1.5px solid #e4e9f2",borderRadius:8,fontFamily:"inherit",background:"white",outline:"none",color:"#374151" }}/>
-                    </span>
-                    <span style={{ fontSize:12.5,fontWeight:600,color:"#ef4444",fontVariantNumeric:"tabular-nums" }}>
-                      {discAmt>0 ? `−${cur.s}${f2(discAmt)}` : "—"}
+                {/* Tax */}
+                <div className="ig-subcard" style={{ marginTop: 10 }}>
+                  <div className="ig-subcard__row" style={{ marginBottom: 10 }}>
+                    <span className="ig-subcard__label"><Percent size={13} aria-hidden="true" /> Tax</span>
+                    <Segmented label="Tax type" size="sm" accent={color} value={doc.taxType} onChange={(v) => patch({ taxType: v })}
+                      options={[{ value: "exclusive", label: "Added on top" }, { value: "inclusive", label: "Included in prices" }]} />
+                  </div>
+                  <div className="ig-subcard__row">
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                      <Sel label="Tax label" srOnly value={["Tax", "VAT", "GST", "HST", "Sales tax", "IVA", "TVA", "MwSt."].includes(doc.taxLabel) ? doc.taxLabel : "Tax"} accent={color} onChange={(v) => patch({ taxLabel: v })}>
+                        {["Tax", "VAT", "GST", "HST", "Sales tax", "IVA", "TVA", "MwSt."].map((l) => <option key={l} value={l}>{l}</option>)}
+                      </Sel>
+                      <input type="number" inputMode="decimal" min="0" max="100" step="any" aria-label="Tax rate percent" placeholder="0" value={doc.tax || ""}
+                        onChange={(e) => patch({ tax: Math.max(0, Math.min(1000, parseFloat(e.target.value) || 0)) })} className="ig-input ig-input--mini" />
+                      <span style={{ fontSize: 12.5, color: "#64748b" }}>%</span>
+                    </div>
+                    <span style={{ fontWeight: 600, color: "#334155", fontVariantNumeric: "tabular-nums", fontSize: 13 }}>
+                      {doc.taxType === "exclusive" ? money(totals.tax) : doc.tax > 0 ? `incl. ${money(totals.taxIncluded)}` : "—"}
                     </span>
                   </div>
-                </div>
-
-                {/* ── Tax ── */}
-                <div style={{ marginTop:10,padding:"12px 14px",background:"#f8fafc",borderRadius:10,border:"1.5px solid #f0f3fa" }}>
-                  {/* Tax type toggle */}
-                  <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10 }}>
-                    <span style={{ fontSize:12,fontWeight:700,color:"#64748b",display:"flex",alignItems:"center",gap:8 }}>
-                      <Percent size={13} style={{ color:"#94a3b8" }}/> Tax Type
-                    </span>
-                    <div style={{ display:"flex",borderRadius:8,overflow:"hidden",border:"1.5px solid #e4e9f2" }}>
-                      {([
-                        { k:"exclusive" as TaxType, label:"Exclusive" },
-                        { k:"inclusive" as TaxType, label:"Inclusive" },
-                      ]).map(t=>(
-                        <button key={t.k} onClick={()=>setTaxType(t.k)} style={{
-                          fontSize:11,fontWeight:700,padding:"5px 12px",border:"none",cursor:"pointer",transition:"all .15s",
-                          background: taxType===t.k ? color : "white",
-                          color:      taxType===t.k ? "white" : "#94a3b8",
-                        }}>{t.label}</button>
-                      ))}
-                    </div>
-                  </div>
-                  {taxType==="exclusive" ? (
-                    <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",fontSize:13,color:"#64748b" }}>
-                      <span style={{ display:"flex",alignItems:"center",gap:10 }}>
-                        Tax Rate (%)
-                        <input type="number" min="0" max="100" placeholder="0" value={tax||""}
-                          onChange={e=>setTax(+e.target.value||0)}
-                          style={{ width:52,padding:"4px 8px",textAlign:"center",fontSize:12,border:"1.5px solid #e4e9f2",borderRadius:8,fontFamily:"inherit",background:"white",outline:"none",color:"#374151" }}/>
-                      </span>
-                      <span style={{ fontWeight:600,color:"#374151",fontVariantNumeric:"tabular-nums" }}>{cur.s}{f2(taxAmt)}</span>
-                    </div>
-                  ) : (
-                    <div style={{ display:"flex",alignItems:"center",gap:6,fontSize:12,color:"#10b981",fontWeight:600,padding:"6px 10px",background:"#f0fdf4",borderRadius:8,border:"1px solid #bbf7d0" }}>
-                      ✓ All taxes are included in the prices above
-                    </div>
+                  {doc.taxType === "inclusive" && (
+                    <p className="ig-note ig-note--ok">✓ Prices already include {doc.taxLabel || "tax"}; the PDF shows the included amount for the client&apos;s records.</p>
                   )}
                 </div>
 
-                {/* ── Total box ── */}
-                <div style={{ marginTop:10,padding:"14px 16px",background:"white",borderRadius:12,border:"1.5px solid #f0f3fa",boxShadow:"0 2px 8px rgba(0,0,0,0.03)" }}>
-                  {discount>0 && (
-                    <div style={{ display:"flex",justifyContent:"space-between",fontSize:12.5,color:"#94a3b8",marginBottom:8 }}>
-                      <span>Subtotal</span>
-                      <span style={{ fontWeight:600,color:"#475569",fontVariantNumeric:"tabular-nums" }}>{cur.s}{f2(subtotal)}</span>
-                    </div>
+                {/* Totals */}
+                <div className="ig-totalbox" aria-live="polite">
+                  {(totals.discount > 0 || (doc.taxType === "exclusive" && doc.tax > 0)) && (
+                    <div className="ig-totalrow"><span>Subtotal</span><span>{money(totals.subtotal)}</span></div>
                   )}
-                  {discount>0 && (
-                    <div style={{ display:"flex",justifyContent:"space-between",fontSize:12.5,color:"#ef4444",marginBottom:8 }}>
-                      <span>Discount {discType==="%"?`(${discount}%)`:`(Fixed)`}</span>
-                      <span style={{ fontWeight:600,fontVariantNumeric:"tabular-nums" }}>−{cur.s}{f2(discAmt)}</span>
-                    </div>
+                  {totals.discount > 0 && (
+                    <div className="ig-totalrow" style={{ color: "#dc2626" }}><span>Discount {doc.discType === "%" ? `(${doc.discount}%)` : ""}</span><span>−{money(totals.discount)}</span></div>
                   )}
-                  {taxType==="exclusive" && tax>0 && (
-                    <div style={{ display:"flex",justifyContent:"space-between",fontSize:12.5,color:"#94a3b8",paddingBottom:10,borderBottom:"1px solid #f0f3fa",marginBottom:10 }}>
-                      <span>Tax ({tax}%)</span>
-                      <span style={{ fontWeight:600,color:"#475569",fontVariantNumeric:"tabular-nums" }}>{cur.s}{f2(taxAmt)}</span>
-                    </div>
+                  {doc.taxType === "exclusive" && doc.tax > 0 && (
+                    <div className="ig-totalrow ig-totalrow--rule"><span>{doc.taxLabel || "Tax"} ({doc.tax}%)</span><span>{money(totals.tax)}</span></div>
                   )}
-                  <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center" }}>
-                    <span style={{ fontSize:15,fontWeight:800,color:"#0d1117" }}>Total</span>
-                    <span style={{ fontSize:26,fontWeight:900,color,fontVariantNumeric:"tabular-nums",letterSpacing:"-0.03em" }}>
-                      {cur.s}{f2(total)}
-                    </span>
+                  <div className="ig-totalrow ig-totalrow--grand">
+                    <span>Total</span>
+                    <span style={{ color }}>{money(totals.total)}</span>
                   </div>
                 </div>
               </div>
 
-              <Divider/>
+              <Divider />
 
-              {/* ── Bank / Payment Details ── */}
-              <div style={{ margin:"20px 0" }}>
-                <p style={sectionTitle}><Accent c={color}/>Bank / Payment Details <span style={{ fontSize:10,fontWeight:400,color:"#c4c9d4",textTransform:"none",letterSpacing:0 }}>(optional)</span></p>
-                <TxtArea value={meta.bankDetails} placeholder={"Bank: XYZ Bank\nAccount #: 1234-5678\nRouting: 0000"} accent={color} fi={focusIn} fo={focusOut} rows={3}
-                  onChange={v=>setMeta(p=>({...p,bankDetails:v}))}/>
-              </div>
-
-              {/* ── Watermark ── */}
-              <div style={{ marginBottom:20 }}>
-                <p style={sectionTitle}><Accent c={color}/>Watermark Logo <span style={{ fontSize:10,fontWeight:400,color:"#c4c9d4",textTransform:"none",letterSpacing:0 }}>(optional)</span></p>
-                {wmLogo ? (
-                  <div style={{ display:"flex",alignItems:"center",gap:10 }}>
-                    <img src={wmLogo} alt="" style={{ height:38,maxWidth:100,objectFit:"contain",borderRadius:8,border:"1.5px solid #e4e9f2",padding:4,background:"white" }}/>
-                    <button onClick={()=>setWmLogo(null)} style={{ display:"flex",alignItems:"center",gap:5,fontSize:12,color:"#ef4444",background:"transparent",border:"none",cursor:"pointer" }}>
-                      <X size={12}/> Remove
-                    </button>
-                  </div>
-                ) : (
-                  <label style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"11px",borderRadius:12,cursor:"pointer",border:"2px dashed #e4e9f2",fontSize:13,color:"#94a3b8",fontWeight:500,transition:"all .2s" }}
-                    onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.borderColor=color;(e.currentTarget as HTMLElement).style.color=color;(e.currentTarget as HTMLElement).style.background=`${color}07`;}}
-                    onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.borderColor="#e4e9f2";(e.currentTarget as HTMLElement).style.color="#94a3b8";(e.currentTarget as HTMLElement).style.background="transparent";}}>
-                    <Upload size={14}/> Upload Watermark
-                    <input type="file" accept="image/*" style={{ display:"none" }} onChange={e=>{const f=e.target.files?.[0];if(f)readFile(f,setWmLogo);}}/>
-                  </label>
-                )}
+              {/* ── Payment details ── */}
+              <div className="ig-block" style={{ marginTop: 20 }}>
+                <TxtArea label="Bank / payment details" hint="Optional — shown in a box above the notes" value={doc.meta.bankDetails} rows={3} accent={color}
+                  placeholder={"Bank: Example Bank\nAccount name: Your Name\nAccount no: 1234-5678 · Sort/Routing: 00-00-00\nor PayPal / UPI / IBAN"} onChange={(v) => setMeta({ bankDetails: v })} />
               </div>
 
               {/* ── Notes ── */}
-              <div style={{ marginBottom:18 }}>
-                <p style={sectionTitle}><Accent c={color}/>{docType==="quotation"?"Terms & Conditions":"Notes / Payment Terms"}</p>
-                <TxtArea rows={3} value={meta.notes} accent={color} fi={focusIn} fo={focusOut}
-                  placeholder={docType==="quotation"?"e.g. Quote valid for 30 days...":"e.g. Payment due within 30 days..."}
-                  onChange={v=>setMeta(p=>({...p,notes:v}))}/>
+              <div className="ig-block">
+                <TxtArea label={isQuote ? "Terms & conditions" : "Notes / payment terms"} rows={3} value={doc.meta.notes} accent={color}
+                  placeholder={isQuote ? "e.g. Valid for 30 days. 50% deposit to begin." : "e.g. Payment due within 30 days. Late payments incur 2% per month."} onChange={(v) => setMeta({ notes: v })} />
               </div>
 
-              {/* ── Footer note (auto, editable) ── */}
-              <div style={{ marginBottom:4 }}>
-                <p style={sectionTitle}>
-                  <Accent c={color}/>Footer Note
-                  <span style={{ fontSize:11.5,fontWeight:400,color:"#c4c9d4",textTransform:"none",letterSpacing:0 }}>(auto — editable / clear to hide)</span>
-                </p>
-                <TxtArea rows={2} value={meta.signNote} accent={color} fi={focusIn} fo={focusOut}
-                  placeholder="This is a computer-generated document and does not require a signature."
-                  onChange={v=>setMeta(p=>({...p,signNote:v}))}/>
+              {/* ── Watermark + footer note ── */}
+              <div className="ig-grid2" style={{ marginBottom: 6 }}>
+                <div>
+                  <span className="ig-label">Watermark image <span style={{ fontWeight: 400, color: "#94a3b8" }}>(optional)</span></span>
+                  {doc.wmLogo ? (
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={doc.wmLogo} alt="Watermark preview" style={{ height: 38, maxWidth: 100, objectFit: "contain", borderRadius: 8, border: "1.5px solid #e4e9f2", padding: 4, background: "white" }} />
+                      <button type="button" onClick={() => patch({ wmLogo: null })} className="ig-linkbtn" style={{ color: "#dc2626" }}><X size={12} aria-hidden="true" /> Remove</button>
+                    </div>
+                  ) : (
+                    <label className="ig-upload ig-upload--block" style={{ ["--accent" as string]: color }}>
+                      <Upload size={14} aria-hidden="true" /> Upload watermark
+                      <input type="file" accept="image/*" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) readFile(f, (u) => patch({ wmLogo: u })); e.target.value = ""; }} />
+                    </label>
+                  )}
+                </div>
+                <TxtArea label="Footer note" hint="Clear to hide" rows={2} value={doc.meta.signNote} accent={color}
+                  placeholder="This is a computer-generated document and does not require a signature." onChange={(v) => setMeta({ signNote: v })} />
               </div>
 
             </div>{/* end form body */}
 
-            {/* ── Action buttons ── */}
-            <div className="ig-formfoot" style={{ borderTop:"1px solid #f0f3fa",display:"flex",flexDirection:"column",gap:10,background:"#fafbff",borderRadius:"0 0 20px 20px" }}>
-              <div style={{ display:"flex",gap:12 }}>
-                <button onClick={startDownload} disabled={busy} style={{ ...btnPrimary(color, busy), flex:1 }}>
-                  {busy ? <><Spinner/> Generating...</> : <><Download size={15}/> Download PDF</>}
+            {/* ── Validation ── */}
+            {warnings.length > 0 && (
+              <details className="ig-warn" open={warnings.length <= 2}>
+                <summary><AlertTriangle size={14} aria-hidden="true" /> {warnings.length} thing{warnings.length > 1 ? "s" : ""} to check before you send</summary>
+                <ul aria-live="polite">{warnings.map((w) => <li key={w}>{w}</li>)}</ul>
+              </details>
+            )}
+
+            {/* ── Actions ── */}
+            <div className="ig-formfoot">
+              <div style={{ display: "flex", gap: 10 }}>
+                <button type="button" onClick={startDownload} disabled={busy} className="ig-btn ig-btn--primary" style={{ background: busy ? "#94a3b8" : color, boxShadow: busy ? "none" : `0 4px 16px ${color}45`, flex: 1 }}>
+                  {busy ? <><Spinner /> Generating…</> : <><Download size={15} aria-hidden="true" /> Download PDF</>}
                 </button>
-                <button onClick={startPrint} style={btnOutline}
-                  onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#f8fafc";(e.currentTarget as HTMLElement).style.borderColor="#c9d0db";}}
-                  onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="white";(e.currentTarget as HTMLElement).style.borderColor="#e4e9f2";}}>
-                  <Printer size={15}/> Print
+                <button type="button" onClick={startPrint} className="ig-btn ig-btn--outline" title="Print or save as PDF via your browser">
+                  <Printer size={15} aria-hidden="true" /> <span className="ig-hide-xs">Print</span>
                 </button>
-              </div>
-              {!isPro && (
-                <button onClick={()=>setProModalOpen(true)} style={{
-                  display:"flex",alignItems:"center",justifyContent:"center",gap:6,
-                  padding:"8px 12px",borderRadius:10,border:"none",background:"transparent",
-                  color:"#7c3aed",fontSize:12,fontWeight:600,cursor:"pointer",
-                  textDecoration:"underline",textDecorationColor:"#c4b5fd",transition:"all .2s",
-                }}
-                  onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.color="#6d28d9";}}
-                  onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.color="#7c3aed";}}>
-                  {isLoggedIn
-                    ? `✦ Upgrade to Pro — Premium templates & no watermark · ${SITE.stripe.priceLabel}`
-                    : "✦ Sign In — Save invoices to dashboard (free)"}
-                </button>
-              )}
-            </div>
-
-          </div>{/* end form card */}
-
-          {/* ══════════════ PREVIEW PANEL ══════════════ */}
-          <div className="ig-preview lg:sticky lg:top-[80px]">
-
-            {/* Status bar */}
-            <div className="ig-previewbar no-print" style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14,padding:"0 4px" }}>
-              <div style={{ display:"flex",alignItems:"center",gap:8 }}>
-                <LiveDot/>
-                <span style={{ fontSize:10.5,fontWeight:800,letterSpacing:"0.12em",textTransform:"uppercase",color:"#94a3b8" }}>Live Preview</span>
-              </div>
-              <div style={{ display:"flex",gap:6,flexWrap:"wrap" }}>
-                <Bdg label={meta.no||"—"}       color="#64748b" bg="#f1f5f9"           border="#e2e8f0"/>
-                <Bdg label={docCfg.label}        color={docCfg.color} bg={`${docCfg.color}10`} border={`${docCfg.color}30`}/>
-                {showStatus && <Bdg label={stCfg[status].label} color={stCfg[status].color} bg={stCfg[status].bg} border={stCfg[status].border}/>}
-              </div>
-            </div>
-
-            {/* Paper wrapper — auto-scale to A4 */}
-            <div ref={wrapRef} className="ig-cardwrap" style={{ ...card,overflow:"hidden",boxShadow:"0 4px 16px rgba(0,0,0,0.06),0 24px 64px rgba(15,23,42,0.09)" }}>
-
-              {/* ── id for print CSS ── */}
-              <div id="invoice-print-area">
-                <div ref={previewRef} style={{ fontFamily:"'Inter',system-ui,sans-serif",background:"white",position:"relative" }}>
-
-                  {/* Accent stripe (Classic only) */}
-                  {tpl.stripe && <div style={{ height:5,background:`linear-gradient(90deg,${color},${color}bb)` }}/>}
-
-                  {/* Watermark */}
-                  {wmLogo && (
-                    <div style={{ position:"absolute",top:0,left:0,right:0,bottom:0,display:"flex",alignItems:"center",justifyContent:"center",pointerEvents:"none",zIndex:0,overflow:"hidden" }}>
-                      <img src={wmLogo} alt="" style={{ maxHeight:200,maxWidth:300,objectFit:"contain",opacity:0.06 }}/>
+                <div style={{ position: "relative" }}>
+                  <button type="button" onClick={() => setMoreOpen((o) => !o)} aria-expanded={moreOpen} aria-haspopup="menu" className="ig-btn ig-btn--outline" title="More actions">
+                    <span className="ig-hide-xs">More</span> <ChevronDown size={14} aria-hidden="true" />
+                  </button>
+                  {moreOpen && (
+                    <div role="menu" className="ig-menu">
+                      <button type="button" role="menuitem" onClick={startNew}><FilePlus2 size={14} aria-hidden="true" /> New {info.label.toLowerCase()} <kbd>{nextInvoiceNumber(doc.meta.no)}</kbd></button>
+                      <button type="button" role="menuitem" onClick={duplicate}><Copy size={14} aria-hidden="true" /> Duplicate</button>
+                      <button type="button" role="menuitem" onClick={saveDraft}><Save size={14} aria-hidden="true" /> {isLoggedIn ? "Save draft to dashboard" : "Save draft (sign in)"}</button>
+                      {(isQuote || doc.docType === "invoice") && (
+                        <button type="button" role="menuitem" onClick={convert}><ArrowRightLeft size={14} aria-hidden="true" /> {isQuote ? "Convert to invoice" : "Create receipt from this invoice"}</button>
+                      )}
+                      <div className="ig-menu__sep" />
+                      <button type="button" role="menuitem" onClick={exportJson}><FileJson size={14} aria-hidden="true" /> Export as file (.json)</button>
+                      <button type="button" role="menuitem" onClick={() => importRef.current?.click()}><FolderOpen size={14} aria-hidden="true" /> Restore from file…</button>
+                      <input ref={importRef} type="file" accept="application/json,.json" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) importJson(f); e.target.value = ""; }} />
                     </div>
                   )}
-
-                  <div style={{ padding:"36px 44px",position:"relative",zIndex:1 }}>
-
-                    {/* ── Invoice header ── */}
-                    <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:32,
-                      ...(tpl.band ? { background:`linear-gradient(135deg,${color},${color}dd)`, margin:"-36px -44px 28px", padding:"30px 44px 26px" } : {}) }}>
-                      {/* From + brand logo */}
-                      <div>
-                        {brandLogo ? (
-                          <img src={brandLogo} alt="logo" style={{ height:50,maxWidth:140,objectFit:"contain",marginBottom:12,display:"block" }}/>
-                        ) : (
-                          <div style={{ width:44,height:44,borderRadius:12,background:tpl.logoBg,display:"flex",alignItems:"center",justifyContent:"center",color:tpl.logoColor,fontWeight:800,fontSize:20,marginBottom:12,boxShadow:tpl.logoShadow }}>
-                            {(from.name||"I")[0].toUpperCase()}
-                          </div>
-                        )}
-                        <p style={{ fontSize:14,fontWeight:800,color:tpl.hPrimary,letterSpacing:"-0.02em" }}>{from.name||"Your Business Name"}</p>
-                        <p style={{ fontSize:11.5,color:tpl.hSecondary,marginTop:3 }}>{from.email||"your@email.com"}</p>
-                        {from.phone   && <p style={{ fontSize:11,color:tpl.hTertiary,marginTop:2 }}>{from.phone}</p>}
-                        {from.address && <p style={{ fontSize:11,color:tpl.hTertiary,marginTop:2,whiteSpace:"pre-line" }}>{from.address}</p>}
-                      </div>
-                      {/* Meta */}
-                      <div style={{ textAlign:"right" }}>
-                        <p style={{ fontSize:tpl.docTitleSize,fontWeight:900,color:tpl.docTitle,letterSpacing:"-0.03em",lineHeight:1 }}>
-                          {docCfg.label.toUpperCase()}
-                        </p>
-                        <p style={{ fontSize:14,fontWeight:800,color:tpl.hPrimary,marginTop:8 }}>#{meta.no||"—"}</p>
-                        <p style={{ fontSize:11.5,color:tpl.hTertiary,marginTop:5 }}>
-                          {docType==="receipt"?"Date:":"Issued:"}{" "}
-                          <span style={{ color:tpl.hValue,fontWeight:600 }}>{meta.date||"—"}</span>
-                        </p>
-                        {meta.due && docType!=="receipt" && (
-                          <p style={{ fontSize:11.5,color:tpl.hTertiary,marginTop:3 }}>
-                            Due: <span style={{ color:tpl.hValue,fontWeight:600 }}>{meta.due}</span>
-                          </p>
-                        )}
-                        {showStatus && (
-                          <span style={{ display:"inline-block",marginTop:10,padding:"4px 14px",borderRadius:99,fontSize:11,fontWeight:800,textTransform:"uppercase",letterSpacing:"0.07em",background:stCfg[status].bg,color:stCfg[status].color,border:`1.5px solid ${stCfg[status].border}` }}>
-                            {stCfg[status].label}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* ── Bill To ── */}
-                    <div style={{ marginBottom:24, ...(tpl.box ? { padding:"14px 16px",borderRadius:12,background:"#f8fafc",border:"1px solid #f0f3fa" } : {}) }}>
-                      <p style={{ fontSize:9.5,fontWeight:800,textTransform:"uppercase",letterSpacing:"0.12em",color:"#94a3b8",marginBottom:7 }}>
-                        {docType==="receipt"?"Received From":"Bill To"}
-                      </p>
-                      <p style={{ fontSize:16,fontWeight:800,color:"#0d1117",letterSpacing:"-0.02em" }}>{to.name||"Client Name"}</p>
-                      <p style={{ fontSize:11.5,color:"#64748b",marginTop:3 }}>{to.email||"client@email.com"}</p>
-                      {to.phone   && <p style={{ fontSize:11,color:"#94a3b8",marginTop:2 }}>{to.phone}</p>}
-                      {to.address && <p style={{ fontSize:11,color:"#94a3b8",marginTop:2,whiteSpace:"pre-line" }}>{to.address}</p>}
-                    </div>
-
-                    {/* ── Items table with S.No ── */}
-                    <table style={{ width:"100%",borderCollapse:"collapse",marginBottom:20 }}>
-                      <thead>
-                        <tr style={{ background:tpl.theadBg }}>
-                          {["#","Description","Qty","Rate","Amount"].map((h,i)=>(
-                            <th key={h} style={{
-                              padding:"9px 8px",fontSize:9.5,fontWeight:800,textTransform:"uppercase",
-                              letterSpacing:"0.08em",color:tpl.thColor,
-                              textAlign:(i===0||i===1?"left":i===2?"center":"right") as "left"|"center"|"right",
-                              borderBottom:tpl.thBorder,
-                              width: i===0?"30px":undefined,
-                            }}>{h}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {items.map((it,idx)=>(
-                          <tr key={it.id} style={{ borderBottom:"1px solid #f0f3fa" }}>
-                            <td style={{ padding:"10px 8px",fontSize:11,color:"#c4c9d4",fontWeight:700,textAlign:"center" }}>{idx+1}</td>
-                            <td style={{ padding:"10px 8px",fontSize:12.5,color:"#374151",fontWeight:500 }}>{it.desc||`Item ${idx+1}`}</td>
-                            <td style={{ padding:"10px 8px",fontSize:12.5,color:"#64748b",textAlign:"center" }}>{it.qty}</td>
-                            <td style={{ padding:"10px 8px",fontSize:12.5,color:"#64748b",textAlign:"right",fontVariantNumeric:"tabular-nums" }}>{cur.s}{f2(it.rate)}</td>
-                            <td style={{ padding:"10px 8px",fontSize:12.5,fontWeight:700,color:"#0d1117",textAlign:"right",fontVariantNumeric:"tabular-nums" }}>{cur.s}{f2(it.qty*it.rate)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-
-                    {/* ── Totals ── */}
-                    <div style={{ display:"flex",justifyContent:"flex-end",marginBottom:24 }}>
-                      <div style={{ width:220 }}>
-                        <TotRow label="Subtotal" val={`${cur.s}${f2(subtotal)}`}/>
-                        {discAmt>0 && <TotRow label={`Discount${discType==="%"?` (${discount}%)`:""}`} val={`−${cur.s}${f2(discAmt)}`} red/>}
-                        {taxType==="exclusive" && tax>0 && <TotRow label={`Tax (${tax}%)`} val={`${cur.s}${f2(taxAmt)}`}/>}
-                        {taxType==="inclusive" && tax>0 && (
-                          <div style={{ fontSize:10.5,color:"#94a3b8",textAlign:"right",marginBottom:8,fontStyle:"italic" }}>
-                            (Tax {tax}% included)
-                          </div>
-                        )}
-                        <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",paddingTop:10,borderTop:tpl.totalRule,marginTop:4 }}>
-                          <span style={{ fontSize:14,fontWeight:800,color:"#0d1117" }}>Total</span>
-                          <span style={{ fontSize:22,fontWeight:900,color:tpl.totalColor,fontVariantNumeric:"tabular-nums",letterSpacing:"-0.03em" }}>{cur.s}{f2(total)}</span>
-                        </div>
-                        {/* Tax label */}
-                        <div style={{ textAlign:"right",marginTop:5 }}>
-                          {taxType==="inclusive"
-                            ? <span style={{ fontSize:9.5,color:"#10b981",fontWeight:700,fontStyle:"italic" }}>✓ All taxes are included</span>
-                            : tax>0
-                            ? <span style={{ fontSize:9.5,color:"#94a3b8",fontStyle:"italic" }}>Taxes are exclusive of total</span>
-                            : null
-                          }
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* ── Bank details ── */}
-                    {meta.bankDetails && (
-                      <div style={{ marginBottom:18,padding:"12px 14px",borderRadius:10,background:"#f8fafc",border:"1px solid #f0f3fa" }}>
-                        <p style={{ fontSize:9.5,fontWeight:800,textTransform:"uppercase",letterSpacing:"0.12em",color:"#94a3b8",marginBottom:6 }}>Payment Details</p>
-                        <p style={{ fontSize:11.5,color:"#475569",lineHeight:1.7,whiteSpace:"pre-line" }}>{meta.bankDetails}</p>
-                      </div>
-                    )}
-
-                    {/* ── Notes ── */}
-                    {meta.notes && (
-                      <div style={{ paddingTop:16,borderTop:"1.5px solid #f0f3fa" }}>
-                        <p style={{ fontSize:9.5,fontWeight:800,textTransform:"uppercase",letterSpacing:"0.12em",color:"#94a3b8",marginBottom:7 }}>
-                          {docType==="quotation"?"Terms & Conditions":"Notes"}
-                        </p>
-                        <p style={{ fontSize:12,color:"#64748b",lineHeight:1.7,fontStyle:"italic",whiteSpace:"pre-line" }}>{meta.notes}</p>
-                      </div>
-                    )}
-
-                    {/* ── Computer-generated note ── */}
-                    {meta.signNote && (
-                      <p style={{ textAlign:"center",fontSize:10.5,color:"#9ca3af",fontStyle:"italic",marginTop:24,lineHeight:1.5 }}>
-                        {meta.signNote}
-                      </p>
-                    )}
-
-                    {/* ── Footer (hidden for Pro users) ── */}
-                    {!isPro && (
-                      <div style={{ display:"flex",justifyContent:"space-between",marginTop:meta.signNote?12:24,paddingTop:12,borderTop:"1px solid #f8fafc" }}>
-                        <span style={{ fontSize:9.5,color:"#c4c9d4" }}>Generated by pdfbillbuilder.com</span>
-                        <span style={{ fontSize:9.5,color:"#c4c9d4" }}>Thank you for your business</span>
-                      </div>
-                    )}
-
-                  </div>
                 </div>
+              </div>
+
+              <div className="ig-formfoot__meta">
+                {isLoggedIn ? (
+                  <label className="ig-check">
+                    <input type="checkbox" checked={settings.saveToDashboard} onChange={(e) => { const s = { ...settings, saveToDashboard: e.target.checked }; setSettings(s); writeSettings(s); }} />
+                    Save a copy to my dashboard when I download
+                  </label>
+                ) : (
+                  <button type="button" onClick={() => openModal("choose", "footer_signin")} className="ig-linkbtn" style={{ color: "#4f46e5" }}>
+                    Sign in free to save, duplicate and track your documents
+                  </button>
+                )}
+                {!isPro && (
+                  <button type="button" onClick={() => openModal("upgrade", "footer_upgrade")} className="ig-linkbtn" style={{ color: "#6d28d9" }}>
+                    <Crown size={12} aria-hidden="true" /> Pro: premium templates &amp; white-label PDFs
+                  </button>
+                )}
+              </div>
+            </div>
+          </section>
+
+          {/* ══════════════ PREVIEW PANEL ══════════════ */}
+          <div ref={colRef} className="ig-preview lg:sticky lg:top-[80px]">
+            <div className="ig-previewbar no-print">
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span className="ig-livedot" aria-hidden="true"><span /><span /></span>
+                <span className="ig-previewbar__title">Live preview</span>
+                <span className="ig-badge" style={{ color: "#475569", background: "#f1f5f9", borderColor: "#e2e8f0" }}>{pages > 1 ? `${pages} pages` : "1 page"}</span>
+              </div>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+                <span className="ig-badge" style={{ color: info.color, background: `${info.color}10`, borderColor: `${info.color}30` }}>{info.label}</span>
+                {(showStatus || doc.docType === "receipt") && <span className="ig-badge" style={{ color: st.color, background: st.bg, borderColor: st.border }}>{st.label}</span>}
+                <Segmented label="Paper size" size="sm" accent={color} value={doc.paper} onChange={(v) => patch({ paper: v })}
+                  options={[{ value: "a4", label: "A4" }, { value: "letter", label: "Letter" }]} />
               </div>
             </div>
 
-            {/* Feature pills */}
-            <div className="ig-pills no-print" style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginTop:14 }}>
-              {[{e:"📄",t:"Invoice"},{e:"🧾",t:"Receipt"},{e:"📋",t:"Quotation"}].map(b=>(
-                <div key={b.t} style={{ display:"flex",alignItems:"center",gap:8,padding:"10px 14px",background:"white",borderRadius:12,border:"1.5px solid #f0f3fa",boxShadow:"0 1px 4px rgba(0,0,0,0.03)" }}>
-                  <span style={{ fontSize:14 }}>{b.e}</span>
-                  <span style={{ fontSize:12,fontWeight:600,color:"#64748b" }}>{b.t}</span>
-                </div>
-              ))}
+            <div ref={wrapRef} className="ig-cardwrap ig-card">
+              <div id="invoice-print-area">
+                <InvoicePreview ref={previewRef} doc={doc} totals={totals} whiteLabel={whiteLabel} />
+              </div>
             </div>
 
-          </div>{/* end preview */}
-        </div>
-      </div>
-
-      {/* ── Features ── */}
-      <div className="ig-features" style={{ background:"white",borderTop:"1px solid #f0f3fa",padding:"72px 24px" }}>
-        <div style={{ maxWidth:1000,margin:"0 auto" }}>
-          <div style={{ textAlign:"center",marginBottom:48 }}>
-            <p style={{ fontSize:12.5,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:"#4f46e5",marginBottom:12 }}>Why PDF Bill Builder</p>
-            <h2 style={{ fontSize:"clamp(22px,3.5vw,34px)",fontWeight:900,letterSpacing:"-0.03em",color:"#0d1117" }}>
-              More powerful than any free tool out there
-            </h2>
-          </div>
-          <div className="ig-featgrid">
-            {[
-              {Icon:Lock,        t:"Zero Storage",   d:"Your data never leaves your browser. Pure privacy."},
-              {Icon:Zap,         t:"3 Doc Types",     d:"Invoice, Receipt & Quotation from one place."},
-              {Icon:Percent,     t:"Tax Inclusive",   d:"Toggle between tax-inclusive or exclusive billing."},
-              {Icon:ScanLine,    t:"Auto A4 Fit",     d:"More items? Content auto-scales to fit one page."},
-              {Icon:Landmark,    t:"Bank Details",    d:"Add payment info directly on your document."},
-              {Icon:CheckCircle2,t:"Always Free",     d:"Unlimited documents. Zero cost. No credit card."},
-            ].map(f=>(
-              <div key={f.t} style={{ padding:"24px 22px",borderRadius:18,background:"#f8faff",border:"1.5px solid #edf0fa" }}>
-                <f.Icon size={22} style={{ color:"#4f46e5",marginBottom:14 }}/>
-                <p style={{ fontSize:15,fontWeight:800,color:"#0d1117",marginBottom:8,letterSpacing:"-0.02em" }}>{f.t}</p>
-                <p style={{ fontSize:13,lineHeight:1.65,color:"#64748b" }}>{f.d}</p>
-              </div>
-            ))}
+            <p className="ig-previewnote no-print">
+              {pages > 1 ? `Long document — the PDF breaks cleanly between items across ${pages} pages and numbers each page.` : "Your PDF will match this preview exactly."}
+              {!whiteLabel && " Free PDFs carry a small “Generated by” line in the footer."}
+            </p>
           </div>
         </div>
       </div>
 
-      <style>{`@keyframes ping{75%,100%{transform:scale(2);opacity:0}}`}</style>
+      {toast && <div role="status" className="ig-toast no-print">{toast}</div>}
 
-      <ProModal
-        open={proModalOpen}
-        justPaid={paymentTrigger}
-        isLoggedIn={isLoggedIn}
-        isPro={isPro}
-        onClose={() => { setProModalOpen(false); setPaymentTrigger(false); }}
-        onSignIn={signIn}
-      />
-
-      {/* Progress + save/upgrade prompt after Download / Print (user-initiated, ad-free) */}
       <DownloadAdModal
         open={adModal.open}
         status={adModal.status}
         action={adModal.action}
         accent={color}
-        onClose={() => setAdModal(m => ({ ...m, open: false }))}
+        savedToDashboard={adModal.saved}
+        onClose={() => setAdModal((m) => ({ ...m, open: false }))}
         onRetry={() => (adModal.action === "download" ? startDownload() : startPrint())}
         isLoggedIn={isLoggedIn}
         isPro={isPro}
-        onSignIn={() => { setAdModal(m => ({ ...m, open: false })); setProModalOpen(true); }}
-        onUpgrade={() => { setAdModal(m => ({ ...m, open: false })); setProModalOpen(true); }}
+        onSignIn={() => { setAdModal((m) => ({ ...m, open: false })); openModal("choose", "post_download"); }}
+        onUpgrade={() => { setAdModal((m) => ({ ...m, open: false })); openModal("upgrade", "post_download"); }}
       />
     </div>
-  );
-}
-
-/* ─── Micro components ──────────────────────── */
-const Accent = ({c}:{c:string}) => <span style={{width:3,height:14,borderRadius:2,background:c,display:"inline-block",flexShrink:0}}/>;
-const Divider = () => <hr style={{border:"none",borderTop:"1.5px solid #f0f3fa",margin:"4px 0"}}/>;
-
-function Fld({label,children}:{label:string;children:React.ReactNode}) {
-  return <div><label style={labelStyle}>{label}</label>{children}</div>;
-}
-
-function Inp({value,onChange,placeholder,type="text",accent,fi,fo}:{
-  value:string; onChange:(v:string)=>void; placeholder?:string; type?:string;
-  accent:string; fi:React.FocusEventHandler<HTMLInputElement>; fo:React.FocusEventHandler<HTMLInputElement>;
-}) {
-  return (
-    <input type={type} value={value} placeholder={placeholder}
-      onChange={e=>onChange(e.target.value)} style={baseInput}
-      onFocus={fi} onBlur={fo}/>
-  );
-}
-
-function TxtArea({value,onChange,placeholder,accent,fi,fo,rows=2}:{
-  value:string; onChange:(v:string)=>void; placeholder?:string; rows?:number;
-  accent:string; fi:React.FocusEventHandler<HTMLTextAreaElement>; fo:React.FocusEventHandler<HTMLTextAreaElement>;
-}) {
-  return (
-    <textarea rows={rows} value={value} placeholder={placeholder}
-      onChange={e=>onChange(e.target.value)}
-      style={{...baseInput,resize:"none",lineHeight:1.55}}
-      onFocus={fi} onBlur={fo}/>
-  );
-}
-
-function TotRow({label,val,red}:{label:string;val:string;red?:boolean}) {
-  return (
-    <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:red?"#ef4444":"#94a3b8",marginBottom:7}}>
-      <span>{label}</span>
-      <span style={{fontWeight:600,color:red?"#ef4444":"#475569",fontVariantNumeric:"tabular-nums"}}>{val}</span>
-    </div>
-  );
-}
-
-function Bdg({label,color,bg,border}:{label:string;color:string;bg:string;border:string}) {
-  return <span style={{fontSize:10.5,fontWeight:700,padding:"3px 10px",borderRadius:99,color,background:bg,border:`1px solid ${border}`}}>{label}</span>;
-}
-
-function LiveDot() {
-  return (
-    <span style={{position:"relative",width:9,height:9,display:"inline-block"}}>
-      <span style={{position:"absolute",inset:0,borderRadius:"50%",background:"#10b981",animation:"ping 1s cubic-bezier(0,0,.2,1) infinite",opacity:0.6}}/>
-      <span style={{position:"relative",width:9,height:9,borderRadius:"50%",background:"#10b981",display:"block"}}/>
-    </span>
-  );
-}
-
-function Spinner() {
-  return (
-    <svg style={{animation:"spin 1s linear infinite",width:16,height:16}} fill="none" viewBox="0 0 24 24">
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
-      <circle style={{opacity:.25}} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-      <path style={{opacity:.8}} fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
-    </svg>
   );
 }

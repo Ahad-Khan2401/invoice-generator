@@ -1,7 +1,8 @@
 /**
  * Client-side auth storage helpers.
- * Stored in localStorage — never contains raw email.
+ * Stored in localStorage — never contains the raw e-mail, only its hash.
  */
+import type { PlanKey } from "@/lib/plans";
 
 const KEY = "pdfbb_auth_v1";
 const VERIFY_EVERY = 7 * 24 * 60 * 60 * 1000;
@@ -12,6 +13,7 @@ export interface AuthUser {
   token:        string;
   expires:      number;
   isPro:        boolean;
+  plan?:        PlanKey;
   lastVerified: number;
 }
 
@@ -22,6 +24,7 @@ export function readAuth(): AuthUser | null {
     const d = JSON.parse(raw) as AuthUser;
     if (!d.token || !d.emailHash || !d.expires) return null;
     if (Date.now() > d.expires) { clearAuth(); return null; }
+    if (!d.plan) d.plan = d.isPro ? "pro" : "free";
     return d;
   } catch { return null; }
 }

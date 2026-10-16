@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Mail, MessageSquare, Clock, Globe } from "lucide-react";
 import { SITE } from "@/lib/config";
 import { PageShell, PageHero } from "@/components/ui";
@@ -47,7 +48,7 @@ export default function ContactPage() {
           <h2 className="text-lg font-bold text-slate-900 mb-2">Response Time</h2>
           <p className="text-sm text-slate-500 leading-relaxed">
             We aim to respond to all emails within <strong className="text-slate-700">24 hours</strong> on business days.
-            For urgent issues, please include "URGENT" in your subject line.
+            For urgent issues, please include &quot;URGENT&quot; in your subject line.
           </p>
           <div className="mt-4 flex items-center gap-2 text-xs text-emerald-600 font-medium">
             <span className="inline-block h-2 w-2 rounded-full bg-emerald-500"></span>
@@ -68,12 +69,12 @@ export default function ContactPage() {
               Most questions about creating invoices, downloading PDFs, taxes, and Pro features are answered in our guides.
             </p>
           </div>
-          <a
+          <Link
             href="/how-it-works"
             className="shrink-0 rounded-xl border border-indigo-200 bg-white px-4 py-2.5 text-sm font-semibold text-indigo-600 hover:bg-indigo-50 transition-colors"
           >
             View guides →
-          </a>
+          </Link>
         </div>
       </div>
 
@@ -88,8 +89,8 @@ export default function ContactPage() {
           We serve users in the USA, Canada, UK, Australia, India, Pakistan, and beyond.
         </p>
         <p className="text-sm text-slate-500 leading-relaxed mb-3">
-          Our tool lets you create professional invoices, receipts, and quotations in seconds — no account needed, no data
-          stored on our servers, 100% private.
+          Our tool lets you create professional invoices, receipts, quotations and estimates in seconds — no account needed.
+          Documents are only stored if you sign in and choose to save them to your dashboard.
         </p>
         <p className="text-sm text-slate-500 leading-relaxed">
           For business enquiries, partnerships, or press: <a href="mailto:support@pdfbillbuilder.com" className="text-indigo-600 font-medium hover:underline">support@pdfbillbuilder.com</a>

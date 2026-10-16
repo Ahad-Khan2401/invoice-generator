@@ -1,17 +1,19 @@
 /**
- * Auth token helpers — server-side only.
+ * Session token helpers — server-side only.
  *
- * Token format:  emailHash.expires.isPro(0|1).hmacSignature
+ * Token format:  emailHash.expires.planCode.hmacSignature
+ *   planCode: "0" = free, "1" = pro, "2" = business  (see lib/plans.ts)
  *
- * Both free and Pro users get a token.
- * isPro flag is embedded so the client can read feature gating
- * without an extra API call, but the token can be re-verified
- * server-side via /api/verify.
+ * The plan code is embedded so the client can read feature gating
+ * without an extra API call, but it is only a HINT for the UI.
+ * Every API route re-resolves the plan server-side (lib/entitlements.ts),
+ * and /api/verify re-issues a token whenever the plan changes.
  */
 import { createHmac, createHash, timingSafeEqual } from "crypto";
+import { CODE_PLAN, PLAN_CODE, type PlanKey } from "./plans.ts";
 
 const FREE_DAYS = 30; // free session
-const PRO_DAYS  = 37; // pro session (~1 month + grace)
+const PAID_DAYS = 37; // paid session (~1 month + grace)
 
 function secret(): string {
   const s = process.env.PRO_JWT_SECRET;
@@ -28,11 +30,11 @@ export function hashEmail(email: string): string {
 }
 
 /* ─── Create ────────────────────────────────────── */
-export function createToken(emailHash: string, isPro: boolean): { token: string; expires: number } {
-  const days    = isPro ? PRO_DAYS : FREE_DAYS;
+export function createToken(emailHash: string, plan: PlanKey | boolean): { token: string; expires: number } {
+  const key: PlanKey = typeof plan === "boolean" ? (plan ? "pro" : "free") : plan;
+  const days    = key === "free" ? FREE_DAYS : PAID_DAYS;
   const expires = Date.now() + days * 24 * 60 * 60 * 1000;
-  const proFlag = isPro ? "1" : "0";
-  const payload = `${emailHash}.${expires}.${proFlag}`;
+  const payload = `${emailHash}.${expires}.${PLAN_CODE[key]}`;
   const sig     = createHmac("sha256", secret())
     .update(payload)
     .digest("hex")
@@ -43,26 +45,29 @@ export function createToken(emailHash: string, isPro: boolean): { token: string;
 /* ─── Verify ────────────────────────────────────── */
 export interface TokenPayload {
   valid:     boolean;
+  /** Back-compat flag: any paid plan. */
   isPro:     boolean;
+  plan:      PlanKey;
   emailHash: string;
   expires:   number;
 }
 
 export function verifyToken(token: string): TokenPayload {
-  const INVALID: TokenPayload = { valid: false, isPro: false, emailHash: "", expires: 0 };
+  const INVALID: TokenPayload = { valid: false, isPro: false, plan: "free", emailHash: "", expires: 0 };
 
   try {
     const sec   = secret();
     const parts = token.split(".");
     if (parts.length !== 4) return INVALID;
 
-    const [emailHash, expiresStr, proFlag, sig] = parts;
+    const [emailHash, expiresStr, planCode, sig] = parts;
     const expires = parseInt(expiresStr, 10);
 
-    if (isNaN(expires) || Date.now() > expires) return INVALID;
-    if (proFlag !== "0" && proFlag !== "1")      return INVALID;
+    if (!/^[a-f0-9]{24}$/.test(emailHash))            return INVALID;
+    if (isNaN(expires) || Date.now() > expires)       return INVALID;
+    if (!(planCode in CODE_PLAN))                     return INVALID;
 
-    const payload  = `${emailHash}.${expires}.${proFlag}`;
+    const payload  = `${emailHash}.${expires}.${planCode}`;
     const expected = createHmac("sha256", sec)
       .update(payload)
       .digest("hex")
@@ -72,7 +77,8 @@ export function verifyToken(token: string): TokenPayload {
     const ok = timingSafeEqual(Buffer.from(sig), Buffer.from(expected));
     if (!ok) return INVALID;
 
-    return { valid: true, isPro: proFlag === "1", emailHash, expires };
+    const plan = CODE_PLAN[planCode];
+    return { valid: true, isPro: plan !== "free", plan, emailHash, expires };
   } catch {
     return INVALID;
   }

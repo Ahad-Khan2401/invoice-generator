@@ -17,12 +17,13 @@ const steps = [
 ];
 
 const faqs = [
-  { q: "Is PDF Bill Builder really free?",   a: "Yes, 100% free. No hidden fees, no subscription, no credit card — ever." },
+  { q: "Is PDF Bill Builder really free?",   a: "Yes. Creating and downloading invoices, receipts, quotations and estimates is free with no limits, no watermark and no card. An optional Pro plan adds premium templates and unlimited saved history, but you never need it to download a PDF." },
   { q: "Do I need to create an account?",        a: "No. Just open the page and start creating. Zero signup required." },
-  { q: "Is my data saved anywhere?",             a: "No. Everything is processed in your browser. Nothing is sent to our servers." },
+  { q: "Is my data saved anywhere?",             a: "As a guest, no. Everything is processed in your browser and nothing is uploaded. If you sign in (free), documents you download can be saved to your dashboard so you can re-open, duplicate and track them — and you can delete them whenever you like." },
   { q: "Can I use this for my small business?",  a: "Absolutely — it's built for freelancers, consultants, and small business owners." },
-  { q: "Which currencies are supported?",        a: "USD, EUR, GBP, INR, PKR, CAD, AUD and more." },
-  { q: "Can I add tax to my invoice?",           a: "Yes. Enter your tax percentage and it's calculated automatically." },
+  { q: "Which currencies are supported?",        a: "18 currencies: USD, EUR, GBP, INR, PKR, CAD, AUD, NZD, SGD, AED, ZAR, CHF, SEK, JPY, NGN, KES, MYR and PHP — with the correct symbol and thousands separators on the PDF." },
+  { q: "Can I add tax to my invoice?",           a: "Yes. Enter your tax percentage and choose whether it is added on top of your prices or already included in them. You can label it VAT, GST, HST, sales tax or your own term." },
+  { q: "Can I make a long invoice with many items?", a: "Yes. The PDF flows across as many pages as needed, breaks cleanly between line items, and numbers every page. You can choose A4 or US Letter." },
 ];
 
 export default function HowItWorks() {
@@ -31,7 +32,7 @@ export default function HowItWorks() {
       <PageHero
         badge="Guide"
         title="How to Create a Free Invoice"
-        subtitle="Generate a professional PDF invoice, receipt, or quotation in under 2 minutes — completely free, no account needed."
+        subtitle="Generate a professional PDF invoice, receipt, quotation or estimate in under 2 minutes — completely free, no account needed."
       />
 
       {/* Steps */}

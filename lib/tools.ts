@@ -60,6 +60,24 @@ export const TOOLS: ToolMeta[] = [
     keywords: ["profit margin calculator", "margin calculator", "markup calculator", "gross margin calculator", "how to calculate profit margin"],
     icon: "📈",
   },
+  {
+    slug: "vat-calculator",
+    name: "VAT Calculator",
+    short: "Add or remove VAT at preset or custom rates in seconds.",
+    title: "VAT Calculator — Add or Remove VAT at Any Rate (Free)",
+    desc: "Free VAT calculator with preset rates for the UK, Ireland, EU, UAE, and South Africa. Add VAT to a net price or reverse-calculate VAT from a gross total.",
+    keywords: ["vat calculator", "add vat calculator", "remove vat calculator", "reverse vat calculator", "vat calculator uk", "how to calculate vat"],
+    icon: "💶",
+  },
+  {
+    slug: "gst-calculator",
+    name: "GST Calculator",
+    short: "Add or remove GST with preset rates for AU, NZ, SG, CA, and IN.",
+    title: "GST Calculator — Add or Remove GST at Any Rate (Free)",
+    desc: "Free GST calculator with preset rates for Australia, New Zealand, Singapore, Canada, and India. Add GST to a price or find the GST inside a total.",
+    keywords: ["gst calculator", "gst calculator australia", "gst calculator india", "reverse gst calculator", "gst inclusive calculator", "how to calculate gst"],
+    icon: "🧮",
+  },
 ];
 
 export const TOOL_SLUGS = TOOLS.map((t) => t.slug);
