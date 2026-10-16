@@ -56,15 +56,15 @@ export default function ClientPicker({
           style={alreadySaved ? { opacity: 0.6 } : undefined} title={alreadySaved ? "This client is already saved" : "Save this client to your directory"}>
           <Save size={11} aria-hidden="true" /> {alreadySaved ? "Client saved" : saving ? "Saving…" : "Save client"}
         </button>
-        {msg && <span role="status" style={{ fontSize: 11, color: "#475569" }}>{msg}</span>}
+        {msg && <span role="status" style={{ fontSize: 11, color: "#3a4150" }}>{msg}</span>}
       </div>
       {open && clients.length > 0 && (
         <ul role="listbox" aria-label="Saved clients" className="ig-clientlist">
           {clients.map((c) => (
             <li key={c.id} role="option" aria-selected={c.name === current.name}>
               <button type="button" onClick={() => { onPick(c); setOpen(false); }} style={{ ["--accent" as string]: accent }}>
-                <span style={{ fontWeight: 700, color: "#0d1117" }}>{c.name}</span>
-                {c.email && <span style={{ color: "#64748b", fontSize: 11.5 }}> · {c.email}</span>}
+                <span style={{ fontWeight: 700, color: "#151a24" }}>{c.name}</span>
+                {c.email && <span style={{ color: "#5b6272", fontSize: 11.5 }}> · {c.email}</span>}
               </button>
             </li>
           ))}

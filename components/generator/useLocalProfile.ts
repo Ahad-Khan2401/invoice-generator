@@ -8,6 +8,7 @@
  */
 import type { InvoiceDoc, Party, Currency, DocType } from "@/lib/invoice-doc";
 import { sanitizeLayout, type Layout } from "@/lib/layout";
+import { DEFAULT_COLOR } from "@/lib/brand";
 
 export const PROFILE_KEY = "pdfbb_profile_v2";
 const LEGACY_KEY = "pdfbb_profile_v1";
@@ -47,7 +48,7 @@ export function readProfile(): LocalProfile | null {
       from,
       brandLogo: typeof p.brandLogo === "string" ? p.brandLogo : null,
       cur: p.cur && typeof p.cur === "object" ? p.cur : { s: "$", l: p.curLabel ?? "USD" },
-      color: typeof p.color === "string" ? p.color : "#4f46e5",
+      color: typeof p.color === "string" ? p.color : DEFAULT_COLOR,
       bankDetails: p.bankDetails ?? "",
       notes: p.notes ?? "",
       taxLabel: p.taxLabel ?? "Tax",

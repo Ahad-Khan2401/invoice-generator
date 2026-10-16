@@ -50,7 +50,7 @@ export default function Privacy() {
             automatically (you can switch this off with the &quot;Save a copy to my dashboard&quot; checkbox in the
             generator), and you may also save drafts, a business profile and a client directory. Everything you
             save can be deleted from your dashboard at any time, and you can request full account deletion by emailing{" "}
-            <a className="text-indigo-600 hover:underline" href="mailto:support@pdfbillbuilder.com">support@pdfbillbuilder.com</a>.
+            <a className="text-accent-600 hover:underline" href="mailto:support@pdfbillbuilder.com">support@pdfbillbuilder.com</a>.
             For Pro subscriptions, payment is processed by Lemon Squeezy (our merchant of record) — we never
             see or store your card details. Lemon Squeezy notifies us of your subscription status (active,
             cancelled, payment failed) so we can grant or remove Pro features; we store that status against the
@@ -66,12 +66,12 @@ export default function Privacy() {
           </p>
           <ul className="mt-3 list-disc space-y-1.5 pl-5">
             <li>Google&apos;s use of advertising cookies lets it and its partners serve ads based on your visits.</li>
-            <li>Opt out of personalised advertising at <a className="text-indigo-600 hover:underline" href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Google Ads Settings</a>.</li>
-            <li>Opt out of third-party vendor cookies at <a className="text-indigo-600 hover:underline" href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer">www.aboutads.info</a>.</li>
+            <li>Opt out of personalised advertising at <a className="text-accent-600 hover:underline" href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Google Ads Settings</a>.</li>
+            <li>Opt out of third-party vendor cookies at <a className="text-accent-600 hover:underline" href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer">www.aboutads.info</a>.</li>
           </ul>
           <p className="mt-3">
             More info:{" "}
-            <a className="text-indigo-600 hover:underline" href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">
+            <a className="text-accent-600 hover:underline" href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">
               How Google uses information from sites that use its services
             </a>.
           </p>
@@ -122,7 +122,7 @@ export default function Privacy() {
         <Section title="10. Contact">
           <p>
             Questions? Email{" "}
-            <a className="text-indigo-600 hover:underline" href="mailto:support@pdfbillbuilder.com">support@pdfbillbuilder.com</a>.
+            <a className="text-accent-600 hover:underline" href="mailto:support@pdfbillbuilder.com">support@pdfbillbuilder.com</a>.
           </p>
         </Section>
       </Card>

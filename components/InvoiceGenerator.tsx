@@ -564,26 +564,25 @@ export default function InvoiceGenerator({
 
       {/* ── Hero ── */}
       <div className="ig-hero">
-        <div className="ig-hero__pill">
-          <span className="ig-hero__dot" aria-hidden="true" />
-          Free forever · no signup · no watermark
+        <div className="ig-hero__inner">
+          <span className="stamp stamp--hero">Free · no signup · no watermark</span>
+          <h1 className="ig-hero__h1">
+            {heading ?? <>Free PDF Invoice Generator</>}
+          </h1>
+          <p className="ig-hero__sub">
+            {subheading ?? (
+              <>Create professional invoices, bills, receipts and quotations in your browser. Fill in the form, watch the live preview update, and download a clean PDF — no account needed.</>
+            )}
+          </p>
+          <ul className="ig-hero__trust" aria-label="Key benefits">
+            {["Private: your data stays in your browser", "Live preview, A4 or US Letter PDF", "Any currency, tax added on top or included"].map((t) => (
+              <li key={t}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c26" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                {t}
+              </li>
+            ))}
+          </ul>
         </div>
-        <h1 className="ig-hero__h1">
-          {heading ?? <>Free PDF Invoice Generator</>}
-        </h1>
-        <p className="ig-hero__sub">
-          {subheading ?? (
-            <>Create professional invoices, bills, receipts and quotations in your browser. Fill in the form, watch the live preview update, and download a clean PDF — no account needed.</>
-          )}
-        </p>
-        <ul className="ig-hero__trust" aria-label="Key benefits">
-          {["Private — your data stays in your browser", "Live preview, A4 or US Letter PDF", "Works in any currency, tax inclusive or exclusive"].map((t) => (
-            <li key={t}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-              {t}
-            </li>
-          ))}
-        </ul>
       </div>
 
       {/* ── Two-column tool ── */}
@@ -658,8 +657,8 @@ export default function InvoiceGenerator({
                     return (
                       <button key={key} type="button" role="radio" aria-checked={active} onClick={() => changeDocType(key)} className="ig-tile"
                         style={{ borderColor: active ? i.color : undefined, background: active ? `${i.color}0f` : undefined }}>
-                        <Icon size={16} aria-hidden="true" style={{ color: active ? i.color : "#64748b" }} />
-                        <span style={{ color: active ? i.color : "#334155", fontWeight: 700, fontSize: 12.5 }}>{i.label}</span>
+                        <Icon size={16} aria-hidden="true" style={{ color: active ? i.color : "#5b6272" }} />
+                        <span style={{ color: active ? i.color : "#2f3542", fontWeight: 700, fontSize: 12.5 }}>{i.label}</span>
                         <span className="ig-tile__desc">{i.desc}</span>
                       </button>
                     );
@@ -680,7 +679,7 @@ export default function InvoiceGenerator({
                             title={locked ? `${t.name} — Pro template` : t.name} onClick={() => chooseTemplate(t.key, locked)}
                             style={{ borderColor: active ? color : undefined, background: active ? `${color}0f` : undefined }}>
                             {locked && <span className="ig-tile__pro">✦ PRO</span>}
-                            <span style={{ fontSize: 12.5, fontWeight: 700, color: active ? color : locked ? "#64748b" : "#334155" }}>{t.name}</span>
+                            <span style={{ fontSize: 12.5, fontWeight: 700, color: active ? color : locked ? "#5b6272" : "#2f3542" }}>{t.name}</span>
                             <span className="ig-tile__desc">{t.desc}</span>
                           </button>
                         );
@@ -691,7 +690,7 @@ export default function InvoiceGenerator({
                   {/* ── Layout & logo ── */}
                   <details className="ig-more">
                     <summary>
-                      <span>Layout &amp; logo <span style={{ fontWeight: 500, color: "#64748b", fontSize: 12 }}>— header design, logo size and position, what to show</span></span>
+                      <span>Layout &amp; logo <span style={{ fontWeight: 500, color: "#5b6272", fontSize: 12 }}>— header design, logo size and position, what to show</span></span>
                     </summary>
                     <div className="ig-more__body">
                       <LayoutPanel
@@ -718,7 +717,7 @@ export default function InvoiceGenerator({
                             <button key={s} type="button" role="radio" aria-checked={active} onClick={() => patch({ status: s })} className="ig-tile ig-tile--row"
                               style={{ borderColor: active ? cfg.border : undefined, background: active ? cfg.bg : undefined }}>
                               <span aria-hidden="true" style={{ fontSize: 15 }}>{s === "paid" ? "✅" : "⏳"}</span>
-                              <span style={{ fontSize: 13, fontWeight: 700, color: active ? cfg.color : "#64748b" }}>{cfg.label}</span>
+                              <span style={{ fontSize: 13, fontWeight: 700, color: active ? cfg.color : "#5b6272" }}>{cfg.label}</span>
                             </button>
                           );
                         })}
@@ -795,7 +794,7 @@ export default function InvoiceGenerator({
                       {doc.brandLogo ? (
                         <div style={{ position: "relative", display: "inline-block" }}>
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={doc.brandLogo} alt="Your logo" style={{ height: 44, maxWidth: 110, objectFit: "contain", borderRadius: 8, border: "1.5px solid #e4e9f2", padding: 4, background: "white" }} />
+                          <img src={doc.brandLogo} alt="Your logo" style={{ height: 44, maxWidth: 110, objectFit: "contain", borderRadius: 6, border: "1.5px solid #e3ddd0", padding: 4, background: "white" }} />
                           <button type="button" onClick={() => patch({ brandLogo: null })} aria-label="Remove logo" className="ig-removebadge"><X size={10} aria-hidden="true" /></button>
                         </div>
                       ) : (
@@ -860,7 +859,7 @@ export default function InvoiceGenerator({
                     {/* Discount */}
                     <div className="ig-subcard" style={{ marginTop: 12 }}>
                       <div className="ig-subcard__row">
-                        <span className="ig-subcard__label"><Tag size={13} aria-hidden="true" /> Discount <span style={{ fontWeight: 500, color: "#64748b" }}>(optional)</span></span>
+                        <span className="ig-subcard__label"><Tag size={13} aria-hidden="true" /> Discount <span style={{ fontWeight: 500, color: "#5b6272" }}>(optional)</span></span>
                         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                           <Segmented label="Discount type" size="sm" accent={color} value={doc.discType} onChange={(v) => patch({ discType: v })}
                             options={[{ value: "%", label: "%" }, { value: "fixed", label: doc.cur.s }]} />
@@ -887,9 +886,9 @@ export default function InvoiceGenerator({
                           </Sel>
                           <input type="number" inputMode="decimal" min="0" max="100" step="any" aria-label="Tax rate percent" placeholder="0" value={doc.tax || ""}
                             onChange={(e) => patch({ tax: Math.max(0, Math.min(1000, parseFloat(e.target.value) || 0)) })} className="ig-input ig-input--mini" />
-                          <span style={{ fontSize: 12.5, color: "#64748b" }}>%</span>
+                          <span style={{ fontSize: 12.5, color: "#5b6272" }}>%</span>
                         </div>
-                        <span style={{ fontWeight: 600, color: "#334155", fontVariantNumeric: "tabular-nums", fontSize: 13 }}>
+                        <span style={{ fontWeight: 600, color: "#2f3542", fontVariantNumeric: "tabular-nums", fontSize: 13 }}>
                           {doc.taxType === "exclusive" ? money(totals.tax) : doc.tax > 0 ? `incl. ${money(totals.taxIncluded)}` : "—"}
                         </span>
                       </div>
@@ -947,11 +946,11 @@ export default function InvoiceGenerator({
                   {/* ── Watermark + footer note ── */}
                   <div className="ig-grid2" style={{ marginBottom: 6 }}>
                     <div>
-                      <span className="ig-label">Watermark image <span style={{ fontWeight: 400, color: "#94a3b8" }}>(optional)</span></span>
+                      <span className="ig-label">Watermark image <span style={{ fontWeight: 400, color: "#6b717f" }}>(optional)</span></span>
                       {doc.wmLogo ? (
                         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={doc.wmLogo} alt="Watermark preview" style={{ height: 38, maxWidth: 100, objectFit: "contain", borderRadius: 8, border: "1.5px solid #e4e9f2", padding: 4, background: "white" }} />
+                          <img src={doc.wmLogo} alt="Watermark preview" style={{ height: 38, maxWidth: 100, objectFit: "contain", borderRadius: 6, border: "1.5px solid #e3ddd0", padding: 4, background: "white" }} />
                           <button type="button" onClick={() => patch({ wmLogo: null })} className="ig-linkbtn" style={{ color: "#dc2626" }}><X size={12} aria-hidden="true" /> Remove</button>
                         </div>
                       ) : (
@@ -980,7 +979,7 @@ export default function InvoiceGenerator({
             {/* ── Actions ── */}
             <div className="ig-formfoot">
               <div style={{ display: "flex", gap: 10 }}>
-                <button type="button" data-field="download" onClick={startDownload} disabled={busy} className="ig-btn ig-btn--primary" style={{ background: busy ? "#94a3b8" : color, boxShadow: busy ? "none" : `0 4px 16px ${color}45`, flex: 1 }}>
+                <button type="button" data-field="download" onClick={startDownload} disabled={busy} className="ig-btn ig-btn--primary" style={{ background: busy ? "#6b717f" : color, boxShadow: busy ? "none" : `0 4px 16px ${color}45`, flex: 1 }}>
                   {busy ? <><Spinner /> Generating…</> : <><Download size={15} aria-hidden="true" /> Download PDF</>}
                 </button>
                 <button type="button" onClick={startPrint} className="ig-btn ig-btn--outline" title="Print or save as PDF via your browser">
@@ -1014,12 +1013,12 @@ export default function InvoiceGenerator({
                     Save a copy to my dashboard when I download
                   </label>
                 ) : (
-                  <button type="button" onClick={() => openModal("choose", "footer_signin")} className="ig-linkbtn" style={{ color: "#4f46e5" }}>
+                  <button type="button" onClick={() => openModal("choose", "footer_signin")} className="ig-linkbtn" style={{ color: "#151a24" }}>
                     Sign in free to save, duplicate and track your documents
                   </button>
                 )}
                 {!isPro && (
-                  <button type="button" onClick={() => openModal("upgrade", "footer_upgrade")} className="ig-linkbtn" style={{ color: "#6d28d9" }}>
+                  <button type="button" onClick={() => openModal("upgrade", "footer_upgrade")} className="ig-linkbtn" style={{ color: "#96141d" }}>
                     <Crown size={12} aria-hidden="true" /> Pro: premium templates &amp; white-label PDFs
                   </button>
                 )}
@@ -1033,7 +1032,7 @@ export default function InvoiceGenerator({
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span className="ig-livedot" aria-hidden="true"><span /><span /></span>
                 <span className="ig-previewbar__title">Live preview</span>
-                <span className="ig-badge" style={{ color: "#475569", background: "#f1f5f9", borderColor: "#e2e8f0" }}>{pages > 1 ? `${pages} pages` : "1 page"}</span>
+                <span className="ig-badge" style={{ color: "#3a4150", background: "#f3efe6", borderColor: "#e3ddd0" }}>{pages > 1 ? `${pages} pages` : "1 page"}</span>
               </div>
               <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
                 <span className="ig-badge" style={{ color: info.color, background: `${info.color}10`, borderColor: `${info.color}30` }}>{info.label}</span>

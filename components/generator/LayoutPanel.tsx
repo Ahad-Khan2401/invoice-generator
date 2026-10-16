@@ -12,19 +12,19 @@ import { Segmented } from "./FormControls";
 
 /** Tiny wireframe of each header design (A = your details, B = document details). */
 function Thumb({ preset, active, accent }: { preset: HeaderPreset; active: boolean; accent: string }) {
-  const a = active ? accent : "#94a3b8";
-  const b = active ? `${accent}66` : "#cbd5e1";
+  const a = active ? accent : "#6b717f";
+  const b = active ? `${accent}66` : "#cfc8b8";
   const line = (x: number, y: number, w: number, c: string, h = 3) => <rect x={x} y={y} width={w} height={h} rx={1.5} fill={c} />;
   const box = (x: number, y: number) => <rect x={x} y={y} width={9} height={9} rx={2} fill={a} />;
   return (
     <svg viewBox="0 0 72 44" width="100%" height="44" aria-hidden="true" focusable="false">
-      <rect x="0.5" y="0.5" width="71" height="43" rx="5" fill="#fff" stroke="#e2e8f0" />
+      <rect x="0.5" y="0.5" width="71" height="43" rx="5" fill="#fff" stroke="#e3ddd0" />
       {preset === "classic" && <>{box(6, 6)}{line(6, 18, 24, a)}{line(6, 24, 18, b)}{line(44, 8, 22, b, 5)}{line(50, 18, 16, a)}{line(52, 24, 14, b)}</>}
       {preset === "reversed" && <>{line(6, 8, 22, b, 5)}{line(6, 18, 16, a)}{line(6, 24, 14, b)}{box(57, 6)}{line(42, 18, 24, a)}{line(48, 24, 18, b)}</>}
       {preset === "centered" && <>{box(31, 5)}{line(22, 17, 28, a)}{line(26, 23, 20, b)}{line(20, 30, 32, b, 5)}</>}
       {preset === "stacked" && <>{box(6, 5)}{line(6, 17, 26, a)}{line(6, 23, 20, b)}{line(6, 31, 26, b, 5)}</>}
       {/* table hint */}
-      {preset !== "centered" && preset !== "stacked" && <>{line(6, 34, 60, "#e2e8f0", 2)}</>}
+      {preset !== "centered" && preset !== "stacked" && <>{line(6, 34, 60, "#e3ddd0", 2)}</>}
     </svg>
   );
 }
@@ -61,7 +61,7 @@ export default function LayoutPanel({
         {logo ? (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={logo} alt="Your logo" style={{ height: 40, maxWidth: 110, objectFit: "contain", borderRadius: 8, border: "1.5px solid #e4e9f2", padding: 4, background: "white" }} />
+            <img src={logo} alt="Your logo" style={{ height: 40, maxWidth: 110, objectFit: "contain", borderRadius: 6, border: "1.5px solid #e3ddd0", padding: 4, background: "white" }} />
             <button type="button" onClick={onLogoRemove} className="ig-linkbtn" style={{ color: "#dc2626" }}><X size={12} aria-hidden="true" /> Remove logo</button>
           </>
         ) : (
@@ -84,7 +84,7 @@ export default function LayoutPanel({
               onClick={() => (locked ? onLocked(`layout_${p.key}`) : onChange({ header: p.key }))}>
               {locked && <span className="ig-tile__pro">✦ PRO</span>}
               <Thumb preset={p.key} active={active} accent={accent} />
-              <span style={{ fontSize: 12, fontWeight: 700, color: active ? accent : "#334155" }}>{p.name}</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: active ? accent : "#2f3542" }}>{p.name}</span>
               <span className="ig-tile__desc">{p.hint}</span>
             </button>
           );

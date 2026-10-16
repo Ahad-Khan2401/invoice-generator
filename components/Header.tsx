@@ -38,7 +38,7 @@ function UserMenu() {
       <button
         type="button"
         onClick={() => openModal("signin", "header_signin")}
-        className="hidden rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:text-slate-900 sm:inline-flex"
+        className="hidden rounded-md px-3 py-2 text-[14px] font-medium text-ink-700 underline-offset-4 transition-colors hover:underline sm:inline-flex"
       >
         Sign in
       </button>
@@ -55,37 +55,37 @@ function UserMenu() {
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label="Account menu"
-        className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 transition-all hover:border-indigo-300"
+        className="flex items-center gap-2 rounded-md border border-[var(--rule)] bg-white px-2.5 py-1.5 transition-colors hover:border-[var(--rule-strong)]"
       >
         <span style={{
-          width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
-          background: isPro ? "linear-gradient(135deg,#4f46e5,#7c3aed)" : "#e4e9f2",
-          color: isPro ? "white" : "#475569",
+          width: 26, height: 26, borderRadius: "50%", flexShrink: 0,
+          background: isPro ? "#151a24" : "#e3ddd0",
+          color: isPro ? "white" : "#2f3542",
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 12, fontWeight: 800,
         }} aria-hidden="true">
           {initials}
         </span>
-        <span className="hidden max-w-[100px] truncate text-[13px] font-semibold text-slate-700 sm:block">
+        <span className="hidden max-w-[100px] truncate text-[13px] font-semibold text-ink-700 sm:block">
           {user?.name?.split(" ")[0] ?? "User"}
         </span>
         {isPro && (
-          <span style={{ fontSize: 10, fontWeight: 700, background: "#ede9fe", color: "#6d28d9", borderRadius: 99, padding: "2px 7px" }}>
+          <span className="rounded-sm bg-accent-600 px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-white">
             {plan === "business" ? "BUSINESS" : "PRO"}
           </span>
         )}
       </button>
 
       {open && (
-        <div role="menu" className="absolute right-0 top-11 z-50 w-52 rounded-2xl border border-slate-100 bg-white p-1.5 shadow-xl">
-          <div className="border-b border-slate-100 px-3 py-2 mb-1">
-            <p className="text-[13px] font-semibold text-slate-800 truncate">{user?.name}</p>
-            <p className="text-[11px] text-slate-500">{isPro ? `✦ ${plan === "business" ? "Business" : "Pro"} member` : "Free account"}</p>
+        <div role="menu" className="absolute right-0 top-11 z-50 w-52 rounded-lg border border-[var(--rule)] bg-white p-1.5 shadow-lg">
+          <div className="border-b border-[var(--rule)] px-3 py-2 mb-1">
+            <p className="text-[13px] font-semibold text-ink truncate">{user?.name}</p>
+            <p className="text-[11px] text-ink-500">{isPro ? `${plan === "business" ? "Business" : "Pro"} member` : "Free account"}</p>
           </div>
           <button
             type="button" role="menuitem"
             onClick={() => { setOpen(false); router.push("/dashboard"); }}
-            className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13.5px] font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900"
+            className="flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-[13.5px] font-medium text-ink-700 transition-colors hover:bg-paper-2"
           >
             <LayoutDashboard size={14} aria-hidden="true" /> Dashboard
           </button>
@@ -93,16 +93,16 @@ function UserMenu() {
             <button
               type="button" role="menuitem"
               onClick={() => { setOpen(false); openModal("upgrade", "header_menu"); }}
-              className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13.5px] font-medium text-indigo-600 transition-colors hover:bg-indigo-50"
+              className="flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-[13.5px] font-medium text-accent-600 transition-colors hover:bg-accent-50"
             >
               <Crown size={14} aria-hidden="true" /> Upgrade to Pro
             </button>
           )}
-          <div className="my-1 border-t border-slate-100" />
+          <div className="my-1 border-t border-[var(--rule)]" />
           <button
             type="button" role="menuitem"
             onClick={() => { setOpen(false); signOut(); }}
-            className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13.5px] font-medium text-slate-500 transition-colors hover:bg-slate-50 hover:text-red-600"
+            className="flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-[13.5px] font-medium text-ink-500 transition-colors hover:bg-paper-2 hover:text-accent-600"
           >
             <LogOut size={14} aria-hidden="true" /> Sign out
           </button>
@@ -134,21 +134,21 @@ export default function Header() {
   };
 
   return (
-    <div className="sticky top-3 sm:top-5 z-50 w-full px-3 no-print">
-      <header className="mx-auto w-full max-w-5xl rounded-2xl border border-slate-200/70 bg-white/85 shadow-[0_8px_30px_rgba(15,23,42,0.10)] backdrop-blur-lg supports-[backdrop-filter]:bg-white/75">
-        <nav className="flex items-center justify-between gap-3 p-2 pl-3 sm:pl-4" aria-label="Main">
+    <div className="sticky top-0 z-50 w-full border-b border-[var(--rule)] bg-paper no-print">
+      <header className="mx-auto w-full max-w-[1200px] px-4 sm:px-6">
+        <nav className="flex h-16 items-center justify-between gap-4" aria-label="Main">
 
-          <Link href="/" className="flex shrink-0 items-center rounded-lg transition-opacity hover:opacity-80" aria-label="PDF Bill Builder home">
+          <Link href="/" className="flex shrink-0 items-center rounded-md transition-opacity hover:opacity-80" aria-label="PDF Bill Builder home">
             <Logo size={30} />
           </Link>
 
-          <div className="hidden items-center gap-1 md:flex">
+          <div className="hidden items-center gap-6 md:flex">
             {NAV.map(({ href, label }) => {
               const active = path === href;
               return (
                 <Link key={href} href={href} aria-current={active ? "page" : undefined}
-                  className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                    active ? "bg-indigo-50 text-indigo-700" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  className={`border-b-2 py-1 text-[14px] font-medium transition-colors ${
+                    active ? "border-[var(--red)] text-ink" : "border-transparent text-ink-500 hover:text-ink"
                   }`}>
                   {label}
                 </Link>
@@ -161,12 +161,12 @@ export default function Header() {
             <button
               type="button"
               onClick={primaryAction}
-              className="rounded-lg bg-indigo-600 px-4 py-2 text-[13.5px] font-semibold text-white shadow-md shadow-indigo-500/30 transition-colors hover:bg-indigo-700"
+              className="rounded-md bg-ink px-4 py-2 text-[13.5px] font-semibold text-white transition-colors hover:bg-ink-700"
             >
               {primaryLabel}
             </button>
             <button type="button" onClick={() => setOpen(true)} aria-label="Open menu" aria-expanded={open}
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition-colors hover:bg-slate-100 md:hidden">
+              className="flex h-9 w-9 items-center justify-center rounded-md border border-[var(--rule)] text-ink-700 transition-colors hover:bg-paper-2 md:hidden">
               <Menu className="size-4" aria-hidden="true" />
             </button>
           </div>
@@ -176,45 +176,45 @@ export default function Header() {
       {/* Mobile drawer */}
       {open && (
         <>
-          <div className="fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-sm md:hidden" onClick={() => setOpen(false)} />
-          <div role="dialog" aria-modal="true" aria-label="Menu" className="drawer-in fixed inset-y-0 left-0 z-[70] flex w-72 max-w-[82%] flex-col bg-white shadow-2xl md:hidden">
-            <div className="flex items-center justify-between border-b border-slate-100 p-4">
+          <div className="fixed inset-0 z-[60] bg-ink/40 md:hidden" onClick={() => setOpen(false)} />
+          <div role="dialog" aria-modal="true" aria-label="Menu" className="drawer-in fixed inset-y-0 left-0 z-[70] flex w-72 max-w-[82%] flex-col bg-paper shadow-2xl md:hidden">
+            <div className="flex items-center justify-between border-b border-[var(--rule)] p-4">
               <Logo size={26} />
               <button type="button" onClick={() => setOpen(false)} aria-label="Close menu"
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100">
+                className="flex h-8 w-8 items-center justify-center rounded-md text-ink-500 hover:bg-paper-2">
                 <X className="size-4" aria-hidden="true" />
               </button>
             </div>
-            <div className="grid flex-1 content-start gap-1 overflow-y-auto p-3">
+            <div className="grid flex-1 content-start gap-0.5 overflow-y-auto p-3">
               {NAV.map(({ href, label }) => {
                 const active = path === href;
                 return (
                   <Link key={href} href={href} onClick={() => setOpen(false)} aria-current={active ? "page" : undefined}
-                    className={`rounded-lg px-4 py-2.5 text-[15px] font-medium ${
-                      active ? "bg-indigo-50 text-indigo-700" : "text-slate-700 hover:bg-slate-50"
+                    className={`rounded-md px-4 py-2.5 text-[15px] font-medium ${
+                      active ? "bg-paper-2 text-ink" : "text-ink-700 hover:bg-paper-2"
                     }`}>
                     {label}
                   </Link>
                 );
               })}
-              <Link href="/about" onClick={() => setOpen(false)} className="rounded-lg px-4 py-2.5 text-[15px] font-medium text-slate-700 hover:bg-slate-50">About</Link>
-              <Link href="/contact" onClick={() => setOpen(false)} className="rounded-lg px-4 py-2.5 text-[15px] font-medium text-slate-700 hover:bg-slate-50">Contact</Link>
+              <Link href="/about" onClick={() => setOpen(false)} className="rounded-md px-4 py-2.5 text-[15px] font-medium text-ink-700 hover:bg-paper-2">About</Link>
+              <Link href="/contact" onClick={() => setOpen(false)} className="rounded-md px-4 py-2.5 text-[15px] font-medium text-ink-700 hover:bg-paper-2">Contact</Link>
               {isLoggedIn && (
                 <Link href="/dashboard" onClick={() => setOpen(false)}
-                  className="rounded-lg px-4 py-2.5 text-[15px] font-medium text-slate-700 hover:bg-slate-50">
+                  className="rounded-md px-4 py-2.5 text-[15px] font-medium text-ink-700 hover:bg-paper-2">
                   Dashboard
                 </Link>
               )}
             </div>
-            <div className="grid gap-2 border-t border-slate-100 p-4">
+            <div className="grid gap-2 border-t border-[var(--rule)] p-4">
               {!isLoggedIn && (
                 <button type="button" onClick={() => { setOpen(false); openModal("signin", "drawer_signin"); }}
-                  className="rounded-lg border border-slate-200 py-2.5 text-center text-sm font-medium text-slate-700">
+                  className="rounded-md border border-[var(--rule-strong)] py-2.5 text-center text-sm font-medium text-ink-700">
                   Sign in
                 </button>
               )}
               <button type="button" onClick={() => { setOpen(false); primaryAction(); }}
-                className="rounded-lg bg-indigo-600 py-2.5 text-center text-sm font-semibold text-white">
+                className="rounded-md bg-ink py-2.5 text-center text-sm font-semibold text-white">
                 {primaryLabel}
               </button>
             </div>

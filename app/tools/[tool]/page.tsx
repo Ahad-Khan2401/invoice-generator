@@ -111,7 +111,7 @@ export default async function ToolPage(
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-2">
           {others.map((o) => (
             <Link key={o.slug} href={`/tools/${o.slug}`}
-              className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-100 hover:shadow-md">
+              className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-ink-100 hover:shadow-md">
               <span className="text-2xl">{o.icon}</span>
               <span className="text-[13.5px] font-bold text-slate-800">{o.name}</span>
             </Link>

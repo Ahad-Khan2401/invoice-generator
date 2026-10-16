@@ -27,7 +27,7 @@ export default function HourlyRateCalculator() {
           <select
             value={cur}
             onChange={(e) => setCur(e.target.value)}
-            className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-[15px] font-medium text-slate-900 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-[15px] font-medium text-slate-900 outline-none focus:border-ink-400 focus:ring-2 focus:ring-ink-100"
           >
             {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>

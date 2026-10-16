@@ -1,4 +1,5 @@
 import { sanitizeLayout } from "./layout.ts";
+import { DEFAULT_COLOR } from "./brand.ts";
 
 /**
  * lib/validate.ts — request body validation / sanitisation for API routes.
@@ -120,7 +121,7 @@ export function documentData(v: unknown): Record<string, unknown> {
     docType:  oneOf(o.docType, DOC_TYPES, "invoice"),
     status:   oneOf(o.status, PAY_STATUSES, "unpaid"),
     cur:      { s: str(cur.s, 6) || "$", l: str(cur.l, 6) || "USD" },
-    color:    /^#[0-9a-f]{6}$/i.test(String(o.color ?? "")) ? String(o.color) : "#4f46e5",
+    color:    /^#[0-9a-f]{6}$/i.test(String(o.color ?? "")) ? String(o.color) : DEFAULT_COLOR,
     template: oneOf(o.template, TEMPLATES, "classic"),
     paper:    oneOf(o.paper, PAPER_SIZES, "a4"),
     layout:   sanitizeLayout(o.layout),

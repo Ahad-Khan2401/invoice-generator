@@ -4,6 +4,7 @@
  */
 import { defaultNumber, localIso } from "./invoice-math.ts";
 import { DEFAULT_LAYOUT, sanitizeLayout, type Layout } from "./layout.ts";
+import { DEFAULT_COLOR } from "./brand.ts";
 
 export type DocType   = "invoice" | "receipt" | "quotation" | "estimate";
 export type PayStatus = "paid" | "unpaid";
@@ -58,7 +59,7 @@ export const CURRENCIES: Currency[] = [
 ];
 
 export const DOC_TYPE_INFO: Record<DocType, { label: string; upper: string; desc: string; color: string }> = {
-  invoice:   { label: "Invoice",   upper: "INVOICE",   desc: "Bill for goods or services", color: "#4f46e5" },
+  invoice:   { label: "Invoice",   upper: "INVOICE",   desc: "Bill for goods or services", color: DEFAULT_COLOR },
   receipt:   { label: "Receipt",   upper: "RECEIPT",   desc: "Proof of payment",           color: "#10b981" },
   quotation: { label: "Quotation", upper: "QUOTATION", desc: "Price proposal",             color: "#f59e0b" },
   estimate:  { label: "Estimate",  upper: "ESTIMATE",  desc: "Approximate cost",           color: "#0ea5e9" },
@@ -100,7 +101,7 @@ export function newDoc(overrides: Partial<InvoiceDoc> = {}): InvoiceDoc {
     docType,
     status: docType === "receipt" ? "paid" : "unpaid",
     cur: CURRENCIES[0],
-    color: "#4f46e5",
+    color: DEFAULT_COLOR,
     template: "classic",
     paper: "a4",
     layout: DEFAULT_LAYOUT,

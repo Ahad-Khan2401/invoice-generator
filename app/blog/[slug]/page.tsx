@@ -71,15 +71,15 @@ export default async function BlogPost(
     <PageShell width="3xl">
       {/* Breadcrumb */}
       <nav className="mb-6 flex items-center gap-2 text-[13px] text-slate-400">
-        <Link href="/" className="hover:text-indigo-600">Home</Link>
+        <Link href="/" className="hover:text-accent-600">Home</Link>
         <span>/</span>
-        <Link href="/blog" className="hover:text-indigo-600">Blog</Link>
+        <Link href="/blog" className="hover:text-accent-600">Blog</Link>
       </nav>
 
       <article>
         <header className="mb-8">
           <div className="mb-3 flex flex-wrap items-center gap-2 text-[13px] font-medium text-slate-400">
-            <span>By <Link href="/about" className="font-semibold text-slate-600 hover:text-indigo-600">{SITE.author}</Link></span>
+            <span>By <Link href="/about" className="font-semibold text-slate-600 hover:text-accent-600">{SITE.author}</Link></span>
             <span>·</span>
             <span>{post.updated !== post.date ? `Updated ${fmt(post.updated)}` : fmt(post.date)}</span>
             <span>·</span><span>{post.readMins} min read</span>
@@ -113,14 +113,14 @@ export default async function BlogPost(
         )}
 
         {/* CTA */}
-        <div className="mt-10 rounded-3xl bg-gradient-to-br from-indigo-600 to-violet-600 p-8 text-center shadow-lg shadow-indigo-500/25">
-          <h2 className="text-[22px] font-extrabold text-white">Create your invoice now — free</h2>
-          <p className="mx-auto mt-2 max-w-md text-[14.5px] leading-relaxed text-white/80">
-            Invoices, receipts, and quotations. Add your logo, apply tax, download a PDF in seconds. No signup.
+        <div className="mt-10 bg-ink px-6 py-9 sm:px-10 sm:py-11">
+          <h2 className="font-display text-[clamp(1.6rem,3vw,2.2rem)] font-semibold leading-tight text-white">Create your invoice now, free</h2>
+          <p className="mt-2 max-w-md text-[15.5px] leading-relaxed text-ink-200">
+            Invoices, receipts, quotations and estimates. Add your logo, apply tax, download a PDF in seconds. No signup.
           </p>
-          <Link href="/" className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-white px-7 py-3.5 font-bold text-indigo-700 transition-transform hover:-translate-y-0.5">
+          <Link href="/" className="mt-6 inline-flex items-center gap-2 rounded-md bg-[var(--red)] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#cf1f25]">
             Open the free generator
-            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
           </Link>
         </div>
 
@@ -132,7 +132,7 @@ export default async function BlogPost(
               {related.map((p) => (
                 <Link key={p.slug} href={`/blog/${p.slug}`}
                   className="group rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
-                  <h3 className="text-[15px] font-bold leading-snug text-slate-900 group-hover:text-indigo-600">{p.title}</h3>
+                  <h3 className="text-[15px] font-bold leading-snug text-slate-900 group-hover:text-accent-600">{p.title}</h3>
                   <p className="mt-1.5 text-[13px] leading-relaxed text-slate-500">{p.excerpt}</p>
                 </Link>
               ))}
@@ -147,8 +147,8 @@ export default async function BlogPost(
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {templates.map((t) => (
                 <Link key={t.slug} href={`/${t.slug}`}
-                  className="group rounded-2xl border border-indigo-100 bg-indigo-50/40 p-5 transition-all hover:-translate-y-0.5 hover:shadow-md">
-                  <h3 className="text-[15px] font-bold leading-snug text-slate-900 group-hover:text-indigo-600">{t.h1}</h3>
+                  className="group rounded-2xl border border-ink-100 bg-ink-50/40 p-5 transition-all hover:-translate-y-0.5 hover:shadow-md">
+                  <h3 className="text-[15px] font-bold leading-snug text-slate-900 group-hover:text-accent-600">{t.h1}</h3>
                   <p className="mt-1.5 text-[13px] leading-relaxed text-slate-500">{t.sub}</p>
                 </Link>
               ))}

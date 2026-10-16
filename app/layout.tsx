@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Public_Sans, Source_Serif_4, Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -11,7 +11,13 @@ import { SITE } from "@/lib/config";
 import GoogleProvider from "@/components/GoogleProvider";
 import { AuthProvider } from "@/components/AuthProvider";
 
-const inter = Inter({ subsets: ["latin"], display: "swap" });
+/* Three families, three jobs:
+   - Public Sans   interface and body copy: plain, wide, easy for non-native readers.
+   - Source Serif  headings: a sturdy, printed-page serif with optical sizes.
+   - Inter         ONLY inside the invoice document itself, so existing PDFs keep their look. */
+const publicSans = Public_Sans({ subsets: ["latin"], display: "swap", variable: "--font-public-sans" });
+const sourceSerif = Source_Serif_4({ subsets: ["latin"], display: "swap", variable: "--font-source-serif", axes: ["opsz"] });
+const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
 
 const otherMeta: Record<string, string> = { "google-adsense-account": SITE.adsenseClient };
 if (SITE.bingSiteVerification) otherMeta["msvalidate.01"] = SITE.bingSiteVerification;
@@ -50,7 +56,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#4f46e5",
+  themeColor: "#faf8f3",
   width: "device-width",
   initialScale: 1,
 };
@@ -60,7 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en">
-      <body className={`${inter.className} min-h-screen flex flex-col bg-[#f5f7ff] text-slate-900 antialiased`}>
+      <body className={`${publicSans.variable} ${sourceSerif.variable} ${inter.variable} font-sans min-h-screen flex flex-col bg-paper text-ink antialiased`}>
         <a href="#main" className="skip-link">Skip to content</a>
         <GoogleProvider>
           <AuthProvider>

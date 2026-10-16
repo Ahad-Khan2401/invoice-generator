@@ -30,7 +30,7 @@ export default function LateFeeCalculator() {
           <select
             value={cur}
             onChange={(e) => setCur(e.target.value)}
-            className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-[15px] font-medium text-slate-900 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-[15px] font-medium text-slate-900 outline-none focus:border-ink-400 focus:ring-2 focus:ring-ink-100"
           >
             {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
@@ -39,7 +39,7 @@ export default function LateFeeCalculator() {
         <div>
           <span className="mb-1.5 block text-[13px] font-semibold text-slate-600">Interest rate</span>
           <div className="flex gap-2">
-            <div className="flex flex-1 items-stretch overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100">
+            <div className="flex flex-1 items-stretch overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-ink-400 focus-within:ring-2 focus-within:ring-ink-100">
               <input
                 type="number" inputMode="decimal" value={rate}
                 onChange={(e) => setRate(e.target.value)}
@@ -50,7 +50,7 @@ export default function LateFeeCalculator() {
             <select
               value={period}
               onChange={(e) => setPeriod(e.target.value as "year" | "month")}
-              className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-[13.5px] font-medium text-slate-900 outline-none focus:border-indigo-400"
+              className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-[13.5px] font-medium text-slate-900 outline-none focus:border-ink-400"
             >
               <option value="year">per year</option>
               <option value="month">per month</option>

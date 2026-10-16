@@ -15,7 +15,7 @@ export default function PricingCta({ planKey }: { planKey: PlanKey }) {
 
   if (isPro) {
     return (
-      <Link href="/dashboard" className="inline-flex w-full items-center justify-center rounded-2xl border-2 border-indigo-200 px-6 py-3 font-bold text-indigo-700">
+      <Link href="/dashboard" className="inline-flex w-full items-center justify-center rounded-md border-2 border-ink px-6 py-3 font-semibold text-ink">
         You&apos;re on {plan.name} — open dashboard
       </Link>
     );
@@ -24,7 +24,7 @@ export default function PricingCta({ planKey }: { planKey: PlanKey }) {
     <button
       type="button"
       onClick={() => openModal(isLoggedIn ? "upgrade" : "choose", `pricing_${planKey}`)}
-      className="inline-flex w-full items-center justify-center rounded-2xl bg-indigo-600 px-6 py-3 font-bold text-white shadow-lg shadow-indigo-500/25 transition-all hover:bg-indigo-700"
+      className="inline-flex w-full items-center justify-center rounded-md bg-ink px-6 py-3 font-semibold text-white transition-colors hover:bg-ink-700"
     >
       Get {plan.name} — {priceLabel(plan)}
     </button>

@@ -1,9 +1,9 @@
 import type { TemplateKey } from "@/lib/invoice-doc";
 
 export const COLORS_FREE = [
-  { hex:"#4f46e5",name:"Indigo"  }, { hex:"#0ea5e9",name:"Sky"    },
-  { hex:"#10b981",name:"Emerald" }, { hex:"#f59e0b",name:"Amber"  },
-  { hex:"#ef4444",name:"Red"     }, { hex:"#8b5cf6",name:"Violet" },
+  { hex:"#17243F",name:"Navy"    }, { hex:"#E5252B",name:"Red"    },
+  { hex:"#1F6FE6",name:"Blue"    }, { hex:"#10b981",name:"Emerald" },
+  { hex:"#f59e0b",name:"Amber"   }, { hex:"#4f46e5",name:"Indigo"  },
 ];
 export const COLORS_PRO = [
   { hex:"#0f172a",name:"Slate"   }, { hex:"#7f1d1d",name:"Crimson"},

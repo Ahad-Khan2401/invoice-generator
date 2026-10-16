@@ -18,7 +18,7 @@ const PRESETS: { id: string; label: string; rate: number }[] = [
 const CUSTOM = "custom";
 
 const selectCls =
-  "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-[15px] font-medium text-slate-900 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100";
+  "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-[15px] font-medium text-slate-900 outline-none focus:border-ink-400 focus:ring-2 focus:ring-ink-100";
 
 export default function GstCalculator() {
   const [cur, setCur] = useState("A$");
@@ -60,7 +60,7 @@ export default function GstCalculator() {
           type="button"
           aria-pressed={mode === "add"}
           onClick={() => setMode("add")}
-          className={`flex-1 rounded-lg py-2 text-[13.5px] font-semibold transition-colors ${mode === "add" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500"}`}
+          className={`flex-1 rounded-lg py-2 text-[13.5px] font-semibold transition-colors ${mode === "add" ? "bg-white text-accent-600 shadow-sm" : "text-slate-500"}`}
         >
           Add GST
         </button>
@@ -68,7 +68,7 @@ export default function GstCalculator() {
           type="button"
           aria-pressed={mode === "remove"}
           onClick={() => setMode("remove")}
-          className={`flex-1 rounded-lg py-2 text-[13.5px] font-semibold transition-colors ${mode === "remove" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500"}`}
+          className={`flex-1 rounded-lg py-2 text-[13.5px] font-semibold transition-colors ${mode === "remove" ? "bg-white text-accent-600 shadow-sm" : "text-slate-500"}`}
         >
           Remove GST
         </button>

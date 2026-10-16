@@ -32,13 +32,13 @@ export default function SalesTaxCalculator() {
       <div className="mb-5 flex rounded-xl border border-slate-200 bg-slate-50 p-1">
         <button
           onClick={() => setMode("add")}
-          className={`flex-1 rounded-lg py-2 text-[13.5px] font-semibold transition-colors ${mode === "add" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500"}`}
+          className={`flex-1 rounded-lg py-2 text-[13.5px] font-semibold transition-colors ${mode === "add" ? "bg-white text-accent-600 shadow-sm" : "text-slate-500"}`}
         >
           Add tax
         </button>
         <button
           onClick={() => setMode("remove")}
-          className={`flex-1 rounded-lg py-2 text-[13.5px] font-semibold transition-colors ${mode === "remove" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500"}`}
+          className={`flex-1 rounded-lg py-2 text-[13.5px] font-semibold transition-colors ${mode === "remove" ? "bg-white text-accent-600 shadow-sm" : "text-slate-500"}`}
         >
           Remove tax
         </button>
@@ -50,7 +50,7 @@ export default function SalesTaxCalculator() {
           <select
             value={cur}
             onChange={(e) => setCur(e.target.value)}
-            className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-[15px] font-medium text-slate-900 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-[15px] font-medium text-slate-900 outline-none focus:border-ink-400 focus:ring-2 focus:ring-ink-100"
           >
             {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>

@@ -169,7 +169,7 @@ const InvoicePreview = forwardRef<HTMLDivElement, Props>(function InvoicePreview
   ) : null;
 
   return (
-    <div ref={ref} style={{ fontFamily: "'Inter',system-ui,sans-serif", background: "white", position: "relative", color: "#0d1117" }}>
+    <div ref={ref} style={{ fontFamily: "var(--font-inter), 'Inter', system-ui, sans-serif", background: "white", position: "relative", color: "#0d1117" }}>
       {/* Accent stripe (Classic only) */}
       {tpl.stripe && <div style={{ height: 5, background: `linear-gradient(90deg,${color},${color}bb)` }} />}
 
