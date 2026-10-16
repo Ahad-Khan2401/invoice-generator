@@ -14,6 +14,8 @@ import HourlyRateCalculator from "@/components/tools/HourlyRateCalculator";
 import SalesTaxCalculator from "@/components/tools/SalesTaxCalculator";
 import DiscountCalculator from "@/components/tools/DiscountCalculator";
 import ProfitMarginCalculator from "@/components/tools/ProfitMarginCalculator";
+import VatCalculator from "@/components/tools/VatCalculator";
+import GstCalculator from "@/components/tools/GstCalculator";
 
 export const dynamicParams = false;
 
@@ -23,6 +25,8 @@ const CALCULATORS: Record<string, React.ComponentType> = {
   "sales-tax-calculator": SalesTaxCalculator,
   "discount-calculator": DiscountCalculator,
   "profit-margin-calculator": ProfitMarginCalculator,
+  "vat-calculator": VatCalculator,
+  "gst-calculator": GstCalculator,
 };
 
 export function generateStaticParams() {
@@ -60,6 +64,11 @@ export default async function ToolPage(
 
   return (
     <PageShell>
+      <nav className="crumbs" aria-label="Breadcrumb">
+        <Link href="/">Home</Link><span aria-hidden="true">/</span>
+        <Link href="/tools">Calculators</Link><span aria-hidden="true">/</span>
+        <span aria-current="page">{t.name}</span>
+      </nav>
       <PageHero badge="Free Tool" title={t.name} subtitle={t.short} />
 
       {/* The interactive calculator */}

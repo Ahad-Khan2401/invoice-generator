@@ -1,13 +1,14 @@
 /* ───────────────────────────────────────────────
-   Central site config — single source of truth.
-   Replace adsenseClient with your real publisher ID
-   once AdSense approves your site.
+   Central site config — single source of truth for identity,
+   analytics/ads IDs and verification tokens.
+   Plans, prices and entitlements live in lib/plans.ts.
 ─────────────────────────────────────────────── */
 export const SITE = {
   name: "PDF Bill Builder",
   url: "https://www.pdfbillbuilder.com",
   author: "Abdul Ahad",   // founder — shown as the author of guides + in schema
-  // ✅ Your real AdSense publisher ID
+  supportEmail: "support@pdfbillbuilder.com",
+  // ✅ Real AdSense publisher ID
   adsenseClient: "ca-pub-3004153584501560",
 
   /* ── Analytics & Search-engine verification ──
@@ -23,7 +24,6 @@ export const SITE = {
      Each banner needs its OWN slot ID. Create them in:
        AdSense → Ads → By ad unit → Display ads → (create)
      Then paste the 10-digit "data-ad-slot" number here.
-     Until you replace these, ads will load but stay blank.
   ─────────────────────────────────────────────── */
   adSlots: {
     homeTop:      "2945686556",
@@ -32,25 +32,4 @@ export const SITE = {
     about:        "6968692049",
     howItWorks:   "5411078115",
   },
-
-  /* ── Pro (monthly subscription, via Lemon Squeezy) ──────────
-     PRICING CHANGED 2026-07-27: $9/year -> $6/month.
-     Why: $9/year = $0.75/mo per customer, so $100/mo needed 133 active
-     subscribers. At $6/mo it needs 17. Same traffic, ~8x the revenue.
-
-     ✅ DONE 2026-07-27: the Lemon Squeezy product "PDF Bill Builder Pro"
-     (store 397470) was switched to $5.99 billed monthly. The checkout URL is
-     unchanged because the existing product was edited rather than replaced.
-     These strings MUST stay in sync with the real Lemon Squeezy price.
-  ─────────────────────────────────────────────── */
-  stripe: {
-    proLink:      "https://pdfbillbuilder.lemonsqueezy.com/checkout/buy/94cf5dec-ef98-4595-8e88-8ff23712bead",
-    priceAmount:  "$5.99",           // headline number
-    pricePeriod:  "month",           // billing period, singular
-    priceMonthly: "$5.99",
-    priceLabel:   "$5.99 / month",   // used in buttons + modals everywhere
-    priceNote:    "cancel anytime",
-  },
 } as const;
-
-

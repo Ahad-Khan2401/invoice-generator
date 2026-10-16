@@ -12,14 +12,14 @@ export const metadata: Metadata = {
 
 const stats = [
   { label: "Free Forever",    value: "100%"    },
-  { label: "Data Stored",     value: "0 bytes" },
+  { label: "Uploaded as a guest", value: "0 bytes" },
   { label: "Signup Required", value: "None"    },
 ];
 
 const values = [
-  { icon: "🔒", title: "Privacy First",  desc: "Your data never leaves your browser. Nothing is sent to our servers, ever.", bg: "bg-indigo-50" },
+  { icon: "🔒", title: "Privacy First",  desc: "As a guest, nothing you type leaves your browser. Only documents you choose to save while signed in are stored — and you can delete them any time.", bg: "bg-indigo-50" },
   { icon: "⚡", title: "Lightning Fast", desc: "No loading screens, no bloat. Open the page and start invoicing instantly.", bg: "bg-emerald-50" },
-  { icon: "♾️", title: "Built to Last",  desc: "No accounts, no subscriptions. PDF Bill Builder is free, forever.", bg: "bg-amber-50" },
+  { icon: "♾️", title: "Built to Last",  desc: "No account needed and no limits on the free plan. An optional Pro subscription funds the free tool instead of locking it down.", bg: "bg-amber-50" },
 ];
 
 export default function About() {
@@ -48,9 +48,8 @@ export default function About() {
           <p>
             Most invoice tools are also quietly collecting your data — your client list, your rates,
             your revenue — and storing it on their servers. We&apos;re different by design: the generator
-            runs entirely in your browser. Your numbers are never uploaded, never analysed, and never
-            sold. Unless you choose to sign in and save an invoice to your dashboard, nothing you type
-            ever leaves your device.
+            runs entirely in your browser. Your numbers are never analysed or sold. Unless you choose to sign in
+            and save a document to your dashboard, nothing you type ever leaves your device.
           </p>
           <p>
             Today {SITE.name} creates invoices, receipts, and quotations with multi-currency support,

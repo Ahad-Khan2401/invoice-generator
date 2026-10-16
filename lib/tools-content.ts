@@ -138,4 +138,110 @@ export const TOOLS_CONTENT: Record<string, ToolContent> = {
       { q: "What is a good profit margin?", a: "It varies by industry, but many small businesses aim for a gross margin of 30–50%. Service businesses often run higher; retail and wholesale typically lower. The key is covering all costs and leaving a sustainable profit." },
     ],
   },
+
+  "vat-calculator": {
+    intro:
+      "This VAT calculator adds VAT to a net price or strips it back out of a VAT-inclusive total. Pick a preset rate from the list, or type your own, then switch between adding and removing to see the net amount, the VAT, and the gross figure side by side. It is built for the everyday moments when you need the number quickly: pricing a job, checking a supplier's invoice, or working out how much of a till total is tax.",
+    sections: [
+      {
+        h: "How VAT is calculated, with a worked example",
+        p: "Value added tax is charged as a percentage of the net selling price, so adding it is a single multiplication. Take the net price, multiply by the rate expressed as a decimal, and that is the VAT. Add it to the net price to get the gross, which is what the customer actually pays. Say you charge 850.00 for a piece of design work and the rate that applies to you is 20 percent. In the calculator above, choose the 20 percent preset, leave the mode on Add VAT, type 850, and all three figures appear instantly; change the preset to a reduced or zero rate and you can see at once how the gross changes for different kinds of supply.",
+        list: [
+          "Net price: 850.00",
+          "VAT at 20 percent: 850.00 × 0.20 = 170.00",
+          "Gross total on the invoice: 850.00 + 170.00 = 1,020.00",
+          "At a 5 percent reduced rate the same job would carry 42.50 of VAT and total 892.50",
+        ],
+      },
+      {
+        h: "Reverse-calculating VAT from a gross price",
+        p: "The mistake nearly everyone makes at least once is to take a gross price and knock off the rate percentage. That gives the wrong answer, because the percentage was applied to the smaller net figure, not the larger gross one. To reverse the calculation you divide the gross by one plus the rate: at 20 percent, divide by 1.20; at 5 percent, divide by 1.05. Take a gross receipt of 240.00 at 20 percent as an example. The Remove VAT mode above does the division for you and shows the divisor it used, so you can check the working on a receipt or an expense claim without a spreadsheet.",
+        list: [
+          "Net: 240.00 ÷ 1.20 = 200.00",
+          "VAT: 240.00 − 200.00 = 40.00",
+          "The wrong way: 240.00 less 20 percent = 192.00, which understates the net and overstates the tax by 8.00",
+        ],
+      },
+      {
+        h: "What a VAT invoice needs to show",
+        p: "If you are registered for VAT, the invoice you issue is the document your customer relies on to reclaim the tax, so it has to carry more than an ordinary bill. Exact requirements are set by each country's tax authority, but the elements below appear in almost every set of rules and are a sensible checklist wherever you trade.",
+        list: [
+          "Your business name, address, and VAT registration number",
+          "A unique sequential invoice number and the date of issue, plus the date of supply if different",
+          "The customer's name and address, and their VAT number where that is required for the type of sale",
+          "A description of each item or service, with quantity, unit price excluding VAT, and the rate applied",
+          "The net total, the VAT amount for each rate used, and the gross total payable",
+          "Where an item is zero-rated or exempt, a note saying so rather than leaving the rate blank",
+        ],
+      },
+      {
+        h: "Common VAT calculation mistakes",
+        p: "Beyond the reverse-calculation trap, a few errors come up again and again. Rounding each line's VAT and then adding the lines can produce a total a few pence or cents different from calculating VAT on the subtotal; pick one method and use it consistently so your invoices reconcile. Mixing rates on one invoice without showing the VAT for each rate separately makes the document hard for the customer to process. Applying VAT to a price that already includes it doubles up the tax, which is why it helps to label every figure clearly as net or gross. And quoting prices to business customers without saying whether VAT is included invites a dispute at invoice time.",
+      },
+      {
+        h: "Showing prices VAT inclusive or exclusive",
+        p: "Who you are selling to usually decides the format. Consumers expect to see the price they will pay, so retail prices are normally shown inclusive of VAT, with the tax broken out on the receipt. Business customers who can reclaim VAT care about the net figure, so trade quotes and invoices normally lead with the net price and show VAT as a separate line. Whichever you choose, say which it is: a quote that reads 1,000 plus VAT and one that reads 1,000 including VAT differ by a meaningful amount. Thresholds for registration, the rates for different goods, and the rules on what you can reclaim all vary by country, so check with your tax authority before relying on any figure for your return.",
+      },
+    ],
+    faq: [
+      { q: "How do I add VAT to a price?", a: "Multiply the net price by the VAT rate as a decimal and add the result to the net price. For 850.00 at 20 percent, the VAT is 170.00 and the gross is 1,020.00. Select a preset rate above, or type your own, and the calculator shows net, VAT, and gross together." },
+      { q: "How do I take VAT off a gross price?", a: "Divide the gross amount by one plus the rate as a decimal: by 1.20 for 20 percent, 1.05 for 5 percent. The result is the net price, and the difference is the VAT. Do not simply subtract the percentage from the gross; that gives the wrong figure." },
+      { q: "Which VAT rate should I use?", a: "The rate depends on where you are registered and what you are selling. The presets above cover the standard rates most commonly needed, plus reduced and zero rates, but the correct rate for a particular supply is set by your tax authority, so check their guidance if you are unsure." },
+      { q: "Why does my VAT total differ by a few pence from the invoice?", a: "Usually because of rounding. Calculating VAT on each line and summing the results can differ slightly from calculating VAT on the subtotal. Both are generally acceptable if applied consistently; the calculator above works on the single amount you enter." },
+      { q: "Do I need to charge VAT at all?", a: "Only if you are registered for VAT, and registration rules and thresholds vary by country. If you are not registered you should not add VAT or show a VAT amount on your invoices. If you are close to a threshold or trade across borders, check with your tax authority or an accountant." },
+    ],
+  },
+
+  "gst-calculator": {
+    intro:
+      "Use this GST calculator to add goods and services tax to a price or to work out how much GST is already inside a tax-inclusive amount. Choose from preset rates for the countries where GST is most commonly used, or enter any custom rate, then switch between Add GST and Remove GST to see the before-tax price, the tax, and the final total. It is designed for quick checks when you are preparing a tax invoice, reviewing a supplier's bill, or deciding what to charge.",
+    sections: [
+      {
+        h: "How GST is worked out, with an example",
+        p: "GST is a percentage added to the price before tax. To add it, multiply the pre-tax amount by the rate as a decimal; the result is the GST, and the pre-tax amount plus the GST is the total the customer pays. The arithmetic is the same at every rate; only the percentage changes. Suppose a tradesperson charges 1,250.00 before tax for a day's work and materials. Select the matching preset above, type 1250, and the three figures update as you switch between rates, which makes it easy to compare how a price lands in different markets.",
+        list: [
+          "Pre-tax amount: 1,250.00",
+          "GST at 10 percent: 1,250.00 × 0.10 = 125.00, so the invoice total is 1,375.00",
+          "GST at 15 percent: 1,250.00 × 0.15 = 187.50, so the invoice total is 1,437.50",
+          "GST at 18 percent: 1,250.00 × 0.18 = 225.00, so the invoice total is 1,475.00",
+        ],
+      },
+      {
+        h: "Finding the GST inside a tax-inclusive price",
+        p: "Many receipts and retail prices are quoted with GST included, and you often need to know how much of that total is tax, for example when claiming it back or recording a purchase. Because the tax was added to the smaller pre-tax amount, you cannot just take the percentage off the total. Instead, divide the inclusive price by one plus the rate. A useful shortcut at exactly 10 percent is that the GST is one eleventh of the inclusive total. The Remove GST mode above shows the divisor it is using so you can follow the working.",
+        list: [
+          "At 10 percent, divide by 1.10: an inclusive 330.00 is 300.00 before tax plus 30.00 GST",
+          "At 15 percent, divide by 1.15: an inclusive 460.00 is 400.00 before tax plus 60.00 GST",
+          "At 18 percent, divide by 1.18: an inclusive 590.00 is 500.00 before tax plus 90.00 GST",
+        ],
+      },
+      {
+        h: "What a GST tax invoice should include",
+        p: "If you are registered for GST, your customers need a compliant tax invoice to claim credits for the tax you charge them, and the tax authority will expect certain details to be present. The specifics differ from country to country, and some set different requirements for small-value sales, but the following list covers what is almost always expected.",
+        list: [
+          "The words Tax Invoice, your business name, and your GST or business registration number",
+          "The date of issue and a unique invoice number",
+          "The customer's name, and their registration number for larger sales where the rules require it",
+          "A description of each item or service with quantity and price",
+          "The GST amount shown clearly, either per line or as a total, and a statement of whether prices include GST",
+          "The total amount payable including GST",
+        ],
+      },
+      {
+        h: "Mistakes to avoid when calculating GST",
+        p: "The most frequent error is subtracting the rate from an inclusive total instead of dividing, which overstates the tax and understates the pre-tax price. Another is forgetting that some goods or services may be exempt or taxed at a different rate, then applying the standard rate to everything on the invoice. Where several rates apply, the GST for each rate should be shown separately rather than blended into one figure. Businesses that quote prices before tax to consumers who expect inclusive prices create friction at payment time, while those that quote inclusive prices to registered businesses make it harder for the customer to see the credit they can claim. Finally, rounding GST on each line and then on the total can produce a mismatch of a cent or two; choose one approach and stick to it.",
+      },
+      {
+        h: "Quoting GST inclusive or exclusive",
+        p: "The right format depends on your customer. Private consumers generally expect to see the full price they will pay, so advertising and retail pricing are normally GST inclusive with the tax identified on the receipt. Registered businesses can usually claim the GST back, so they care about the pre-tax price and expect quotes and invoices that show GST as a separate line. Whichever format you use, label it plainly so a quote of 2,000 is never read as inclusive by one party and exclusive by the other. Registration thresholds, the rates for particular categories, and the rules on claiming credits all vary by country, so treat this calculator as a quick arithmetic check and confirm the rules that apply to you with your tax authority.",
+      },
+    ],
+    faq: [
+      { q: "How do I calculate GST on a price?", a: "Multiply the pre-tax price by the GST rate as a decimal and add it on. For 1,250.00 at 10 percent, the GST is 125.00 and the total is 1,375.00. Choose a preset rate above or enter your own, and the calculator shows the pre-tax price, the GST, and the total." },
+      { q: "How do I work out GST from a total that includes it?", a: "Divide the inclusive total by one plus the rate: by 1.10 at 10 percent, by 1.15 at 15 percent, by 1.18 at 18 percent. The result is the pre-tax price and the remainder is the GST. At exactly 10 percent, the GST is one eleventh of the total." },
+      { q: "Is GST the same as VAT?", a: "They are different names for the same kind of consumption tax, and the arithmetic is identical. Countries such as Australia, New Zealand, Singapore, Canada, and India use the term GST, while the UK and much of Europe use VAT. The rates, invoice rules, and registration thresholds are set separately by each country." },
+      { q: "Which GST rate should I choose from the presets?", a: "Pick the rate that applies to your country and the type of goods or services you sell. The presets cover commonly used standard rates, including the multiple rate bands some countries use, but the correct rate for a specific item is defined by your tax authority, so check their guidance when in doubt." },
+      { q: "Do I have to register for GST?", a: "That depends on where you operate and how much you sell; registration thresholds and rules vary by country and sometimes by type of business. If you are not registered you should not charge GST or show it on invoices. If you are unsure, check with your tax authority or an accountant." },
+    ],
+  },
 };

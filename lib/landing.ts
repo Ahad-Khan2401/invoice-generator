@@ -13,6 +13,7 @@ export interface Landing {
   profession: string;          // used inside the SEO body text ("built for …")
   currencySymbol?: string;     // tool opens with this currency (must match CURRENCIES)
   keywords?: string[];         // page-specific keywords for <meta keywords>
+  docType?: "invoice" | "receipt" | "quotation" | "estimate"; // generator opens pre-set to this document type
 }
 
 export const LANDING: Record<string, Landing> = {
@@ -347,6 +348,35 @@ export const LANDING: Record<string, Landing> = {
     desc: "Create personal trainer invoices online for free. Bill per session, package, or month, add your branding, and download a professional PDF invoice.",
     profession: "personal trainers and fitness coaches",
     keywords: ["personal trainer invoice generator", "fitness invoice template", "personal training invoice", "gym trainer invoice", "coaching invoice template"],
+  },
+
+  /* ───────── By document type (generator opens pre-set via docType) ───────── */
+  "receipt-generator": {
+    h1: "Free Receipt Generator",
+    sub: "Create a professional payment receipt for your customer and download it as PDF in seconds — free, no signup.",
+    title: "Free Receipt Generator — Create & Download PDF Receipts",
+    desc: "Free receipt generator and receipt maker. Record who paid, how much, and for what, then download a clean PDF payment receipt instantly. No signup needed.",
+    profession: "shops, freelancers, and service providers who need to confirm a payment",
+    keywords: ["receipt generator", "free receipt maker", "payment receipt template", "receipt maker online", "cash receipt generator", "receipt format pdf"],
+    docType: "receipt",
+  },
+  "quotation-generator": {
+    h1: "Free Quotation Generator",
+    sub: "Create a clear, professional quotation for your customer and download it as PDF in seconds — free, no signup.",
+    title: "Free Quotation Generator — Create & Download PDF Quotes",
+    desc: "Free quotation generator and quote maker. Use a clean quotation format, itemise your prices, set a validity date, and download a professional PDF quote.",
+    profession: "tradespeople, freelancers, and small businesses pricing new work",
+    keywords: ["quotation generator", "quote maker", "quotation format", "free quotation template", "price quote generator", "quotation maker online"],
+    docType: "quotation",
+  },
+  "estimate-generator": {
+    h1: "Free Estimate Generator",
+    sub: "Give customers a clear written estimate before the job starts and download it as PDF in seconds — 100% free.",
+    title: "Free Estimate Generator — Estimate Maker & PDF Template",
+    desc: "Free estimate generator and estimate maker. Itemise labour and materials, show a realistic price range, and download a clean PDF estimate. No signup needed.",
+    profession: "contractors, tradespeople, and service businesses",
+    keywords: ["estimate generator", "estimate maker", "free estimate template", "job estimate template", "work estimate generator", "estimate format pdf"],
+    docType: "estimate",
   },
 };
 

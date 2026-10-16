@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import InvoiceGenerator from "@/components/InvoiceGenerator";
+import HomeSections from "@/components/HomeSections";
 import SeoContent from "@/components/SeoContent";
 import HomeGuides from "@/components/HomeGuides";
 import AdSlot from "@/components/AdSlot";
@@ -8,30 +9,28 @@ import { softwareSchema, faqSchema, howToSchema, breadcrumbSchema } from "@/lib/
 import { SITE } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: "Free Invoice & Bill Generator — Create & Download PDF Invoices Instantly",
+  title: "Free PDF Invoice Generator — Create & Download Invoices Instantly",
   description:
-    "Free online invoice generator and bill maker. Create professional invoices, bills, receipts, and quotations — add line items, apply tax, and download a clean PDF in seconds. No signup.",
-  keywords: [
-    "free invoice generator", "invoice maker", "bill generator", "bill maker",
-    "online bill maker", "create invoice online", "make a bill online",
-    "pdf invoice", "receipt generator", "quotation generator",
-  ],
+    "Free PDF invoice generator and bill maker. Create professional invoices, bills, receipts, quotations and estimates — add line items, apply tax, and download a clean PDF in seconds. No signup, no watermark.",
   alternates: { canonical: "/" },
 };
 
 export default function Home() {
   return (
     <>
-      {/* The interactive tool (hero + generator + feature grid) */}
+      {/* The interactive tool (hero + generator) */}
       <InvoiceGenerator />
 
-      {/* Prominent guides grid - surfaces editorial content high on the page */}
+      {/* Document types · how it works · benefits · more resources · Pro path */}
+      <HomeSections />
+
+      {/* Guides grid - surfaces editorial content + internal links */}
       <HomeGuides />
 
       {/* SEO body + FAQ (indexable, server-rendered) — includes one in-article ad */}
       <SeoContent midAdSlot={SITE.adSlots.homeMid} />
 
-      {/* Ad #2 — after the article, before the footer */}
+      {/* Ad — after the article, before the footer */}
       <AdSlot slot={SITE.adSlots.homeBottom} />
 
       {/* Structured data — search + AI engines */}

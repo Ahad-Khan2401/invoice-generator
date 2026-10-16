@@ -3,19 +3,20 @@ import { Mail } from "lucide-react";
 import { Logo } from "@/components/Logo";
 
 const FOOTER_TEMPLATES = [
+  { slug: "receipt-generator",         label: "Receipt Generator" },
+  { slug: "quotation-generator",       label: "Quotation Generator" },
+  { slug: "estimate-generator",        label: "Estimate Generator" },
   { slug: "freelancer-invoice",        label: "Freelancer Invoice" },
-  { slug: "contractor-invoice",        label: "Contractor Invoice" },
-  { slug: "small-business-invoice",    label: "Small Business Invoice" },
   { slug: "invoice-generator-usa",     label: "Invoice Generator USA" },
   { slug: "invoice-generator-uk",      label: "Invoice Generator UK" },
-  { slug: "bill-generator",            label: "Bill Generator" },
 ];
 
 const FOOTER_TOOLS = [
+  { slug: "vat-calculator",                   label: "VAT Calculator" },
+  { slug: "gst-calculator",                   label: "GST Calculator" },
+  { slug: "sales-tax-calculator",             label: "Sales Tax Calculator" },
   { slug: "late-fee-calculator",              label: "Late Fee Calculator" },
   { slug: "freelance-hourly-rate-calculator", label: "Hourly Rate Calculator" },
-  { slug: "sales-tax-calculator",             label: "Sales Tax Calculator" },
-  { slug: "discount-calculator",              label: "Discount Calculator" },
   { slug: "profit-margin-calculator",         label: "Profit Margin Calculator" },
 ];
 
@@ -27,10 +28,10 @@ const Tape = ({ className }: { className?: string }) => (
 );
 
 export default function Footer() {
-  const year = 2026;
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="mx-auto mt-16 mb-8 w-full max-w-5xl px-4">
+    <footer className="mx-auto mt-16 mb-8 w-full max-w-5xl px-4 no-print">
       {/* Taped card */}
       <div className="relative rounded-3xl border border-slate-100 bg-white px-6 py-10 shadow-[0_2px_8px_rgba(0,0,0,0.04),0_18px_50px_rgba(15,23,42,0.06)]">
         {/* Tape corners */}
@@ -47,7 +48,7 @@ export default function Footer() {
             <Link href="/" aria-label="PDF Bill Builder home">
               <Logo size={30} />
             </Link>
-            <p className="text-[14px] font-medium leading-relaxed text-slate-400">
+            <p className="text-[14px] font-medium leading-relaxed text-slate-500">
               Create professional invoices, receipts &amp; quotations and download a polished PDF in seconds — 100% free, no signup.
             </p>
           </div>
@@ -63,6 +64,7 @@ export default function Footer() {
                 <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/pricing">Pricing</Link>
                 <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/blog">Blog</Link>
                 <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/about">About</Link>
+                <Link className="font-medium text-slate-500 transition-colors hover:text-indigo-600" href="/dashboard">Dashboard</Link>
               </div>
             </div>
 
@@ -115,7 +117,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar — aligned to the card's inner offset (px-6 + md:px-4) above */}
-      <div className="mt-4 flex flex-col items-start justify-between gap-3 px-4 sm:px-6 md:px-10 text-[13px] text-slate-400 sm:flex-row sm:items-center">
+      <div className="mt-4 flex flex-col items-start justify-between gap-3 px-4 sm:px-6 md:px-10 text-[13px] text-slate-500 sm:flex-row sm:items-center">
         <p>© {year} PDF Bill Builder. All rights reserved.</p>
         <a href="mailto:support@pdfbillbuilder.com" className="hover:text-slate-700">support@pdfbillbuilder.com</a>
       </div>

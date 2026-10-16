@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/terms" },
 };
 
-const UPDATED = "June 1, 2026";
+const UPDATED = "October 16, 2026";
 
 export default function Terms() {
   return (
@@ -46,19 +46,23 @@ export default function Terms() {
           <p>The {SITE.name} name, design, and software are owned by us. The documents <em>you</em> create belong to <em>you</em> — we claim no ownership over your content.</p>
         </Section>
 
-        <Section title="7. Advertising">
+        <Section title="7. Pro subscription, cancellation & refunds">
+          <p>The optional Pro plan is billed by our merchant of record, Lemon Squeezy, at the price shown on the <Link href="/pricing" className="text-indigo-600 hover:underline">pricing page</Link>. It renews automatically until cancelled. You can cancel at any time from the customer portal link in your receipt; you keep Pro until the end of the period already paid for. Within 30 days of your first purchase you may request a full refund by emailing support. If a renewal payment fails and cannot be recovered, your account returns to the free plan and nothing you created is deleted.</p>
+        </Section>
+
+        <Section title="8. Advertising">
           <p>The Service is supported by third-party advertising (Google AdSense). Your use is also subject to our <Link href="/privacy" className="text-indigo-600 hover:underline">Privacy Policy</Link>.</p>
         </Section>
 
-        <Section title="8. Limitation of liability">
+        <Section title="9. Limitation of liability">
           <p>To the maximum extent permitted by law, {SITE.name} and its operators shall not be liable for any indirect, incidental, or consequential damages arising from your use of, or inability to use, the Service — including losses related to documents created with the tool.</p>
         </Section>
 
-        <Section title="9. Changes to these terms">
+        <Section title="10. Changes to these terms">
           <p>We may update these Terms from time to time. Continued use after changes are posted constitutes acceptance of the updated Terms.</p>
         </Section>
 
-        <Section title="10. Contact">
+        <Section title="11. Contact">
           <p>Questions? Email <a className="text-indigo-600 hover:underline" href="mailto:support@pdfbillbuilder.com">support@pdfbillbuilder.com</a>.</p>
         </Section>
       </Card>
